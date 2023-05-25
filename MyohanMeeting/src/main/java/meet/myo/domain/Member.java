@@ -28,6 +28,7 @@ public class Member {
 
     private String refreshToken;
 
+    //TODO: Upload 클래스에 빌더 패턴을 적용하고 보니 Member 클래스도 스트링 필드가 여러번 중복되어서...빌더 패턴으로 변경하는 게 좋을까요?
     private Member(String email, String name, String password, String nickName, String phoneNumber) {
         this.email = email;
         this.name = name;
@@ -51,6 +52,7 @@ public class Member {
     public void updateNickName(String nickName) {
         this.nickName = nickName;
     }
+    public void updatePhoneNumber(String phoneNumber) { this.phoneNumber = phoneNumber; }
 
     public void updateRefreshToken(String refreshToken) {
         this.refreshToken = refreshToken;
