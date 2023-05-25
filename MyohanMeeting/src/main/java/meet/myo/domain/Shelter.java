@@ -10,13 +10,16 @@ import lombok.NoArgsConstructor;
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Shelter {
+
     @Column(name="shelter_city")
     private String city;
+
     @Column(name="shelter_address")
     private String address;
 
     @Column(name="shelter_name")
     private String name;
+
     @Column(name="shelter_phoneNumber")
     private String phoneNumber;
 

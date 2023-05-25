@@ -14,6 +14,9 @@ public class AdoptApplication {
     @Column(name = "adopt_application_id")
     private Long id;
 
+    // 여러개의 신청을 한 사람이 한다
+    @ManyToOne
+    @JoinColumn(name = "member_id")
     private Member member;
 
     private String content;
