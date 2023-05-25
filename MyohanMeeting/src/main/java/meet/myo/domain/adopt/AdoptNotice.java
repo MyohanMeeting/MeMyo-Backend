@@ -1,9 +1,11 @@
-package meet.myo.domain;
+package meet.myo.domain.adopt;
 
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import meet.myo.domain.Member;
+import meet.myo.domain.cat.Cat;
 
 import java.util.List;
 
