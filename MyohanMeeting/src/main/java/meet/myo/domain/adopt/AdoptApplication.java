@@ -1,9 +1,10 @@
-package meet.myo.domain;
+package meet.myo.domain.adopt;
 
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import meet.myo.domain.Member;
 
 @Entity
 @Getter
