@@ -1,10 +1,12 @@
-package meet.myo.domain;
+package meet.myo.domain.cat;
 
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import meet.myo.domain.adopt.Shelter;
 
 import java.time.LocalDate;
+import java.util.List;
 
 @Entity
 @Getter
@@ -29,7 +31,8 @@ public class Cat {
     @Enumerated(EnumType.STRING)
     private Neutered neutered;
 
-    private List<Upload> picture;
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "cat")
+    private List<CatPictures> pictures;
 
     private String healthStatus;
 
@@ -46,5 +49,4 @@ public class Cat {
 
     @Embedded
     private Shelter shelter;
-
 }
