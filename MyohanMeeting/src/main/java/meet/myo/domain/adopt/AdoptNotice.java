@@ -19,8 +19,12 @@ public class AdoptNotice {
     @Column(name = "adopt_notice_id")
     private Long id;
 
+    @OneToOne
+    @JoinColumn(name = "cat_id")
     private Cat cat;
 
+    @ManyToOne
+    @JoinColumn(name = "member_id")
     private Member member;
 
     private String title;

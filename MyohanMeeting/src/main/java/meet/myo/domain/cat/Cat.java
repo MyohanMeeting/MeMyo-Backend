@@ -14,7 +14,7 @@ import java.util.List;
 public class Cat {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "member_id")
+    @Column(name = "cat_id")
     private Long id;
 
     private String name;
