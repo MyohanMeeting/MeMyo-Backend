@@ -1,6 +1,7 @@
 package meet.myo.domain.cat;
 
 import jakarta.persistence.*;
+import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import meet.myo.domain.adopt.Shelter;
@@ -10,7 +11,7 @@ import java.util.List;
 
 @Entity
 @Getter
-@NoArgsConstructor
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Cat {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
