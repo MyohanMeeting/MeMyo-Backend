@@ -23,7 +23,7 @@ public class MemberAuthority {
     private Member member;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "member_id")
+    @JoinColumn(name = "authority_id")
     private Authority authority;
 
     private MemberAuthority(Member member, Authority authority) {
