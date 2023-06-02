@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import meet.myo.domain.BaseAuditingListener;
 import meet.myo.domain.Member;
 
 
@@ -12,7 +13,7 @@ import meet.myo.domain.Member;
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class MemberAuthority {
+public class MemberAuthority extends BaseAuditingListener {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "member_authority_id")

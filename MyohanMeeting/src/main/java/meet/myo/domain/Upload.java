@@ -9,7 +9,7 @@ import lombok.NoArgsConstructor;
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class Upload {
+public class Upload extends BaseAuditingListener {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
