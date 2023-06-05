@@ -4,12 +4,13 @@ import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import meet.myo.domain.BaseAuditingListener;
 import meet.myo.domain.Member;
 
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class AdoptApplication {
+public class AdoptApplication extends BaseAuditingListener {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "adopt_application_id")
