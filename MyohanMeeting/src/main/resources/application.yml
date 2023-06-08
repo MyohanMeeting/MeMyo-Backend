@@ -1,0 +1,38 @@
+spring:
+  h2:
+    console:
+      enabled: true  # H2 Console? ???? ?? (H2 Console? H2 Database? UI? ????? ??)
+      path: /h2-console  # H2 Console? Path
+      settings:
+        web-allow-others: true  # 추가
+
+  datasource:
+    driver-class-name: org.h2.Driver  # Database? H2? ?????.
+    url: jdbc:h2:~/local # H2 ?? ??
+    username: sa  # H2 ?? ? ??? username ?? (??? ??? ??)
+    password:
+
+
+  jpa:
+    show-sql: true
+    generate-ddl: true
+    properties:
+      hibernate:
+        show-sql: true
+        ddl-auto: update
+        format_sql: true
+        dialect: org.hibernate.dialect.H2Dialect
+
+jwt:
+    access-secret: c2lsdmVybmluZS10ZWNoLXNwcmluZy1ib290LWp3dC10dXRvcmlhbC1zZWNyZXQtc2lsdmVybmluZS10ZWNoLXNwcmluZy1ib290LWp3dC10dXRvcmlhbC1zZWNyZXQK
+    access-token-validity-time: 180000 # 3분
+    refresh-secret: c2lsdmVybmluZS10ZWNoLXNwcmluZy1ib290LWp3dC10dXRvcmlhbC1zZWNyZXQtc2lsdmVybmluZS10ZWNoLXNwcmluZy1ib290LWp3dC10dXRvcmlhbC1zZWNyZXQK
+    refresh-token-validity-time: 60480000 # 1008분
+
+logging:
+  level:
+    org.hibernate: info
+    org.hibernate.SQL: debug
+    org.hibernate.type: trace
+
+

@@ -1,10 +1,9 @@
 package meet.myo.repository;
 
-import meet.myo.domain.adopt.Shelter;
+import meet.myo.domain.authority.Authority;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public interface ShelterRepository extends JpaRepository<Shelter, Long> {
-
+public interface AuthorityRepository extends JpaRepository<Authority, Long> {
 }

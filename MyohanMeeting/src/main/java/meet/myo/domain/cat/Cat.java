@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import meet.myo.domain.BaseAuditingListener;
 import meet.myo.domain.adopt.Shelter;
 
 import java.time.LocalDate;
@@ -12,7 +13,7 @@ import java.util.List;
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class Cat {
+public class Cat extends BaseAuditingListener {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "member_id")
