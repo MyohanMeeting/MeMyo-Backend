@@ -13,32 +13,25 @@ import lombok.*;
 @Getter
 public class Applicant {
 
-    @NonNull
-    @Column(name = "applicant_name")
+    @Column(name = "applicant_name", nullable = false)
     private String name;
 
-    @NonNull
-    @Column(name = "applicant_age")
+    @Column(name = "applicant_age", nullable = false)
     private Integer age;
 
-    @NonNull
     @Column(name = "applicant_gender")
     @Enumerated(EnumType.STRING)
     private Gender gender;
 
-    @NonNull
     @Column(name = "applicant_address")
     private String address;
 
-    @NonNull
     @Column(name = "applicant_phone")
     private String phoneNumber;
 
-    @NonNull
     @Column(name = "applicant_job")
     private String job;
 
-    @NonNull
     @Column(name = "applicant_married")
     @Enumerated(EnumType.STRING)
     private Married married; //MARRIED, UNMARRIED

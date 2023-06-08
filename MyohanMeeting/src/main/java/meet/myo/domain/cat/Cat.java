@@ -20,39 +20,48 @@ public class Cat extends BaseAuditingListener {
     @Column(name = "member_id")
     private Long id;
 
+    @Column(nullable = false)
     private String name;
 
+    @Column(nullable = false)
     private String age;
 
-    private LocalDate foundedAt;
+    @Column(nullable = false)
+    private String species;
 
     @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
     private Sex sex;
 
+    @Column(nullable = false)
     private Double weight;
 
     @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
     private Neutered neutered;
 
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "thumbnail_id")
+    @Column(nullable = false)
     private Upload thumbnail;
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "cat")
     private List<CatPictures> pictures;
 
+    @Column(nullable = false)
     private String healthStatus;
 
-    private String species;
-
+    @Column(nullable = false)
     private String personality;
-
-    private String registNumber;
 
     @Enumerated(EnumType.STRING)
     private Registered registered;
 
+    private String registNumber;
+
     private String foundedPlace;
+
+    private String foundedAt;
 
     @Embedded
     private Shelter shelter;

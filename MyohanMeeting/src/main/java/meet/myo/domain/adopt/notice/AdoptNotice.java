@@ -29,9 +29,10 @@ public class AdoptNotice extends BaseAuditingListener {
     @JoinColumn(name="member_id")
     private Member member;
 
+    @Column(nullable = false)
     private String title;
 
-    @Column(columnDefinition = "TEXT")
+    @Column(columnDefinition = "TEXT", nullable = false)
     private String content;
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "adoptNotice")

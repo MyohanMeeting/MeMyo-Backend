@@ -15,6 +15,7 @@ public class Authority extends BaseAuditingListener {
     @Column(name = "authority_id")
     private Long id;
 
+    @Column(nullable = false)
     private String authorityName;
 
     @Override

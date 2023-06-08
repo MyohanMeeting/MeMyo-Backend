@@ -14,25 +14,29 @@ public class Member extends BaseAuditingListener {
     @Column(name = "member_id")
     private Long id;
 
-    @Column(unique = true)
+    @Column(nullable = false)
     private String email;
 
+    @Column(nullable = false)
     private String name;
 
+    @Column(nullable = false)
     private String password;
 
+    @Column(nullable = false)
     private String nickName;
 
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "profile_image_id")
     private Upload profileImage;
 
-    @Column(unique = true)
+    @Column(nullable = false)
     private String phoneNumber;
 
     private String refreshToken;
 
     @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
     private Certified certified; // CERTIFIED, NOT_CERTIFIED
 
     //TODO: Upload 클래스에 빌더 패턴을 적용하고 보니 Member 클래스도 스트링 필드가 여러번 중복되어서...빌더 패턴으로 변경하는 게 좋을까요?
