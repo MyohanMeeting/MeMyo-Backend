@@ -20,21 +20,21 @@ public class UploadService {
      * 파일상세 엔티티 조회
      */
     @Transactional(readOnly = true)
-    public UploadResponseDto getFileDetail(Long id) {
+    public UploadResponseDto getFileDetail(Long memberId, Long uploadId) {
         return UploadResponseDto.fromEntity();
     }
 
     /**
      * 파일 업로드 처리
      */
-    public Long uploadFile(List<MultipartFile> files) {
-        return 1L;
+    public List<Long> uploadFiles(Long memberId, List<MultipartFile> files) {
+        return List.of(1L);
     }
 
     /**
      * 파일 삭제 처리
      */
-    public List<Long> deleteFile(List<Long> idList) {
+    public List<Long> deleteFiles(Long memberId, List<Long> uploadIdList) {
         return List.of(1L);
     }
 

@@ -2,6 +2,7 @@ package meet.myo.service;
 
 import lombok.RequiredArgsConstructor;
 import meet.myo.dto.request.AdoptNoticeCreateRequestDto;
+import meet.myo.dto.request.AdoptNoticeStatusUpdateRequestDto;
 import meet.myo.dto.response.AdoptNoticeResponseDto;
 import meet.myo.dto.request.AdoptNoticeUpdateRequestDto;
 import meet.myo.repository.AdoptNoticeRepoImpl;
@@ -31,10 +32,10 @@ public class AdoptNoticeService {
     }
 
     /**
-     * 내가 쓴 공고목록 조회
+     * 특정 회원의 공고목록 전체 조회
      */
     @Transactional(readOnly = true)
-    public List<AdoptNoticeResponseDto> getMyAdoptNoticeList(Pageable pageable, Long memberId) {
+    public List<AdoptNoticeResponseDto> getMyAdoptNoticeList(Long memberId, Pageable pageable, String ordered) {
         return List.of(AdoptNoticeResponseDto.fromEntity());
     }
 
@@ -42,29 +43,35 @@ public class AdoptNoticeService {
      * 단일 조회
      */
     @Transactional(readOnly = true)
-    public AdoptNoticeResponseDto getAdoptNotice(Long id) {
+    public AdoptNoticeResponseDto getAdoptNotice(Long noticeId) {
         return AdoptNoticeResponseDto.fromEntity();
     }
 
     /**
      * 작성
      */
-    public Long createAdoptNotice(AdoptNoticeCreateRequestDto dto) {
+    public Long createAdoptNotice(Long memberId, AdoptNoticeCreateRequestDto dto) {
         return 1L;
+    }
+
+    /**
+     * 상태 수정
+     */
+    public AdoptNoticeResponseDto updateAdoptNoticeStatus(Long memberId, Long noticeId, AdoptNoticeStatusUpdateRequestDto dto) {
+        return AdoptNoticeResponseDto.fromEntity();
     }
 
     /**
      * 수정
      */
-    //TODO: 글 상태만 변경하는 엔드포인트를 따로 만들어야 할까요?
-    public AdoptNoticeResponseDto updateAdoptNotice(AdoptNoticeUpdateRequestDto dto) {
+    public AdoptNoticeResponseDto updateAdoptNotice(Long memberId, Long noticeId, AdoptNoticeUpdateRequestDto dto) {
         return AdoptNoticeResponseDto.fromEntity();
     }
 
     /**
      * 삭제
      */
-    public Long deleteAdoptNotice(Long id) {
+    public Long deleteAdoptNotice(Long memberId, Long noticeId) {
         return 1L;
     }
 }

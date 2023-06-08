@@ -6,7 +6,6 @@ import meet.myo.dto.request.AdoptApplicationUpdateRequestDto;
 import meet.myo.dto.response.AdoptApplicationResponseDto;
 import meet.myo.repository.AdoptNoticeRepoImpl;
 import meet.myo.repository.AdoptNoticeRepository;
-import meet.myo.search.AdoptApplicationSearch;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -25,7 +24,7 @@ public class AdoptApplicationService {
      * 특정 공고에 달린 분양신청 목록 조회
      */
     @Transactional(readOnly = true)
-    public List<AdoptApplicationResponseDto> getAdoptApplicationList(Pageable pageable, AdoptApplicationSearch search) {
+    public List<AdoptApplicationResponseDto> getAdoptApplicationListByNotice(Long memberId, Long noticeId, Pageable pageable, String ordered) {
         return List.of(AdoptApplicationResponseDto.fromEntity());
     }
 
@@ -33,7 +32,7 @@ public class AdoptApplicationService {
      * 내가 작성한 분양신청 목록 조회
      */
     @Transactional(readOnly = true)
-    public List<AdoptApplicationResponseDto> getMyAdoptApplicationList(Pageable pageable, Long memberId) {
+    public List<AdoptApplicationResponseDto> getMyAdoptApplicationList(Long memberId, Pageable pageable, String ordered) {
         return List.of(AdoptApplicationResponseDto.fromEntity());
     }
 
@@ -41,28 +40,28 @@ public class AdoptApplicationService {
      * 단일 조회
      */
     @Transactional(readOnly = true)
-    public AdoptApplicationResponseDto getAdoptApplication(Long id) {
+    public AdoptApplicationResponseDto getAdoptApplication(Long applicationId) {
         return AdoptApplicationResponseDto.fromEntity();
     }
 
     /**
      * 작성
      */
-    public Long createAdoptApplication(AdoptApplicationCreateRequestDto dto) {
+    public Long createAdoptApplication(Long memberId, AdoptApplicationCreateRequestDto dto) {
         return 1L;
     }
 
     /**
      * 수정
      */
-    public AdoptApplicationResponseDto updateAdoptApplication(AdoptApplicationUpdateRequestDto dto) {
+    public AdoptApplicationResponseDto updateAdoptApplication(Long memberId, Long applicationId, AdoptApplicationUpdateRequestDto dto) {
         return AdoptApplicationResponseDto.fromEntity();
     }
 
     /**
      * 삭제
      */
-    public Long deleteAdoptApplication(Long id) {
+    public Long deleteAdoptApplication(Long memberId, Long applicationId) {
         return 1L;
     }
 }

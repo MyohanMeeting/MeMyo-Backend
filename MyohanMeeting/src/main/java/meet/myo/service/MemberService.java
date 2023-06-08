@@ -32,35 +32,49 @@ public class MemberService {
     /**
      * 회원가입(SNS)
      */
-    public Long directOauth(MemberOauthCreateRequestDto dto) {
+    public Long oauthJoin(MemberOauthCreateRequestDto dto) {
         return 1L;
+    }
+
+    /**
+     * 이메일 중복체크
+     */
+    public void emailDuplicationCheck(EmailDuplicationCheckRequestDto dto) {
+
+    }
+
+    /**
+     * 닉네임 중복체크
+     */
+    public void nickNameDuplicationCheck(NickNameDuplicationCheckRequestDto dto) {
+
     }
 
     /**
      * 이메일 인증용 메일발송 및 UUID 저장
      */
-    public void sendCertificationEmail() { // TODO: 별 리턴내용이 없긴한데 그래도 void는 아닌거같죠...?
+    public void sendCertificationEmail(Long memberId) { // TODO: 리턴항목 생각
 
     }
 
     /**
      * 이메일 인증 UUID 비교
      */
-    public void verifyCertificationEmail(CertifyEmailRequestDto dto) {
+    public void verifyCertificationEmail(Long memberId, CertifyEmailRequestDto dto) {
 
     }
 
     /**
      * 이메일 수정
      */
-    public EmailUpdateResponseDto updateEmail(EmailUpdateRequestDto dto) {
+    public EmailUpdateResponseDto updateEmail(Long memberId, EmailUpdateRequestDto dto) {
         return EmailUpdateResponseDto.fromEntity();
     }
 
     /**
      * Oauth 수정
      */
-    public OauthUpdateResponseDto updateOauth(OauthUpdateRequestDto dto) {
+    public OauthUpdateResponseDto updateOauth(Long memberId, OauthUpdateRequestDto dto) {
         return OauthUpdateResponseDto.fromEntity();
     }
 
@@ -76,15 +90,15 @@ public class MemberService {
     /**
      * 비밀번호 수정
      */
-    public PasswordUpdateResponseDto updatePassword(PasswordUpdateRequestDto dto) {
-        return PasswordUpdateResponseDto.fromEntity();
+    public void updatePassword(Long memberId, PasswordUpdateRequestDto dto) {
+        //TODO: 리턴값 생각
     }
 
 
     /**
      * 개인정보 수정
      */
-    public MemberUpdateResponseDto updateMember(MemberUpdateRequestDto dto) {
+    public MemberUpdateResponseDto updateMember(Long memberId, MemberUpdateRequestDto dto) {
         return MemberUpdateResponseDto.fromEntity();
     }
 
@@ -92,7 +106,7 @@ public class MemberService {
     /**
      * 탈퇴
      */
-    public Long resign(Long id) {
+    public Long resign(Long memberId) {
         return 1L;
     }
 
