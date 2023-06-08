@@ -35,4 +35,6 @@ public class AdoptNotice extends BaseAuditingListener {
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "adoptNotice")
     private List<AdoptApplication> applicationList;
 
+    @Enumerated(EnumType.STRING)
+    private AdoptNoticeStatus noticeStatus;
 }
