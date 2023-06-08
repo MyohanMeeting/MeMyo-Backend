@@ -2,7 +2,6 @@ package meet.myo.domain.cat;
 
 import jakarta.persistence.*;
 import lombok.AccessLevel;
-import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import meet.myo.domain.BaseAuditingListener;

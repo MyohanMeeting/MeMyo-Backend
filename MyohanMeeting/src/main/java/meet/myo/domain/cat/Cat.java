@@ -7,7 +7,6 @@ import meet.myo.domain.Upload;
 import meet.myo.domain.adopt.notice.AdoptNotice;
 import meet.myo.domain.adopt.notice.Shelter;
 
-import java.time.LocalDate;
 import java.util.List;
 
 @Entity

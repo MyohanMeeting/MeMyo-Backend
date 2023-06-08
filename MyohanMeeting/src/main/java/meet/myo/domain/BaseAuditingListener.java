@@ -1,6 +1,5 @@
 package meet.myo.domain;
 
-
 import jakarta.persistence.EntityListeners;
 import jakarta.persistence.MappedSuperclass;
 import lombok.Getter;
