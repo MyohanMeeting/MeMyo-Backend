@@ -5,6 +5,7 @@ import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import meet.myo.domain.BaseAuditingListener;
+import meet.myo.domain.Upload;
 import meet.myo.domain.adopt.Shelter;
 
 import java.time.LocalDate;
@@ -32,6 +33,10 @@ public class Cat extends BaseAuditingListener {
 
     @Enumerated(EnumType.STRING)
     private Neutered neutered;
+
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "thumbnail_id")
+    private Upload thumbnail;
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "cat")
     private List<CatPictures> pictures;
