@@ -38,7 +38,7 @@ public class EmailCertification extends BaseAuditingListner {
 
     private String createUUID() {
         return "";
-    }
+    } //TODO: 로직 짜기
 
     private boolean isExpired() {
         return Duration.between(super.getCreateAt(), LocalDateTime.now())
