@@ -30,11 +30,9 @@ public class AdoptApplication extends BaseAuditingListener {
     @JoinColumn(name = "adopt_notice_id")
     private AdoptNotice adoptNotice;
 
-    // 신청인 정보
     @Embedded
     private Applicant applicant;
 
-    // 설문조사
     @Embedded
     private Survey survey;
 

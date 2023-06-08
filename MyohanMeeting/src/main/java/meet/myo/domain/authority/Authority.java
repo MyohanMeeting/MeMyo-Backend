@@ -10,6 +10,7 @@ import meet.myo.domain.BaseAuditingListener;
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Authority extends BaseAuditingListener {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "authority_id")

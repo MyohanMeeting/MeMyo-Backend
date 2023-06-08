@@ -61,6 +61,7 @@ public class Member extends BaseAuditingListener {
     public void updateName(String name) {
         this.name = name;
     }
+
     public void updateNickName(String nickName) {
         this.nickName = nickName;
     }

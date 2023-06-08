@@ -14,8 +14,10 @@ import java.time.LocalDateTime;
 @Getter
 @EntityListeners(AuditingEntityListener.class) //MEMO: https://ugo04.tistory.com/100, https://ugo04.tistory.com/102
 public abstract class BaseAuditingListener {
+
     @CreatedDate
     private LocalDateTime createdAt;
+
     @LastModifiedDate
     private LocalDateTime updatedAt;
 
