@@ -4,6 +4,9 @@ import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import meet.myo.domain.authority.MemberAuthority;
+
+import java.util.List;
 
 @Entity
 @Getter
@@ -30,6 +33,9 @@ public class Member extends BaseAuditingListener {
 
     @Enumerated(EnumType.STRING)
     private Certified certified; // CERTIFIED, NOT_CERTIFIED
+
+    @OneToMany(mappedBy = "member", fetch = FetchType.LAZY)
+    private List<MemberAuthority> memberAuthorities;
 
     //TODO: Upload 클래스에 빌더 패턴을 적용하고 보니 Member 클래스도 스트링 필드가 여러번 중복되어서...빌더 패턴으로 변경하는 게 좋을까요?
     private Member(String email, String name, String password, String nickName, String phoneNumber) {
