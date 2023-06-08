@@ -36,4 +36,27 @@ public class Applicant {
     @Enumerated(EnumType.STRING)
     private Married married; //MARRIED, UNMARRIED
 
+    // TODO: 개인정보를 어떻게 다룰지 생각하기
+    public void updateName(String name) {
+        this.name = name;
+    }
+    public void updateAge(Integer age) {
+        this.age = age;
+    }
+    public void updateGender(Gender gender) {
+        this.gender = gender;
+    }
+    public void updateAddress(String address) {
+        this.address = address;
+    }
+    public void updatePhoneNumber(String phoneNumber) {
+        this.phoneNumber = phoneNumber;
+    }
+    public void updateJob(String job) {
+        this.job = job;
+    }
+    public void updateMarried(Married married) {
+        this.married = married;
+    }
+
 }

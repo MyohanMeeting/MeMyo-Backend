@@ -51,4 +51,9 @@ public class AdoptApplication extends BaseAuditingListener {
         this.survey = survey;
         this.agreement = agreement;
     }
+
+    public void updateContent(String content) {
+        this.content = content;
+    }
+
 }

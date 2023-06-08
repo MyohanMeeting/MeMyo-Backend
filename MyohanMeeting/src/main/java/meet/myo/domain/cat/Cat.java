@@ -82,4 +82,59 @@ public class Cat extends BaseAuditingListener {
         this.shelter = shelter;
     }
 
+    public void updateName(String name) {
+        this.name = name;
+    }
+
+    public void updateAge(String age) {
+        this.age = age;
+    }
+
+    public void updateSpecies(String species) {
+        this.species = species;
+    }
+
+    public void updateSex(Sex sex) {
+        this.sex = sex;
+    }
+
+    public void updateWeight(Double weight) {
+        this.weight = weight;
+    }
+
+    public void updateNeutered(Neutered neutered) {
+        this.neutered = neutered;
+    }
+
+    public void updateThumbnail(Upload thumbnail) {
+        this.thumbnail = thumbnail;
+    }
+
+    public void updateHealthStatus(String healthStatus) {
+        this.healthStatus = healthStatus;
+    }
+
+    public void updatePersonality(String personality) {
+        this.personality = personality;
+    }
+
+    public void updateRegistered(Registered registered) {
+        this.registered = registered;
+    }
+
+    public void updateRegistNumber(String registNumber) {
+        this.registNumber = registNumber;
+    }
+
+    public void updateFoundedPlace(String foundedPlace) {
+        this.foundedPlace = foundedPlace;
+    }
+
+    public void updateFoundedAt(String foundedAt) {
+        this.foundedAt = foundedAt;
+    }
+
+    public void updateShelter(Shelter shelter) {
+        this.shelter = shelter;
+    }
 }

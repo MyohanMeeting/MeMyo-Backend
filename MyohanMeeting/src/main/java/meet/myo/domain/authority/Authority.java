@@ -24,6 +24,10 @@ public class Authority extends BaseAuditingListener {
         return authority;
     }
 
+    public void updateAuthorityName(String authorityName) {
+        this.authorityName = authorityName;
+    }
+
     @Override
     public String toString() {
         return authorityName;

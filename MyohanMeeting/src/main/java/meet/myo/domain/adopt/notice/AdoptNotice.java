@@ -54,6 +54,17 @@ public class AdoptNotice extends BaseAuditingListener {
         this.content = content;
     }
 
+    public void updateTitle(String title) {
+        this.title = title;
+    }
+
+    public void updateContent(String content) {
+        this.content = content;
+    }
+
+    public void updateNoticeStatus(AdoptNoticeStatus status) {
+        this.noticeStatus = status;
+    }
 
     public void addApplication() {
         applicationCount ++;

@@ -65,6 +65,10 @@ public class Member extends BaseAuditingListener {
         this.nickName = nickName;
     }
 
+    public void updateProfileImage(Upload upload) {
+        this.profileImage = upload;
+    }
+
     public void updatePhoneNumber(String phoneNumber) { this.phoneNumber = phoneNumber; }
 
     public void updateRefreshToken(String refreshToken) {

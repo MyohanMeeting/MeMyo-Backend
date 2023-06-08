@@ -49,4 +49,32 @@ public class Upload extends BaseAuditingListener {
         this.extension = extension;
         this.size = size;
     }
+
+    public void updateUrl(String url) {
+        this.url = url;
+    }
+
+    public void updatePath(String path) {
+        this.path = path;
+    }
+
+    public void updateOriginName(String originName) {
+        this.originName = originName;
+    }
+
+    public void updateSavedName(String savedName) {
+        this.savedName = savedName;
+    }
+
+    public void updateType(String type) {
+        this.type = type;
+    }
+
+    public void updateExtension(String extension) {
+        this.extension = extension;
+    }
+
+    public void updateSize(Long size) {
+        this.size = size;
+    }
 }

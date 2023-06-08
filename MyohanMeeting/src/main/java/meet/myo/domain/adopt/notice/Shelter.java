@@ -23,4 +23,21 @@ public class Shelter {
     @Column(name="shelter_phoneNumber", nullable = false)
     private String phoneNumber;
 
+
+    public void updateCity(City city) {
+        this.city = city;
+    }
+
+    public void updateAddress(String address) {
+        this.address = address;
+    }
+
+    public void updateName(String name) {
+        this.name = name;
+    }
+
+    public void updatePhoneNumber(String phoneNumber) {
+        this.phoneNumber = phoneNumber;
+    }
+
 }
