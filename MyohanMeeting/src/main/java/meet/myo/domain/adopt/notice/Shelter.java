@@ -1,4 +1,4 @@
-package meet.myo.domain.adopt;
+package meet.myo.domain.adopt.notice;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Embeddable;

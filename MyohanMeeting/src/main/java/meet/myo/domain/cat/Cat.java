@@ -6,7 +6,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import meet.myo.domain.BaseAuditingListener;
 import meet.myo.domain.Upload;
-import meet.myo.domain.adopt.Shelter;
+import meet.myo.domain.adopt.notice.Shelter;
 
 import java.time.LocalDate;
 import java.util.List;

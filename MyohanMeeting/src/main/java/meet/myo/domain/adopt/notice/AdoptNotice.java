@@ -1,4 +1,4 @@
-package meet.myo.domain.adopt;
+package meet.myo.domain.adopt.notice;
 
 import jakarta.persistence.*;
 import lombok.AccessLevel;
@@ -6,6 +6,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import meet.myo.domain.BaseAuditingListener;
 import meet.myo.domain.Member;
+import meet.myo.domain.adopt.application.AdoptApplication;
 import meet.myo.domain.cat.Cat;
 
 import java.util.List;
@@ -30,6 +31,7 @@ public class AdoptNotice extends BaseAuditingListener {
 
     private String title;
 
+    @Column(columnDefinition = "TEXT")
     private String content;
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "adoptNotice")
