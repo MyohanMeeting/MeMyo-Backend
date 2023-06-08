@@ -23,6 +23,10 @@ public class Member extends BaseAuditingListener {
 
     private String nickName;
 
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "profile_image_id")
+    private Upload profileImage;
+
     @Column(unique = true)
     private String phoneNumber;
 
