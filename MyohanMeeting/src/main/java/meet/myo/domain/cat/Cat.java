@@ -48,7 +48,7 @@ public class Cat extends BaseAuditingListener {
     private Upload thumbnail;
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "cat")
-    private List<CatPictures> pictures;
+    private List<CatPicture> pictures;
 
     @Column(nullable = false)
     private String healthStatus;

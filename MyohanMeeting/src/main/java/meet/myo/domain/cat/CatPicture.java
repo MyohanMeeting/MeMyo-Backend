@@ -2,6 +2,7 @@ package meet.myo.domain.cat;
 
 import jakarta.persistence.*;
 import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import meet.myo.domain.BaseAuditingListener;
@@ -12,7 +13,7 @@ import meet.myo.domain.Upload;
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class CatPictures extends BaseAuditingListener {
+public class CatPicture extends BaseAuditingListener {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -26,4 +27,11 @@ public class CatPictures extends BaseAuditingListener {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "upload_id")
     private Upload upload;
+
+    public static CatPicture createCatPicture(Cat cat, Upload upload) {
+        CatPicture catPicture = new CatPicture();
+        catPicture.cat = cat;
+        catPicture.upload = upload;
+        return catPicture;
+    }
 }
