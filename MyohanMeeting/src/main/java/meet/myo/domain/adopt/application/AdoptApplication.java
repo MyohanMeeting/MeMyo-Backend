@@ -38,9 +38,11 @@ public class AdoptApplication extends BaseAuditingListener {
     @Embedded
     private Survey survey;
 
-    // 규정동의
-    @Embedded
-    private Agreement agreement;
+    /**
+     * 문항에 하나라도 동의하지 않으면 신청서 작성이 불가능하기 때문에,
+     * 전체 동의 여부를 나타내는 필드만 생성하고 이를 동의 상태로 초기화합니다.
+     */
+    private String isAllAgreed = "AGREED";
 
     @Builder
     AdoptApplication(Member member, String content, AdoptNotice adoptNotice, Applicant applicant, Survey survey) {
@@ -49,7 +51,6 @@ public class AdoptApplication extends BaseAuditingListener {
         this.adoptNotice = adoptNotice;
         this.applicant = applicant;
         this.survey = survey;
-        this.agreement = agreement;
     }
 
     public void updateContent(String content) {

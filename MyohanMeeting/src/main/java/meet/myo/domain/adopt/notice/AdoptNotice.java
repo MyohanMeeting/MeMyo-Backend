@@ -44,8 +44,10 @@ public class AdoptNotice extends BaseAuditingListener {
 
     private Integer applicationCount;
 
+    // 접수중 상태로 초기화
     @Enumerated(EnumType.STRING)
-    private AdoptNoticeStatus noticeStatus;
+    private AdoptNoticeStatus noticeStatus = AdoptNoticeStatus.ACCEPTING;
+
     @Builder
     AdoptNotice(Cat cat, Member member, String title, String content) {
         this.cat = cat;

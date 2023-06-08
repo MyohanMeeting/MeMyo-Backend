@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.*;
 import meet.myo.domain.BaseAuditingListener;
 import meet.myo.domain.Upload;
+import meet.myo.domain.adopt.notice.AdoptNotice;
 import meet.myo.domain.adopt.notice.Shelter;
 
 import java.time.LocalDate;
@@ -17,6 +18,9 @@ public class Cat extends BaseAuditingListener {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "member_id")
     private Long id;
+
+    @OneToOne(fetch = FetchType.LAZY, mappedBy = "cat")
+    private AdoptNotice adoptNotice;
 
     @Column(nullable = false)
     private String name;
