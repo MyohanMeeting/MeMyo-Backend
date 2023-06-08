@@ -1,24 +1,38 @@
-# ??: https://velog.io/@backtony/JPA-%ED%99%9C%EC%9A%A91-%ED%94%84%EB%A1%9C%EC%A0%9D%ED%8A%B8-%ED%99%98%EA%B2%BD%EC%84%A4%EC%A0%95
-
 spring:
   h2:
     console:
-      enabled: true
+      enabled: true  # H2 Console? ???? ?? (H2 Console? H2 Database? UI? ????? ??)
+      path: /h2-console  # H2 Console? Path
+      settings:
+        web-allow-others: true  # 추가
 
   datasource:
-    url: jdbc:h2:mem:myomeet
-    driver-class-name: org.h2.Driver
-    username: sa
+    driver-class-name: org.h2.Driver  # Database? H2? ?????.
+    url: jdbc:h2:~/local # H2 ?? ??
+    username: sa  # H2 ?? ? ??? username ?? (??? ??? ??)
     password:
 
+
   jpa:
-    hibernate:
-      ddl-auto: create
+    show-sql: true
+    generate-ddl: true
     properties:
       hibernate:
-#        format_sql: true
+        show-sql: true
+        ddl-auto: update
+        format_sql: true
+        dialect: org.hibernate.dialect.H2Dialect
+
+jwt:
+    access-secret: c2lsdmVybmluZS10ZWNoLXNwcmluZy1ib290LWp3dC10dXRvcmlhbC1zZWNyZXQtc2lsdmVybmluZS10ZWNoLXNwcmluZy1ib290LWp3dC10dXRvcmlhbC1zZWNyZXQK
+    access-token-validity-time: 180000 # 3분
+    refresh-secret: c2lsdmVybmluZS10ZWNoLXNwcmluZy1ib290LWp3dC10dXRvcmlhbC1zZWNyZXQtc2lsdmVybmluZS10ZWNoLXNwcmluZy1ib290LWp3dC10dXRvcmlhbC1zZWNyZXQK
+    refresh-token-validity-time: 60480000 # 1008분
 
 logging:
   level:
+    org.hibernate: info
     org.hibernate.SQL: debug
-#    org.hibernate.type: trace
+    org.hibernate.type: trace
+
+

@@ -36,8 +36,23 @@ public class MemberAuthority extends BaseAuditingListener {
         return new MemberAuthority(member, authority);
     }
 
+    /**
+     * 권한 부여
+     */
+    public static MemberAuthority addAuthority(Member member, Authority authority) {
+        return new MemberAuthority(member, authority);
+    }
+
     @Override
     public String toString() {
-        return authority.getAuthorityName();
+        return this.authority.getAuthorityName();
+    }
+
+    public Authority toAuthority() {
+        return this.authority;
+    }
+
+    public void delete() {
+        super.delete();
     }
 }
