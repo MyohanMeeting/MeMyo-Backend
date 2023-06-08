@@ -1,9 +1,7 @@
 package meet.myo.domain.cat;
 
 import jakarta.persistence.*;
-import lombok.AccessLevel;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import meet.myo.domain.BaseAuditingListener;
 import meet.myo.domain.Upload;
 import meet.myo.domain.adopt.notice.Shelter;
@@ -65,4 +63,23 @@ public class Cat extends BaseAuditingListener {
 
     @Embedded
     private Shelter shelter;
+
+    @Builder
+    Cat(String name, String age, String species, Sex sex, Double weight, Neutered neutered, Upload thumbnail, String healthStatus, String personality, Registered registered, String registNumber, String foundedPlace, String foundedAt, Shelter shelter) {
+        this.name = name;
+        this.age = age;
+        this.species = species;
+        this.sex = sex;
+        this.weight = weight;
+        this.neutered = neutered;
+        this.thumbnail = thumbnail;
+        this.healthStatus = healthStatus;
+        this.personality = personality;
+        this.registered = registered;
+        this.registNumber = registNumber;
+        this.foundedPlace = foundedPlace;
+        this.foundedAt = foundedAt;
+        this.shelter = shelter;
+    }
+
 }

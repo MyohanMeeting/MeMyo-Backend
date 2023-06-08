@@ -26,4 +26,10 @@ public class Favorite extends BaseAuditingListener {
     @Column(nullable = false)
     private Cat cat;
 
+    public static Favorite createFavorite(Member member, Cat cat) {
+        Favorite favorite = new Favorite();
+        favorite.member = member;
+        favorite.cat = cat;
+        return favorite;
+    }
 }

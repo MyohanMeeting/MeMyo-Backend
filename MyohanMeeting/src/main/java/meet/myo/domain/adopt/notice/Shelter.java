@@ -2,13 +2,13 @@ package meet.myo.domain.adopt.notice;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Embeddable;
-import lombok.AccessLevel;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 @Embeddable
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
+@AllArgsConstructor(access = AccessLevel.PROTECTED)
+@Builder
 public class Shelter {
 
     @Column(name="shelter_city", nullable = false)
@@ -23,14 +23,4 @@ public class Shelter {
     @Column(name="shelter_phoneNumber", nullable = false)
     private String phoneNumber;
 
-    private Shelter(String city, String address, String name, String phoneNumber) {
-        this.city = city;
-        this.address = address;
-        this.name = name;
-        this.phoneNumber = phoneNumber;
-    }
-
-    public static Shelter createShelter(String city, String address, String name, String phoneNumber) {
-        return new Shelter(city, address, name, phoneNumber);
-    }
 }

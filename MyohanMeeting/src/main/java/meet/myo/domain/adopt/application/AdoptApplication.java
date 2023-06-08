@@ -43,7 +43,7 @@ public class AdoptApplication extends BaseAuditingListener {
     private Agreement agreement;
 
     @Builder
-    public AdoptApplication(Member member, String content, AdoptNotice adoptNotice, Applicant applicant, Survey survey, Agreement agreement) {
+    AdoptApplication(Member member, String content, AdoptNotice adoptNotice, Applicant applicant, Survey survey) {
         this.member = member;
         this.content = content;
         this.adoptNotice = adoptNotice;

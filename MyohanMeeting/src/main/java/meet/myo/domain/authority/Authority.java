@@ -18,6 +18,12 @@ public class Authority extends BaseAuditingListener {
     @Column(nullable = false)
     private String authorityName;
 
+    public static Authority createAuthority(String authorityName) {
+        Authority authority = new Authority();
+        authority.authorityName = authorityName;
+        return authority;
+    }
+
     @Override
     public String toString() {
         return authorityName;

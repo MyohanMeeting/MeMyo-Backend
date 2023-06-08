@@ -2,6 +2,7 @@ package meet.myo.domain.adopt.notice;
 
 import jakarta.persistence.*;
 import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import meet.myo.domain.BaseAuditingListener;
@@ -45,6 +46,14 @@ public class AdoptNotice extends BaseAuditingListener {
 
     @Enumerated(EnumType.STRING)
     private AdoptNoticeStatus noticeStatus;
+    @Builder
+    AdoptNotice(Cat cat, Member member, String title, String content) {
+        this.cat = cat;
+        this.member = member;
+        this.title = title;
+        this.content = content;
+    }
+
 
     public void addApplication() {
         applicationCount ++;

@@ -1,15 +1,13 @@
 package meet.myo.domain.adopt.notice;
 
 import jakarta.persistence.*;
-import lombok.AccessLevel;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import meet.myo.domain.BaseAuditingListener;
 import meet.myo.domain.Member;
 
 @Entity
-@NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class AdoptNoticeComment extends BaseAuditingListener {
 
     @Id
@@ -27,4 +25,11 @@ public class AdoptNoticeComment extends BaseAuditingListener {
 
     @Column(columnDefinition = "TEXT", nullable = false)
     private String content;
+
+    @Builder
+    AdoptNoticeComment(AdoptNotice adoptNotice, Member member, String content) {
+        this.adoptNotice = adoptNotice;
+        this.member = member;
+        this.content = content;
+    }
 }
