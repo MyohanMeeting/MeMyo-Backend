@@ -71,6 +71,7 @@ public class Member extends BaseAuditingListener {
             this.certified = Certified.CERTIFIED;
         } else {
             // TODO: 이미 인증된 회원임을 알리는 로직이 필요할까요?
+            // conflict
         }
     }
 }
