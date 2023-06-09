@@ -1,5 +1,8 @@
 package meet.myo.controller;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import meet.myo.dto.request.*;
 import meet.myo.dto.response.*;
@@ -19,6 +22,9 @@ public class MemberController {
     /**
      * 직접 회원가입
      */
+    @Tag(name = "Sign Up", description = "회원가입 관련 기능")
+    @Operation(summary = "직접 가입", description = "이메일과 비밀번호로 직접 가입합니다.", operationId = "directJoin")
+    @SecurityRequirement(name = "")
     @PostMapping("/direct")
     public CommonResponseDto<Map<String, Long>> joinDirectV1(@Validated @RequestBody final MemberDirectCreateRequestDto dto) {
         return CommonResponseDto.<Map<String, Long>>builder()
@@ -29,6 +35,9 @@ public class MemberController {
     /**
      * SNS 회원가입
      */
+    @Tag(name = "Sign Up", description = "회원가입 관련 기능")
+    @Operation(summary = "SNS 가입", description = "SNS 서비스를 통해 가입합니다.", operationId = "oauthJoin")
+    @SecurityRequirement(name = "")
     @PostMapping("/oauth")
     public CommonResponseDto<Map<String, Long>> joinOauthV1(@Validated @RequestBody final MemberOauthCreateRequestDto dto) {
         return CommonResponseDto.<Map<String, Long>>builder()
@@ -39,6 +48,9 @@ public class MemberController {
     /**
      * 이메일 중복확인
      */
+    @Tag(name = "Sign Up", description = "회원가입 관련 기능")
+    @Operation(summary = "이메일 중복 확인", description = "가입 시 이메일 중복여부를 확인합니다.", operationId = "emailDuplicationCheck")
+    @SecurityRequirement(name = "")
     @GetMapping("/email")
     public CommonResponseDto emailDuplicationCheckV1(
             @Validated @RequestBody final EmailDuplicationCheckRequestDto dto
@@ -50,8 +62,11 @@ public class MemberController {
     /**
      * 닉네임 중복확인
      */
+    @Tag(name = "Sign Up", description = "회원가입 관련 기능")
+    @Operation(summary = "닉네임 중복확인", description = "가입 시 닉네임 중복여부를 확인합니다.", operationId = "nickNameDuplicationCheck")
+    @SecurityRequirement(name = "")
     @GetMapping("/nickName")
-    public CommonResponseDto emailDuplicationCheckV1(
+    public CommonResponseDto nickNameDuplicationCheckV1(
             @Validated @RequestBody final NickNameDuplicationCheckRequestDto dto
     ) {
         memberService.nickNameDuplicationCheck(dto);
@@ -62,6 +77,9 @@ public class MemberController {
     /**
      * 인증 이메일 발송
      */
+    @Tag(name = "Sign Up", description = "회원가입 관련 기능")
+    @Operation(summary = "인증 이메일 발송", description = "가입 후 이메일 주소 인증을 위한 이메일을 발송합니다.", operationId = "sendCertificationEmail")
+    @SecurityRequirement(name = "JWT")
     @PostMapping("/certification")
     public CommonResponseDto sendCertificationEmailV1() {
         Long memberId = 1L; //TODO: security
@@ -72,6 +90,9 @@ public class MemberController {
     /**
      * 메일인증 코드 검증
      */
+    @Tag(name = "Sign Up", description = "회원가입 관련 기능")
+    @Operation(summary = "메일인증 코드 검증", description = "이메일 주소 인증코드를 검증합니다.", operationId = "verifyCertificationEmail")
+    @SecurityRequirement(name = "JWT")
     @PutMapping("/certification")
     public CommonResponseDto verifyCertificationEmailV1(@Validated @RequestBody final CertifyEmailRequestDto dto) {
         Long memberId = 1L; //TODO: security
@@ -82,6 +103,9 @@ public class MemberController {
     /**
      * 내 정보 보기
      */
+    @Tag(name = "Member", description = "회원 관련 기능")
+    @Operation(summary = "내 정보 보기", description = "자신의 회원정보를 확인합니다.", operationId = "getMyInfo")
+    @SecurityRequirement(name = "JWT")
     @GetMapping("")
     public CommonResponseDto<MemberResponseDto> getMyInfoV1() {
         Long memberId = 1L; //TODO: security
@@ -93,6 +117,9 @@ public class MemberController {
     /**
      * 내 정보 수정
      */
+    @Tag(name = "Member", description = "회원 관련 기능")
+    @Operation(summary = "내 정보 수정", description = "자신의 회원정보를 수정합니다.", operationId = "updateMyInfo")
+    @SecurityRequirement(name = "JWT")
     @PatchMapping("")
     public CommonResponseDto<MemberUpdateResponseDto> updateMyInfoV1(@Validated @RequestBody final MemberUpdateRequestDto dto) {
         Long memberId = 1L; //TODO: security
@@ -104,6 +131,9 @@ public class MemberController {
     /**
      * 이메일 수정
      */
+    @Tag(name = "Member", description = "회원 관련 기능")
+    @Operation(summary = "이메일 수정", description = "이메일을 수정합니다.", operationId = "updateEmail")
+    @SecurityRequirement(name = "JWT")
     @PutMapping("/email")
     public CommonResponseDto<EmailUpdateResponseDto> updateEmailV1(@Validated @RequestBody final EmailUpdateRequestDto dto) {
         Long memberId = 1L; //TODO: security
@@ -115,6 +145,11 @@ public class MemberController {
     /**
      * 비밀번호 수정
      */
+    @Tag(name = "Member", description = "회원 관련 기능")
+    @Operation(summary = "비밀번호 수정",
+            description = "로그인에 사용되는 비밀번호를 수정하거나, 비밀번호를 설정한 적 없는 SNS 회원의 경우 비밀번호를 새롭게 설정합니다.",
+            operationId = "updatePassword")
+    @SecurityRequirement(name = "JWT")
     @PutMapping("/password")
     public CommonResponseDto updatePasswordV1(@Validated @RequestBody final PasswordUpdateRequestDto dto) {
         Long memberId = 1L; //TODO: security
@@ -125,6 +160,11 @@ public class MemberController {
     /**
      * SNS 로그인 정보 수정
      */
+    @Tag(name = "Member", description = "회원 관련 기능")
+    @Operation(summary = "SNS 로그인 정보 수정",
+            description = "SNS 로그인 정보를 수정하거나, SNS 로그인을 설정한 적 없는 직접 가입 회원의 경우 SNS 로그인 정보를 새롭게 연결합니다.",
+            operationId = "updateOauth")
+    @SecurityRequirement(name = "JWT")
     @PutMapping("/oauth")
     public CommonResponseDto<OauthUpdateResponseDto> updateOauthV1(@Validated @RequestBody final OauthUpdateRequestDto dto) {
         Long memberId = 1L; //TODO: security
@@ -136,6 +176,9 @@ public class MemberController {
     /**
      * SNS 로그인 정보 삭제
      */
+    @Tag(name = "Member", description = "회원 관련 기능")
+    @Operation(summary = "SNS 로그인 정보 삭제", description = "연결된 SNS 로그인 정보를 삭제합니다.", operationId = "removeOauth")
+    @SecurityRequirement(name = "JWT")
     @DeleteMapping("/oauth")
     public CommonResponseDto removeOauthV1() {
         Long memberId = 1L; //TODO: security
@@ -146,6 +189,9 @@ public class MemberController {
     /**
      * 탈퇴
      */
+    @Tag(name = "Member", description = "회원 관련 기능")
+    @Operation(summary = "회원 탈퇴", description = "서비스에서 탈퇴합니다.", operationId = "resign")
+    @SecurityRequirement(name = "JWT")
     @DeleteMapping("")
     public CommonResponseDto resignV1() {
         Long memberId = 1L; //TODO: security

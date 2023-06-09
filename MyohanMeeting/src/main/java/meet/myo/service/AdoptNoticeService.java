@@ -1,10 +1,9 @@
 package meet.myo.service;
 
 import lombok.RequiredArgsConstructor;
-import meet.myo.dto.request.AdoptNoticeCreateRequestDto;
-import meet.myo.dto.request.AdoptNoticeStatusUpdateRequestDto;
+import meet.myo.dto.request.*;
+import meet.myo.dto.response.AdoptNoticeCommentResponseDto;
 import meet.myo.dto.response.AdoptNoticeResponseDto;
-import meet.myo.dto.request.AdoptNoticeUpdateRequestDto;
 import meet.myo.repository.AdoptNoticeRepoImpl;
 import meet.myo.repository.AdoptNoticeRepository;
 import meet.myo.search.AdoptNoticeSearch;
@@ -72,6 +71,28 @@ public class AdoptNoticeService {
      * 삭제
      */
     public Long deleteAdoptNotice(Long memberId, Long noticeId) {
+        return 1L;
+    }
+
+    /**
+     * 댓글 작성
+     */
+    public Long createAdoptNoticeComment(Long memberId, AdoptNoticeCommentCreateRequestDto dto) {
+        return 1L;
+    }
+
+    /**
+     * 특정 공고글에 달린 댓글 목록 조회
+     */
+    public List<AdoptNoticeCommentResponseDto> getAdoptNoticeCommentList(Long noticeId) {
+        return List.of(AdoptNoticeCommentResponseDto.fromEntity());
+    }
+
+    public AdoptNoticeCommentResponseDto updateAdoptNoticeComment(Long memberId, Long noticeId, AdoptNoticeCommentUpdateRequestDto dto) {
+        return AdoptNoticeCommentResponseDto.fromEntity();
+    }
+
+    public Long deleteAdoptNoticeComment(Long memberId, Long noticeCommentId) {
         return 1L;
     }
 }
