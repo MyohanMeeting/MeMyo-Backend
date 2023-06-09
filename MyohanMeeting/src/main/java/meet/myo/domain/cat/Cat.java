@@ -43,7 +43,6 @@ public class Cat extends BaseAuditingListener {
 
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "thumbnail_id")
-    @Column(nullable = false)
     private Upload thumbnail;
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "cat")

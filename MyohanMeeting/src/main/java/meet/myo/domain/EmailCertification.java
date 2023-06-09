@@ -20,7 +20,6 @@ public class EmailCertification extends BaseAuditingListener {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "member_id")
-    @Column(nullable = false)
     private Member member;
 
     @Column(nullable = false)
