@@ -20,8 +20,10 @@ public class EmailCertification extends BaseAuditingListener {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "member_id")
+    @Column(nullable = false)
     private Member member;
 
+    @Column(nullable = false)
     private String UUID;
 
     private EmailCertification(Member member) {
@@ -35,7 +37,7 @@ public class EmailCertification extends BaseAuditingListener {
 
     private String createUUID() {
         return "";
-    }
+    } //TODO: 로직 짜기
 
     private boolean isExpired() {
         return Duration.between(super.getCreatedAt(), LocalDateTime.now())

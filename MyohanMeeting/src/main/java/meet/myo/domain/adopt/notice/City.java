@@ -1,4 +1,4 @@
-package meet.myo.domain.adopt;
+package meet.myo.domain.adopt.notice;
 
 public enum City {
     SEOUL, SEJONG, BUSAN, DAEGU, INCHEON, GWANGJU, ULSAN, DAEJEON,
