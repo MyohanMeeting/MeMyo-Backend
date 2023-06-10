@@ -44,15 +44,21 @@ public class Member extends BaseAuditingListener {
     @Embedded
     private Oauth oauth;
 
-    @Builder
-    Member(String email, String name, String password, String nickName, String phoneNumber, Oauth oauth) {
+    @Builder(builderMethodName = "directJoinBuilder")
+    Member(String email, String name, String password, String nickName, String phoneNumber) {
         this.email = email;
         this.name = name;
         this.password = password;
         this.nickName = nickName;
         this.phoneNumber = phoneNumber;
         this.certified = Certified.NOT_CERTIFIED; // 미인증을 기본값으로 세팅
-        this.oauth = oauth;
+    }
+
+    @Builder(builderMethodName = "oauthJoinBuilder")
+    Member(OauthType oauthType, String oauthId, String email) {
+        this.email = email;
+        this.certified = Certified.NOT_CERTIFIED; // 미인증을 기본값으로 세팅
+        this.oauth = Oauth.createOauth(oauthType, oauthId);
 
     }
 
@@ -89,14 +95,6 @@ public class Member extends BaseAuditingListener {
             // TODO: 이미 인증된 회원임을 알리는 로직이 필요할까요?
             // conflict
         }
-    }
-
-    public static Member createMember(MemberOauthCreateRequestDto dto) {
-        Oauth oauth = Oauth.createOauth(OauthType.valueOf(dto.getOauthType()), dto.getOauthId());
-        return Member.builder()
-                .email(dto.getEmail())
-                .oauth(oauth)
-                .build();
     }
 
     public void updateOauth(Oauth updatedOauth) {

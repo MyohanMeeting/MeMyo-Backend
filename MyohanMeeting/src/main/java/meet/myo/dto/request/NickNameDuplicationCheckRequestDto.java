@@ -5,8 +5,4 @@ import lombok.Getter;
 @Getter
 public class NickNameDuplicationCheckRequestDto {
     private String nickName;
-
-    public NickNameDuplicationCheckRequestDto(String nickName) {
-        this.nickName = nickName;
-    }
 }

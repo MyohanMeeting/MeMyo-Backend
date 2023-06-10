@@ -29,7 +29,9 @@ public class MemberService {
      */
     @Transactional(readOnly = true)
     public MemberResponseDto getMemberById(Long id) {
-        return MemberResponseDto.fromEntity(memberRepository.findByIdAndDeletedAtNull(id).orElseThrow(() -> new NotFoundException("Member not found")));
+        return MemberResponseDto.fromEntity(
+                memberRepository.findByIdAndDeletedAtNull(id).orElseThrow(
+                        () -> new NotFoundException("id에 해당하는 회원을 찾을 수 없습니다.")));
     }
 
     /**
@@ -38,8 +40,9 @@ public class MemberService {
     public Long directJoin(MemberDirectCreateRequestDto dto) {
         validateEmailDuplication(dto.getEmail());
         validateNickNameDuplication(dto.getNickName());
+
         String encoded = passwordEncoder.encode(dto.getPassword());
-        Member member = Member.builder()
+        Member member = Member.directJoinBuilder()
                 .email(dto.getEmail())
                 .name(dto.getName())
                 .password(encoded)
@@ -54,9 +57,14 @@ public class MemberService {
      * 회원가입(SNS)
      */
     public Long oauthJoin(MemberOauthCreateRequestDto dto) {
+
         validateEmailDuplication(dto.getEmail());
 
-        Member member = Member.createMember(dto);
+        Member member = Member.oauthJoinBuilder()
+                .oauthType(dto.getOauthType() != null ? OauthType.valueOf(dto.getOauthType()) : null)
+                .oauthId(dto.getOauthId())
+                .build();
+
         Member savedMember = memberRepository.save(member);
         return savedMember.getId();
     }
@@ -69,26 +77,11 @@ public class MemberService {
         validateEmailDuplication(dto.getEmail());
     }
 
-    private void validateEmailDuplication(String email) throws DuplicateKeyException {
-        memberRepository.findByEmailAndDeletedAtNull(email)
-                .ifPresent(m -> {
-                    throw new DuplicateKeyException("RESOURCE_DUPLICATION");
-                });
-    }
-
-
     /**
      * 닉네임 중복체크
      */
     public void nickNameDuplicationCheck(NickNameDuplicationCheckRequestDto dto) {
         validateNickNameDuplication(dto.getNickName());
-    }
-
-    private void validateNickNameDuplication(String nickName) throws DuplicateKeyException {
-        memberRepository.findByNickNameAndDeletedAtNull(nickName)
-                .ifPresent(m -> {
-                    throw new DuplicateKeyException("RESOURCE_DUPLICATION");
-                });
     }
 
     /**
@@ -98,26 +91,23 @@ public class MemberService {
         Member member = memberRepository.findByIdAndDeletedAtNull(memberId)
                 .orElseThrow(() -> new NotFoundException("Not Found member"));
 
+        // 메일은 이곳에서 발송
+
         EmailCertification emailCertification = EmailCertification.createEmailCertification(member);
         emailCertificationRepository.save(emailCertification);
         // TODO: 이메일 발송 로직 작성
-
     }
 
     /**
      * 이메일 인증 UUID 비교
      */
     public void verifyCertificationEmail(Long memberId, CertifyEmailRequestDto dto) {
-        Member member = memberRepository.findByIdAndDeletedAtNull(memberId)
-                .orElseThrow(() -> new NotFoundException("Not Found member"));
-        EmailCertification latestCertification = emailCertificationRepository.findLatestByMemberId(memberId)
-                .orElseThrow(() -> new NotFoundException("Not Found email certification"));
+        EmailCertification latestCertification =
+                emailCertificationRepository.findLatestByMemberIdAndUuidAndDeletedAtNull(memberId, dto.getUUID())
+                .orElseThrow(() -> new NotFoundException("Not Match email certification"));
 
-        if (!latestCertification.getUUID().equals(dto.getUUID())) {
-            throw new NotFoundException("Invalid UUID");
-        }
         // TODO: If Expired 된 것들이 이곳에 작성되어야 할까요?
-
+        // 네!
     }
 
     /**
@@ -128,7 +118,7 @@ public class MemberService {
         String newEmail = dto.getNewEmail();
         validateEmailDuplication(newEmail); // 이메일 중복체크 추가
         Member member = memberRepository.findByIdAndDeletedAtNull(memberId)
-                .orElseThrow(() -> new IllegalArgumentException("Invalid"));
+                .orElseThrow(() -> new IllegalArgumentException("Invalid")); // TODO: NOT FOUND
         member.updateEmail(newEmail);
 
         return EmailUpdateResponseDto.fromEntity(member);
@@ -142,11 +132,10 @@ public class MemberService {
         Member member = memberRepository.findByIdAndDeletedAtNull(memberId)
                 .orElseThrow(() -> new NotFoundException("Member not found"));
 
-        Oauth updatedOauth = Oauth.createOauth(OauthType.valueOf(dto.getOauthType()), dto.getOauthId());
+        Oauth updatedOauth = Oauth.createOauth(OauthType.valueOf(dto.getOauthType()), dto.getOauthId()); //TODO: null check
         member.updateOauth(updatedOauth);
-        Member savedMember = memberRepository.save(member);
 
-        return OauthUpdateResponseDto.fromEntity(savedMember);
+        return OauthUpdateResponseDto.fromEntity(member);
     }
 
     /**
@@ -157,43 +146,38 @@ public class MemberService {
                 .orElseThrow(() -> new NotFoundException("Member not found"));
 
         member.updateOauth(null);
-        memberRepository.save(member);
     }
 
 
     /**
      * 비밀번호 수정
      */
-    public PasswordUpdateResponseDto updatePassword(Long memberId, PasswordUpdateRequestDto dto) {
-        String currentPassword = dto.getCurrentPassword();
-        String newPassword = dto.getNewPassword();
+    public void updatePassword(Long memberId, PasswordUpdateRequestDto dto) {
+
         Member member = memberRepository.findByIdAndDeletedAtNull(memberId)
                 .orElseThrow(() -> new IllegalArgumentException("Invalid"));
 
+        String currentPassword = dto.getCurrentPassword();
         if (!passwordEncoder.matches(currentPassword, member.getPassword())) {
             throw new IllegalArgumentException("Current password is incorrect");
         }
-        String encodedPassword = passwordEncoder.encode(newPassword);
+
+        String encodedPassword = passwordEncoder.encode(dto.getNewPassword());
         member.updatePassword(encodedPassword);
-        return PasswordUpdateResponseDto.fromEntity(member);
     }
 
 
     /**
      * 개인정보 수정
      */
-    public MemberUpdateResponseDto updateMember(MemberUpdateRequestDto dto) {
-        Long memberId = dto.getMemberId();
-        String newName = dto.getName();
-        String newNickName = dto.getNickName();
-        String newPhoneNumber = dto.getPhoneNumber();
-
+    public MemberUpdateResponseDto updateMember(Long memberId, MemberUpdateRequestDto dto) {
         Member member = memberRepository.findByIdAndDeletedAtNull(memberId)
                 .orElseThrow(() -> new IllegalArgumentException("Invalid"));
 
-        member.updateName(newName);
-        member.updateNickName(newNickName);
-        member.updatePhoneNumber(newPhoneNumber);
+        member.updateName(dto.getName());
+        member.updateNickName(dto.getNickName());
+        member.updatePhoneNumber(dto.getPhoneNumber());
+
         return MemberUpdateResponseDto.fromEntity(member);
     }
 
@@ -205,7 +189,26 @@ public class MemberService {
         Member member = memberRepository.findByIdAndDeletedAtNull(memberId)
                 .orElseThrow(() -> new NotFoundException("Member not found"));
         member.delete();
-        return 1L;
+        
+        return member.getId();
+    }
+
+    /**
+     * 중복체크 유틸
+     */
+
+    private void validateEmailDuplication(String email) throws DuplicateKeyException {
+        memberRepository.findByEmailAndDeletedAtNull(email)
+                .ifPresent(m -> {
+                    throw new DuplicateKeyException("RESOURCE_DUPLICATION"); // TODO: debugMessage
+                });
+    }
+
+    private void validateNickNameDuplication(String nickName) throws DuplicateKeyException {
+        memberRepository.findByNickNameAndDeletedAtNull(nickName)
+                .ifPresent(m -> {
+                    throw new DuplicateKeyException("RESOURCE_DUPLICATION"); // TODO: debugMessage
+                });
     }
 
 }

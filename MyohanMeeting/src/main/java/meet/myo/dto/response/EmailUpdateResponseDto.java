@@ -6,14 +6,12 @@ import lombok.Setter;
 import meet.myo.domain.Member;
 
 @Getter
-@Setter
-@RequiredArgsConstructor
 public class EmailUpdateResponseDto {
     private String newEmail;
 
     public static EmailUpdateResponseDto fromEntity(Member member) {
         EmailUpdateResponseDto dto = new EmailUpdateResponseDto();
-        dto.setNewEmail(member.getEmail());
+        dto.newEmail = member.getEmail();
         return dto;
     }
 }

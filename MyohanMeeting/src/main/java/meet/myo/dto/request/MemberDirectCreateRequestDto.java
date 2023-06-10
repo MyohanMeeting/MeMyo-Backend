@@ -7,6 +7,7 @@ import meet.myo.domain.Member;
 
 @Getter
 public class MemberDirectCreateRequestDto {
+
     @Email(message = "INVALID_EMAIL")
     @NotBlank(message="EMAIL_IS_MANDATORY")
     private String email;
@@ -21,7 +22,7 @@ public class MemberDirectCreateRequestDto {
     private String phoneNumber;
 
     public Member toEntity(String encodedPassword) {
-        return Member.builder()
+        return Member.directJoinBuilder()
                 .email(this.email)
                 .name(this.name)
                 .nickName(this.nickName)
