@@ -3,6 +3,7 @@ package meet.myo.domain.exception;
 import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
 import org.springframework.dao.DataAccessException;
+import org.springframework.dao.DuplicateKeyException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.ErrorResponse;
@@ -47,4 +48,11 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(errorResponse);
     }
 
+    // 409 Duplicate Resource create Conflict
+    @ExceptionHandler(DuplicateKeyException.class)
+    protected ResponseEntity<ErrorResponse> handleDuplicateKeyException(DuplicateKeyException ex) {
+        ErrorResponse errorResponse = ErrorResponse.builder(ex, HttpStatus.CONFLICT, "Duplicate resource")
+                .build();
+        return ResponseEntity.status(HttpStatus.CONFLICT).body(errorResponse);
+    }
 }
