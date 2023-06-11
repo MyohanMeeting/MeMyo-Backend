@@ -1,5 +1,7 @@
 package meet.myo.domain.exception;
 
+import jakarta.el.MethodNotFoundException;
+import meet.myo.dto.response.ErrorResponseDto;
 import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
 import org.springframework.dao.DataAccessException;
@@ -18,33 +20,70 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
 
     // 400 요청파라미터
     @ExceptionHandler(IllegalArgumentException.class)
-    public ResponseEntity<String> handleIllegalArgumentException(IllegalArgumentException ex) {
-        String errorMessage = "Invalid request parameter: " + ex.getMessage();
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorMessage);
+    public ResponseEntity<ErrorResponseDto> handleIllegalArgumentException(IllegalArgumentException ex) {
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(
+                ErrorResponseDto.builder()
+                        .status(HttpStatus.BAD_REQUEST.toString()) // http 관점의 오류메시지
+                        .message("INVALID PARAMETER") // java 관점의 오류메시지
+                        .debugMessage(ex.getMessage()) // 실제 디버깅에 도움되는 상세한 메시지
+                        .build());
     }
+
+    // http code
+    // exception
+
 
     // 401 특정 권한 없을때
     @ExceptionHandler(AuthenticationException.class)
-    protected ResponseEntity<ErrorResponse> handleAuthenticationException(AuthenticationException ex) {
-        ErrorResponse errorResponse = ErrorResponse.builder(ex, HttpStatus.UNAUTHORIZED, "인증 실패")
-            .build();
-        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(errorResponse);
+    protected ResponseEntity<ErrorResponseDto> handleAuthenticationException(AuthenticationException ex) {
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(
+                ErrorResponseDto.builder()
+                        .status(HttpStatus.BAD_REQUEST.toString())
+                        .message("AUTHORIZATION REQUIRED")
+                        .debugMessage(ex.getMessage())
+                        .build());
         }
 
     // 403 데이터 접근 오류
     @ExceptionHandler(DataAccessException.class)
-    protected ResponseEntity<ErrorResponse> handleDataAccessException(DataAccessException ex) {
-        ErrorResponse errorResponse = ErrorResponse.builder(ex, HttpStatus.FORBIDDEN, "Access denied")
-                .build();
-        return ResponseEntity.status(HttpStatus.FORBIDDEN).body(errorResponse);
+    protected ResponseEntity<ErrorResponseDto> handleDataAccessException(DataAccessException ex) {
+        return ResponseEntity.status(HttpStatus.FORBIDDEN).body(ErrorResponseDto.builder()
+                .status(HttpStatus.FORBIDDEN.toString())
+                .message("ACCESS DENIED")
+                .debugMessage(ex.getMessage())
+                .build());
     }
 
     // 404 리소스 not found
     @ExceptionHandler(NotFoundException.class)
-    protected ResponseEntity<ErrorResponse> handleNotFoundException(NotFoundException ex) {
-        ErrorResponse errorResponse = ErrorResponse.builder(ex, HttpStatus.NOT_FOUND, "Resource not found")
-                .build();
-        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(errorResponse);
+    protected ResponseEntity<ErrorResponseDto> handleNotFoundException(NotFoundException ex) {
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ErrorResponseDto.builder()
+                .status(HttpStatus.NOT_FOUND.toString())
+                .message("NO RESOURCE FOUND")
+                .debugMessage(ex.getMessage())
+                .build());
+    }
+
+    @ExceptionHandler(MethodNotFoundException.class)
+    protected ResponseEntity<ErrorResponseDto> handleMethodNotFoundException(MethodNotFoundException ex) {
+        return ResponseEntity.status(HttpStatus.METHOD_NOT_ALLOWED).body(ErrorResponseDto.builder()
+                .status(HttpStatus.METHOD_NOT_ALLOWED.toString())
+                .message("METHOD NOT ALLOWED")
+                .debugMessage(ex.getMessage())
+                .build());
+    }
+
+
+    // 409 conflict
+
+
+    @ExceptionHandler(RuntimeException.class)
+    protected ResponseEntity<ErrorResponseDto> handleServerException(RuntimeException ex) {
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(ErrorResponseDto.builder()
+                .status(HttpStatus.INTERNAL_SERVER_ERROR.toString())
+                .message("SERVER ERROR")
+                .debugMessage(ex.getMessage())
+                .build());
     }
 
 }

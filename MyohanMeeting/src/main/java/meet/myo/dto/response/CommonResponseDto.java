@@ -1,5 +1,6 @@
 package meet.myo.dto.response;
 
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Builder;
 import lombok.Getter;
 import org.springframework.http.HttpStatus;
@@ -10,10 +11,14 @@ import java.time.format.DateTimeFormatter;
 @Getter
 public class CommonResponseDto<T> {
 
+    @Schema(example = "200 OK")
     private String status;
-    private String message;
 
+    @Schema(format = "date-time")
     private final String timestamp = LocalDateTime.now().format(DateTimeFormatter.ISO_DATE_TIME);
+
+    @Schema(example = "SUCCESS")
+    private String message;
 
     private T data;
 
