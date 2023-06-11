@@ -38,7 +38,7 @@ public class EmailCertification extends BaseAuditingListener {
         return "";
     } //TODO: 로직 짜기
 
-    public boolean isExpired() {
+    private boolean isExpired() {
         return Duration.between(super.getCreatedAt(), LocalDateTime.now())
                 .compareTo(Duration.ofSeconds(3000))  // TODO: 임의로 만료시간 5분 설정
                 >= 0;
