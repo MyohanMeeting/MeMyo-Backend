@@ -11,7 +11,7 @@ import java.time.LocalDateTime;
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class EmailCertification extends BaseAuditingListner {
+public class EmailCertification extends BaseAuditingListener {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -22,8 +22,8 @@ public class EmailCertification extends BaseAuditingListner {
     @JoinColumn(name = "member_id")
     private Member member;
 
+    @Column(nullable = false)
     private String UUID;
-
 
     private EmailCertification(Member member) {
         this.member = member;
@@ -36,10 +36,10 @@ public class EmailCertification extends BaseAuditingListner {
 
     private String createUUID() {
         return "";
-    }
+    } //TODO: 로직 짜기
 
     private boolean isExpired() {
-        return Duration.between(super.getCreateAt(), LocalDateTime.now())
+        return Duration.between(super.getCreatedAt(), LocalDateTime.now())
                 .compareTo(Duration.ofSeconds(3000))  // TODO: 임의로 만료시간 5분 설정
                 >= 0;
     }
