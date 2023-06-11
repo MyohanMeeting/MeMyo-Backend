@@ -5,7 +5,6 @@ import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import meet.myo.dto.request.MemberOauthCreateRequestDto;
 
 @Entity
 @Getter
@@ -44,7 +43,7 @@ public class Member extends BaseAuditingListener {
     @Embedded
     private Oauth oauth;
 
-    @Builder(builderMethodName = "directJoinBuilder")
+    @Builder
     Member(String email, String name, String password, String nickName, String phoneNumber) {
         this.email = email;
         this.name = name;
