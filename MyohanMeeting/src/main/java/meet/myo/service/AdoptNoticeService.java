@@ -1,9 +1,9 @@
 package meet.myo.service;
 
 import lombok.RequiredArgsConstructor;
-import meet.myo.dto.request.*;
-import meet.myo.dto.response.AdoptNoticeCommentResponseDto;
-import meet.myo.dto.response.AdoptNoticeResponseDto;
+import meet.myo.dto.request.adopt.*;
+import meet.myo.dto.response.adopt.AdoptNoticeCommentResponseDto;
+import meet.myo.dto.response.adopt.AdoptNoticeResponseDto;
 import meet.myo.repository.AdoptNoticeRepoImpl;
 import meet.myo.repository.AdoptNoticeRepository;
 import meet.myo.search.AdoptNoticeSearch;
