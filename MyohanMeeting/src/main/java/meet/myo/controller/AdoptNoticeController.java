@@ -4,15 +4,18 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.enums.ParameterIn;
 import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
-import meet.myo.dto.request.*;
-import meet.myo.dto.response.AdoptNoticeCommentResponseDto;
-import meet.myo.dto.response.AdoptNoticeResponseDto;
+import meet.myo.dto.request.adopt.AdoptNoticeCreateRequestDto;
+import meet.myo.dto.request.adopt.AdoptNoticeStatusUpdateRequestDto;
+import meet.myo.dto.request.adopt.AdoptNoticeUpdateRequestDto;
+import meet.myo.dto.response.adopt.AdoptNoticeResponseDto;
 import meet.myo.dto.response.CommonResponseDto;
 import meet.myo.search.AdoptNoticeSearch;
 import meet.myo.service.AdoptNoticeService;
+import meet.myo.springdoc.annotations.*;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.validation.annotation.Validated;
@@ -21,6 +24,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 import java.util.Map;
 
+@Tag(name = "Adopt Notice", description = "분양공고 관련 기능")
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/v1/adoption/notices")
@@ -31,8 +35,8 @@ public class AdoptNoticeController {
     /**
      * 분양공고 목록조회
      */
-    @Tag(name = "Adopt Notice", description = "분양공고 관련 기능")
     @Operation(summary = "분양공고 목록조회", description = "검색 조건에 따른 분양 공고 목록을 조회합니다.", operationId = "getNoticeList")
+    @ApiResponse(responseCode = "200") @ApiResponseCommon
     @GetMapping("")
     public CommonResponseDto<List<AdoptNoticeResponseDto>> getNoticeListV1(
             /**
@@ -128,8 +132,8 @@ public class AdoptNoticeController {
     /**
      * 내가 올린 분양공고 목록조회
      */
-    @Tag(name = "Adopt Notice", description = "분양공고 관련 기능")
     @Operation(summary = "내가 올린 분양공고 목록조회", description = "자신이 업로드한 분양 공고 목록을 조회합니다.", operationId = "getMyNoticeList")
+    @ApiResponse(responseCode = "200") @ApiResponseCommon @ApiResponseSignin
     @GetMapping("/my")
     public CommonResponseDto<List<AdoptNoticeResponseDto>> getMyNoticeListV1(
             /**
@@ -166,13 +170,14 @@ public class AdoptNoticeController {
     /**
      * 분양공고 상세조회
      */
-    @Tag(name = "Adopt Notice", description = "분양공고 관련 기능")
     @Operation(summary = "분양공고 상세조회", description = "개별 분양공고의 상세 내용을 조회합니다.", operationId = "getNotice")
+    @ApiResponse(responseCode = "200") @ApiResponseCommon @ApiResponseResource
     @GetMapping("/{noticeId}")
     public CommonResponseDto<AdoptNoticeResponseDto> getNoticeV1(
             @Parameter(name = "noticeId", description = "조회하고자 하는 공고의 id입니다.")
             @PathVariable(name = "noticeId") Long noticeId
     ) {
+        if (noticeId == 1L) throw new IllegalArgumentException("test");
         return CommonResponseDto.<AdoptNoticeResponseDto>builder()
                 .data(adoptNoticeService.getAdoptNotice(noticeId))
                 .build();
@@ -181,8 +186,8 @@ public class AdoptNoticeController {
     /**
      * 분양공고 작성
      */
-    @Tag(name = "Adopt Notice", description = "분양공고 관련 기능")
     @Operation(summary = "분양공고 작성", description = "분양공고를 작성합니다.", operationId = "createNotice")
+    @ApiResponse(responseCode = "200") @ApiResponseCommon @ApiResponseSignin
     @SecurityRequirement(name = "JWT")
     @PostMapping("")
     public CommonResponseDto<Map<String, Long>> createNoticeV1(@Validated @RequestBody final AdoptNoticeCreateRequestDto dto) {
@@ -195,10 +200,10 @@ public class AdoptNoticeController {
     /**
      * 분양공고 상태 업데이트
      */
-    @Tag(name = "Adopt Notice", description = "분양공고 관련 기능")
     @Operation(summary = "분양공고 상태 업데이트", description = "분양공고의 상태를 업데이트합니다.", operationId = "updateNoticeStatus")
+    @ApiResponse(responseCode = "200") @ApiResponseCommon @ApiResponseResource @ApiResponseAuthority
     @SecurityRequirement(name = "JWT")
-    @PatchMapping("/status/{noticeId}")
+    @PatchMapping("/{noticeId}/status")
     public CommonResponseDto<AdoptNoticeResponseDto> updateNoticeStatusV1(
             @Parameter(name = "noticeId", description = "수정하고자 하는 공고의 id입니다.")
             @PathVariable(name = "noticeId") Long noticeId,
@@ -214,8 +219,8 @@ public class AdoptNoticeController {
     /**
      * 분양공고 수정
      */
-    @Tag(name = "Adopt Notice", description = "분양공고 관련 기능")
     @Operation(summary = "분양공고 수정", description = "분양공고의 내용을 수정합니다.", operationId = "updateNotice")
+    @ApiResponse(responseCode = "200") @ApiResponseCommon @ApiResponseResource @ApiResponseAuthority
     @PatchMapping("/{noticeId}")
     @SecurityRequirement(name = "JWT")
     public CommonResponseDto<AdoptNoticeResponseDto> updateNoticeV1(
@@ -233,8 +238,8 @@ public class AdoptNoticeController {
     /**
      * 분양공고 삭제
      */
-    @Tag(name = "Adopt Notice", description = "분양공고 관련 기능")
     @Operation(summary = "분양공고 삭제", description = "분양공고를 삭제합니다.", operationId = "deleteNotice")
+    @ApiResponse(responseCode = "200") @ApiResponseCommon @ApiResponseResource @ApiResponseAuthority
     @SecurityRequirement(name = "JWT")
     @DeleteMapping("/{noticeId}")
     public CommonResponseDto<Map<String, Long>> deleteNoticeV1(
@@ -244,74 +249,6 @@ public class AdoptNoticeController {
         Long memberId = 1L; //TODO: security
         return CommonResponseDto.<Map<String, Long>>builder()
                 .data(Map.of("noticeId", adoptNoticeService.deleteAdoptNotice(memberId, noticeId)))
-                .build();
-    }
-
-    /**
-     * 분양공고에 달린 댓글목록 조회
-     */
-    @Tag(name = "Adopt Notice Comment", description = "분양공고 댓글 관련 기능")
-    @Operation(summary = "분양공고 댓글 조회", description = "특정 분양공고에 달린 댓글을 조회합니다.", operationId = "getNoticeCommentList")
-    @GetMapping("/{noticeId}/comments")
-    public CommonResponseDto<List<AdoptNoticeCommentResponseDto>> getNoticeCommentListV1(
-            @Parameter(name = "noticeId", description = "댓글을 조회하고자 하는 공고의 id입니다.")
-            @PathVariable(name = "noticeId") Long noticeId,
-            @Validated @RequestBody final AdoptNoticeCommentCreateRequestDto dto
-    ) {
-        return CommonResponseDto.<List<AdoptNoticeCommentResponseDto>>builder()
-                .data(adoptNoticeService.getAdoptNoticeCommentList(noticeId))
-                .build();
-    }
-
-    /**
-     * 분양공고 댓글 작성
-     */
-    @Tag(name = "Adopt Notice Comment", description = "분양공고 댓글 관련 기능")
-    @Operation(summary = "분양공고 댓글 작성", description = "분양공고 댓글을 작성합니다.", operationId = "createNoticeComment")
-    @SecurityRequirement(name = "JWT")
-    @PostMapping("/comments")
-    public CommonResponseDto<Map<String, Long>> createNoticeCommentV1(
-            @Validated @RequestBody final AdoptNoticeCommentCreateRequestDto dto
-    ) {
-        Long memberId = 1L; //TODO: security
-        return CommonResponseDto.<Map<String, Long>>builder()
-                .data(Map.of("noticeId", adoptNoticeService.createAdoptNoticeComment(memberId, dto)))
-                .build();
-    }
-
-    /**
-     * 분양공고 댓글 수정
-     */
-    @Tag(name = "Adopt Notice Comment", description = "분양공고 댓글 관련 기능")
-    @Operation(summary = "분양공고 댓글 수정", description = "분양공고 댓글의 내용을 수정합니다.", operationId = "updateNoticeCommentV1")
-    @PatchMapping("/comments/{noticeCommentId}")
-    @SecurityRequirement(name = "JWT")
-    public CommonResponseDto<AdoptNoticeCommentResponseDto> updateNoticeCommentV1(
-            @Parameter(name = "noticeCommentId", description = "수정하고자 하는 공고의 id입니다.")
-            @PathVariable(name = "noticeCommentId") Long noticeCommentId,
-
-            @Validated @RequestBody final AdoptNoticeCommentUpdateRequestDto dto
-    ) {
-        Long memberId = 1L; //TODO: security
-        return CommonResponseDto.<AdoptNoticeCommentResponseDto>builder()
-                .data(adoptNoticeService.updateAdoptNoticeComment(memberId, noticeCommentId, dto))
-                .build();
-    }
-
-    /**
-     * 분양공고 댓글 삭제
-     */
-    @Tag(name = "Adopt Notice Comment", description = "분양공고 댓글 관련 기능")
-    @Operation(summary = "분양공고 댓글 삭제", description = "분양공고 댓글을 삭제합니다.", operationId = "deleteNoticeComment")
-    @SecurityRequirement(name = "JWT")
-    @DeleteMapping("/comments/{noticeCommentId}")
-    public CommonResponseDto<Map<String, Long>> deleteNoticeCommentV1(
-            @Parameter(name = "noticeCommentId", description = "삭제하고자 하는 댓글의 id입니다.")
-            @PathVariable(name = "noticeCommentId") Long noticeCommentId
-    ) {
-        Long memberId = 1L; //TODO: security
-        return CommonResponseDto.<Map<String, Long>>builder()
-                .data(Map.of("noticeCommentId", adoptNoticeService.deleteAdoptNoticeComment(memberId, noticeCommentId)))
                 .build();
     }
 }
