@@ -26,3 +26,5 @@ springdoc:
   ver: v1
   default-consumes-media-type: application/json
   default-produces-media-type: application/json
+  swagger-ui:
+    defaultModelsExpandDepth: -1
