@@ -5,6 +5,9 @@ import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import meet.myo.domain.authority.MemberAuthority;
+
+import java.util.List;
 
 @Entity
 @Getter
@@ -39,6 +42,9 @@ public class Member extends BaseAuditingListener {
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private Certified certified; // CERTIFIED, NOT_CERTIFIED
+
+    @OneToMany(mappedBy = "member", fetch = FetchType.LAZY)
+    private List<MemberAuthority> memberAuthorities;
 
     @Builder
     Member(String email, String name, String password, String nickName, String phoneNumber) {
