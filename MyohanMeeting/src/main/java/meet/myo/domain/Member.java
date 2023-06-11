@@ -40,6 +40,9 @@ public class Member extends BaseAuditingListener {
     @Column(nullable = false)
     private Certified certified; // CERTIFIED, NOT_CERTIFIED
 
+    @Embedded
+    private Oauth oauth;
+
     @Builder
     Member(String email, String name, String password, String nickName, String phoneNumber) {
         this.email = email;
@@ -48,6 +51,14 @@ public class Member extends BaseAuditingListener {
         this.nickName = nickName;
         this.phoneNumber = phoneNumber;
         this.certified = Certified.NOT_CERTIFIED; // 미인증을 기본값으로 세팅
+    }
+
+    @Builder(builderMethodName = "oauthJoinBuilder")
+    Member(OauthType oauthType, String oauthId, String email) {
+        this.email = email;
+        this.certified = Certified.NOT_CERTIFIED; // 미인증을 기본값으로 세팅
+        this.oauth = Oauth.createOauth(oauthType, oauthId);
+
     }
 
     public void updateEmail(String email) {
@@ -84,4 +95,13 @@ public class Member extends BaseAuditingListener {
             // conflict
         }
     }
+
+    public void updateOauth(Oauth updatedOauth) {
+        this.oauth = updatedOauth;
+    }
+
+    public void delete() {
+        super.delete();
+    }
+
 }
