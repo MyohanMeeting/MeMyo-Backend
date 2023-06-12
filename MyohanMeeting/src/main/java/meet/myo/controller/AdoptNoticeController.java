@@ -15,6 +15,7 @@ import meet.myo.dto.request.adopt.AdoptNoticeStatusUpdateRequestDto;
 import meet.myo.dto.request.adopt.AdoptNoticeUpdateRequestDto;
 import meet.myo.dto.response.adopt.AdoptNoticeResponseDto;
 import meet.myo.dto.response.CommonResponseDto;
+import meet.myo.dto.response.adopt.AdoptNoticeSummaryResponseDto;
 import meet.myo.search.AdoptNoticeSearch;
 import meet.myo.service.AdoptNoticeService;
 import meet.myo.springdoc.annotations.*;
@@ -40,7 +41,7 @@ public class AdoptNoticeController {
     @Operation(summary = "분양공고 목록조회", description = "검색 조건에 따른 분양 공고 목록을 조회합니다.", operationId = "getNoticeList")
     @ApiResponse(responseCode = "200") @ApiResponseCommon
     @GetMapping("")
-    public CommonResponseDto<List<AdoptNoticeResponseDto>> getNoticeListV1(
+    public CommonResponseDto<List<AdoptNoticeSummaryResponseDto>> getNoticeListV1(
             /**
              * 페이징
              */
@@ -126,7 +127,7 @@ public class AdoptNoticeController {
                 .sort(sort)
                 .build();
 
-        return CommonResponseDto.<List<AdoptNoticeResponseDto>>builder()
+        return CommonResponseDto.<List<AdoptNoticeSummaryResponseDto>>builder()
                 .data(adoptNoticeService.getAdoptNoticeList(pageable, search))
                 .build();
     }
@@ -137,7 +138,7 @@ public class AdoptNoticeController {
     @Operation(summary = "내가 올린 분양공고 목록조회", description = "자신이 업로드한 분양 공고 목록을 조회합니다.", operationId = "getMyNoticeList")
     @ApiResponse(responseCode = "200") @ApiResponseCommon @ApiResponseSignin
     @GetMapping("/my")
-    public CommonResponseDto<List<AdoptNoticeResponseDto>> getMyNoticeListV1(
+    public CommonResponseDto<List<AdoptNoticeSummaryResponseDto>> getMyNoticeListV1(
             /**
              * 페이징
              */
@@ -164,7 +165,7 @@ public class AdoptNoticeController {
     ) {
         Long memberId = 1L; // TODO: security
         Pageable pageable = PageRequest.of(page, size);
-        return CommonResponseDto.<List<AdoptNoticeResponseDto>>builder()
+        return CommonResponseDto.<List<AdoptNoticeSummaryResponseDto>>builder()
                 .data(adoptNoticeService.getMyAdoptNoticeList(memberId, pageable, sort))
                 .build();
     }

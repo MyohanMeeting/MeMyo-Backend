@@ -7,6 +7,7 @@ import meet.myo.dto.schema.CatResponseSchema;
 import meet.myo.dto.schema.UploadSummarySchema;
 
 @Getter
+@Schema(name = "AdoptNoticeDetail")
 public class AdoptNoticeResponseDto {
 
     private Long noticeId;
@@ -15,7 +16,7 @@ public class AdoptNoticeResponseDto {
 
     private CatResponseSchema cat;
 
-    private UploadSummarySchema fileSummary;
+    private UploadSummarySchema thumbnail;
 
     private String status;
 
