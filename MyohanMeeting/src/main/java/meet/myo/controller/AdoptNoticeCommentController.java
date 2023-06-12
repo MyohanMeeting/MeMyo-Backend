@@ -2,6 +2,9 @@ package meet.myo.controller;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.ExampleObject;
+import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -48,7 +51,17 @@ public class AdoptNoticeCommentController {
      * 분양공고 댓글 작성
      */
     @Operation(summary = "분양공고 댓글 작성", description = "분양공고 댓글을 작성합니다.", operationId = "createNoticeComment")
-    @ApiResponse(responseCode = "200") @ApiResponseCommon @ApiResponseResource @ApiResponseSignin
+    @ApiResponse(responseCode = "200", description = "작성 성공", content = @Content(
+            schema = @Schema(implementation = CommonResponseDto.class), examples = { @ExampleObject(value = """
+{
+  "status": "200 OK",
+  "timestamp": "2023-06-10T09:19:08.550Z",
+  "message": "SUCCESS",
+  "data": {
+    "noticeCommentId" : 1
+  }
+}
+""")})) @ApiResponseCommon @ApiResponseResource @ApiResponseSignin
     @SecurityRequirement(name = "JWT")
     @PostMapping("/comments")
     public CommonResponseDto<Map<String, Long>> createNoticeCommentV1(
@@ -83,7 +96,17 @@ public class AdoptNoticeCommentController {
      * 분양공고 댓글 삭제
      */
     @Operation(summary = "분양공고 댓글 삭제", description = "분양공고 댓글을 삭제합니다.", operationId = "deleteNoticeComment")
-    @ApiResponse(responseCode = "200") @ApiResponseCommon @ApiResponseResource @ApiResponseAuthority
+    @ApiResponse(responseCode = "200", description = "삭제 성공", content = @Content(
+            schema = @Schema(implementation = CommonResponseDto.class), examples = { @ExampleObject(value = """
+{
+  "status": "200 OK",
+  "timestamp": "2023-06-10T09:19:08.550Z",
+  "message": "SUCCESS",
+  "data": {
+    "noticeCommentId" : 1
+  }
+}
+""")})) @ApiResponseCommon @ApiResponseResource @ApiResponseAuthority
     @SecurityRequirement(name = "JWT")
     @DeleteMapping("/comments/{noticeCommentId}")
     public CommonResponseDto<Map<String, Long>> deleteNoticeCommentV1(
