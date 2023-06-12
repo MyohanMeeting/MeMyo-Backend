@@ -5,7 +5,7 @@ import lombok.Getter;
 
 import java.util.List;
 
-@Schema(name = "cat")
+@Schema(name = "catCreateForm")
 @Getter
 public class CatRequestSchema {
 

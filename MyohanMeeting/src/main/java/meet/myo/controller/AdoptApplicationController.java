@@ -3,6 +3,9 @@ package meet.myo.controller;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.enums.ParameterIn;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.ExampleObject;
+import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -124,7 +127,17 @@ public class AdoptApplicationController {
      * 분양신청 작성
      */
     @Operation(summary = "분양신청 작성", description = "분양 신청서를 작성합니다.", operationId = "createApplication")
-    @ApiResponse(responseCode = "200") @ApiResponseCommon @ApiResponseResource @ApiResponseSignin
+    @ApiResponse(responseCode = "200", description = "작성 성공", content = @Content(
+            schema = @Schema(implementation = CommonResponseDto.class), examples = { @ExampleObject(value = """
+{
+  "status": "200 OK",
+  "timestamp": "2023-06-10T09:19:08.550Z",
+  "message": "SUCCESS",
+  "data": {
+    "applicationId" : 1
+  }
+}
+""")})) @ApiResponseCommon @ApiResponseResource @ApiResponseSignin
     @PostMapping("")
     public CommonResponseDto<Map<String, Long>> createApplicationV1(
             @Validated @RequestBody final AdoptApplicationCreateRequestDto dto
@@ -157,7 +170,17 @@ public class AdoptApplicationController {
      * 분양신청 삭제
      */
     @Operation(summary = "분양신청 삭제", description = "분양 신청서를 삭제합니다.", operationId = "deleteApplication")
-    @ApiResponse(responseCode = "200") @ApiResponseCommon @ApiResponseResource @ApiResponseAuthority
+    @ApiResponse(responseCode = "200", description = "삭제 성공", content = @Content(
+            schema = @Schema(implementation = CommonResponseDto.class), examples = { @ExampleObject(value = """
+{
+  "status": "200 OK",
+  "timestamp": "2023-06-10T09:19:08.550Z",
+  "message": "SUCCESS",
+  "data": {
+    "applicationId" : 1
+  }
+}
+""")})) @ApiResponseCommon @ApiResponseResource @ApiResponseAuthority
     @DeleteMapping("/{applicationId}")
     public CommonResponseDto<Map<String, Long>> deleteApplicationV1(
             @Parameter(name = "applicationId", description = "삭제하고자 하는 분양신청의 id입니다.")

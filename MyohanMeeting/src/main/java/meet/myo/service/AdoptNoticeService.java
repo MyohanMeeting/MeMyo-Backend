@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import meet.myo.dto.request.adopt.*;
 import meet.myo.dto.response.adopt.AdoptNoticeCommentResponseDto;
 import meet.myo.dto.response.adopt.AdoptNoticeResponseDto;
+import meet.myo.dto.response.adopt.AdoptNoticeSummaryResponseDto;
 import meet.myo.repository.AdoptNoticeRepoImpl;
 import meet.myo.repository.AdoptNoticeRepository;
 import meet.myo.search.AdoptNoticeSearch;
@@ -26,16 +27,16 @@ public class AdoptNoticeService {
      * 공고목록 전체 조회
      */
     @Transactional(readOnly = true)
-    public List<AdoptNoticeResponseDto> getAdoptNoticeList(Pageable pageable, AdoptNoticeSearch search) {
-        return List.of(AdoptNoticeResponseDto.fromEntity());
+    public List<AdoptNoticeSummaryResponseDto> getAdoptNoticeList(Pageable pageable, AdoptNoticeSearch search) {
+        return List.of(AdoptNoticeSummaryResponseDto.fromEntity());
     }
 
     /**
      * 특정 회원의 공고목록 전체 조회
      */
     @Transactional(readOnly = true)
-    public List<AdoptNoticeResponseDto> getMyAdoptNoticeList(Long memberId, Pageable pageable, String ordered) {
-        return List.of(AdoptNoticeResponseDto.fromEntity());
+    public List<AdoptNoticeSummaryResponseDto> getMyAdoptNoticeList(Long memberId, Pageable pageable, String ordered) {
+        return List.of(AdoptNoticeSummaryResponseDto.fromEntity());
     }
 
     /**

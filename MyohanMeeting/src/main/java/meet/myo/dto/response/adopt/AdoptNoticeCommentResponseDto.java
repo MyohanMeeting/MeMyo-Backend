@@ -1,8 +1,10 @@
 package meet.myo.dto.response.adopt;
 
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Getter;
 import meet.myo.dto.schema.AuthorSchema;
 
+@Schema(name = "AdoptNoticeComment")
 @Getter
 public class AdoptNoticeCommentResponseDto {
 
