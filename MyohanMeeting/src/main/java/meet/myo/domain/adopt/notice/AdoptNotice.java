@@ -7,6 +7,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import meet.myo.domain.BaseAuditingListener;
 import meet.myo.domain.Member;
+import meet.myo.domain.Upload;
 import meet.myo.domain.adopt.application.AdoptApplication;
 import meet.myo.domain.cat.Cat;
 
@@ -22,11 +23,11 @@ public class AdoptNotice extends BaseAuditingListener {
     @Column(name = "adopt_notice_id")
     private Long id;
 
-    @OneToOne
+    @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "cat_id")
     private Cat cat;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name="member_id")
     private Member member;
 
@@ -35,6 +36,10 @@ public class AdoptNotice extends BaseAuditingListener {
 
     @Column(columnDefinition = "TEXT", nullable = false)
     private String content;
+
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "upload_id")
+    private Upload thumbnail;
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "adoptNotice")
     private List<AdoptNoticeComment> commentList;

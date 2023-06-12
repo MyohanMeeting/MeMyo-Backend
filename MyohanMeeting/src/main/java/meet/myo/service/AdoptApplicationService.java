@@ -1,9 +1,9 @@
 package meet.myo.service;
 
 import lombok.RequiredArgsConstructor;
-import meet.myo.dto.request.AdoptApplicationCreateRequestDto;
-import meet.myo.dto.request.AdoptApplicationUpdateRequestDto;
-import meet.myo.dto.response.AdoptApplicationResponseDto;
+import meet.myo.dto.request.adopt.AdoptApplicationCreateRequestDto;
+import meet.myo.dto.request.adopt.AdoptApplicationUpdateRequestDto;
+import meet.myo.dto.response.adopt.AdoptApplicationResponseDto;
 import meet.myo.repository.AdoptNoticeRepoImpl;
 import meet.myo.repository.AdoptNoticeRepository;
 import org.springframework.data.domain.Pageable;

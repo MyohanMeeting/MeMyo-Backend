@@ -13,6 +13,7 @@ import java.util.List;
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Cat extends BaseAuditingListener {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "member_id")
@@ -40,10 +41,6 @@ public class Cat extends BaseAuditingListener {
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private Neutered neutered;
-
-    @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "thumbnail_id")
-    private Upload thumbnail;
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "cat")
     private List<CatPicture> pictures;
@@ -74,7 +71,6 @@ public class Cat extends BaseAuditingListener {
         this.sex = sex;
         this.weight = weight;
         this.neutered = neutered;
-        this.thumbnail = thumbnail;
         this.healthStatus = healthStatus;
         this.personality = personality;
         this.registered = registered;
@@ -109,7 +105,6 @@ public class Cat extends BaseAuditingListener {
     }
 
     public void updateThumbnail(Upload thumbnail) {
-        this.thumbnail = thumbnail;
     }
 
     public void updateHealthStatus(String healthStatus) {
@@ -139,4 +134,5 @@ public class Cat extends BaseAuditingListener {
     public void updateShelter(Shelter shelter) {
         this.shelter = shelter;
     }
+
 }

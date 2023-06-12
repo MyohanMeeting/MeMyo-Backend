@@ -21,9 +21,15 @@ logging:
     org.hibernate.SQL: debug
 #    org.hibernate.type: trace
 
+
+springdoc:
+  default-consumes-media-type: application/json
+  default-produces-media-type: application/json
+  swagger-ui:
+    defaultModelsExpandDepth: -1
+
+
 jwt:
     access-token-validity-time: 180000 # 3분
     refresh-token-validity-time: 60480000 # 1008분
-
-
 

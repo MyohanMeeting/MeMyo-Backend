@@ -1,6 +1,7 @@
 package meet.myo.service;
 
 import lombok.RequiredArgsConstructor;
+import meet.myo.dto.request.DeleteFilesRequestDto;
 import meet.myo.dto.response.UploadResponseDto;
 import meet.myo.repository.UploadRepository;
 import org.springframework.stereotype.Service;
@@ -34,7 +35,7 @@ public class UploadService {
     /**
      * 파일 삭제 처리
      */
-    public List<Long> deleteFiles(Long memberId, List<Long> uploadIdList) {
+    public List<Long> deleteFiles(Long memberId, DeleteFilesRequestDto dto) {
         return List.of(1L);
     }
 
