@@ -1,5 +1,3 @@
-# ??: https://velog.io/@backtony/JPA-%ED%99%9C%EC%9A%A91-%ED%94%84%EB%A1%9C%EC%A0%9D%ED%8A%B8-%ED%99%98%EA%B2%BD%EC%84%A4%EC%A0%95
-
 spring:
   h2:
     console:
@@ -22,3 +20,10 @@ logging:
   level:
     org.hibernate.SQL: debug
 #    org.hibernate.type: trace
+
+jwt:
+    access-token-validity-time: 180000 # 3분
+    refresh-token-validity-time: 60480000 # 1008분
+
+
+
