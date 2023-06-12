@@ -1,4 +1,8 @@
 spring:
+  config:
+    import:
+      - classpath:/config/secret.yml
+
   h2:
     console:
       enabled: true

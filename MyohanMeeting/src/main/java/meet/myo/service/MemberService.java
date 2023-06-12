@@ -99,7 +99,7 @@ public class MemberService {
      */
     public void verifyCertificationEmail(Long memberId, CertifyEmailRequestDto dto) {
         EmailCertification latestCertification =
-                emailCertificationRepository.findLatestByMemberIdAndUuidAndDeletedAtNull(memberId, dto.getUUID())
+                emailCertificationRepository.findLatestByMemberIdAndUUIDAndDeletedAtNull(memberId, dto.getUUID())
                 .orElseThrow(() -> new NotFoundException("Not Match email certification"));
 
         if (latestCertification.isExpired()) {

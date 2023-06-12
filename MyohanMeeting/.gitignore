@@ -35,3 +35,9 @@ out/
 
 ### VS Code ###
 .vscode/
+
+### SECRET ###
+secret.yml
+
+### Mac OS ###
+.DS_STORE

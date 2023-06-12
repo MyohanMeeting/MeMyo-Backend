@@ -5,6 +5,9 @@ import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import meet.myo.domain.authority.MemberAuthority;
+
+import java.util.List;
 
 @Entity
 @Getter
@@ -40,10 +43,13 @@ public class Member extends BaseAuditingListener {
     @Column(nullable = false)
     private Certified certified; // CERTIFIED, NOT_CERTIFIED
 
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "member")
+    private List<MemberAuthority> memberAuthorities;
+
     @Embedded
     private Oauth oauth;
 
-    @Builder
+    @Builder(builderMethodName = "directJoinBuilder")
     Member(String email, String name, String password, String nickName, String phoneNumber) {
         this.email = email;
         this.name = name;

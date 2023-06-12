@@ -7,6 +7,6 @@ import java.util.Optional;
 
 public interface EmailCertificationRepository extends JpaRepository<EmailCertification, Long> {
     // select * from member where member_id = 1 order by member_id desc limit 1;
-    Optional<EmailCertification> findLatestByMemberIdAndUuidAndDeletedAtNull(Long memberId, String uuid);
+    Optional<EmailCertification> findLatestByMemberIdAndUUIDAndDeletedAtNull(Long memberId, String uuid);
 
 }
