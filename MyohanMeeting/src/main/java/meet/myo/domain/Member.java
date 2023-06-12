@@ -43,7 +43,7 @@ public class Member extends BaseAuditingListener {
     @Embedded
     private Oauth oauth;
 
-    @Builder
+    @Builder(builderMethodName = "directJoinBuilder")
     Member(String email, String name, String password, String nickName, String phoneNumber) {
         this.email = email;
         this.name = name;

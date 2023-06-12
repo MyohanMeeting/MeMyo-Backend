@@ -69,6 +69,7 @@ public class MemberService {
         return savedMember.getId();
     }
 
+
     /**
      * 이메일 중복체크
      */
@@ -89,6 +90,7 @@ public class MemberService {
     public void sendCertificationEmail(Long memberId) { // TODO: 리턴항목 생각
         Member member = memberRepository.findByIdAndDeletedAtNull(memberId)
                 .orElseThrow(() -> new NotFoundException("Not Found member"));
+
         // 메일은 이곳에서 발송
         EmailCertification emailCertification = EmailCertification.createEmailCertification(member);
         emailCertificationRepository.save(emailCertification);
@@ -100,12 +102,10 @@ public class MemberService {
     public void verifyCertificationEmail(Long memberId, CertifyEmailRequestDto dto) {
         EmailCertification latestCertification =
                 emailCertificationRepository.findLatestByMemberIdAndUuidAndDeletedAtNull(memberId, dto.getUUID())
-                .orElseThrow(() -> new NotFoundException("Not Match email certification"));
-
+                .orElseThrow(() -> new NotFoundException("인증되지 않은 이메일입니다."));
         if (latestCertification.isExpired()) {
-            throw new RuntimeException("UUID가 만료되었습니다.");
+            throw new IllegalStateException("이메일 인증이 만료되었습니다.");
         }
-
     }
 
     /**
@@ -115,9 +115,8 @@ public class MemberService {
     public EmailUpdateResponseDto updateEmail(Long memberId, EmailUpdateRequestDto dto) {
         String newEmail = dto.getNewEmail();
         validateEmailDuplication(newEmail); // 이메일 중복체크 추가
-
         Member member = memberRepository.findByIdAndDeletedAtNull(memberId)
-                .orElseThrow(() -> new NotFoundException("회원을 찾을 수 없습니다."));
+                .orElseThrow(() -> new NotFoundException("회원이 존재하지 않습니다.")); // TODO: NOT FOUND
         member.updateEmail(newEmail);
 
         return EmailUpdateResponseDto.fromEntity(member);
@@ -129,7 +128,7 @@ public class MemberService {
      */
     public OauthUpdateResponseDto updateOauth(Long memberId, OauthUpdateRequestDto dto) {
         Member member = memberRepository.findByIdAndDeletedAtNull(memberId)
-                .orElseThrow(() -> new NotFoundException("회원을 찾을 수 없습니다."));
+                .orElseThrow(() -> new NotFoundException("회원이 존재하지 않습니다."));
 
         Oauth updatedOauth = Oauth.createOauth(OauthType.valueOf(dto.getOauthType()), dto.getOauthId()); //TODO: null check
         member.updateOauth(updatedOauth);
@@ -142,7 +141,7 @@ public class MemberService {
      */
     public void deleteOauth(Long memberId) {
         Member member = memberRepository.findByIdAndDeletedAtNull(memberId)
-                .orElseThrow(() -> new NotFoundException("회원을 찾을 수 없습니다."));
+                .orElseThrow(() -> new NotFoundException("회원이 존재하지 않습니다."));
 
         member.updateOauth(null);
     }
@@ -154,7 +153,7 @@ public class MemberService {
     public void updatePassword(Long memberId, PasswordUpdateRequestDto dto) {
 
         Member member = memberRepository.findByIdAndDeletedAtNull(memberId)
-                .orElseThrow(() -> new NotFoundException("회원을 찾을 수 없습니다."));
+                .orElseThrow(() -> new NotFoundException("회원이 존재하지 않습니다."));
 
         String currentPassword = dto.getCurrentPassword();
         if (!passwordEncoder.matches(currentPassword, member.getPassword())) {
@@ -171,7 +170,7 @@ public class MemberService {
      */
     public MemberUpdateResponseDto updateMember(Long memberId, MemberUpdateRequestDto dto) {
         Member member = memberRepository.findByIdAndDeletedAtNull(memberId)
-                .orElseThrow(() -> new NotFoundException("회원을 찾을 수 없습니다."));
+                .orElseThrow(() -> new NotFoundException("회원이 존재하지 않습니다."));
 
         member.updateName(dto.getName());
         member.updateNickName(dto.getNickName());
@@ -186,7 +185,7 @@ public class MemberService {
      */
     public Long resign(Long memberId) {
         Member member = memberRepository.findByIdAndDeletedAtNull(memberId)
-                .orElseThrow(() -> new NotFoundException("회원을 찾을 수 없습니다."));
+                .orElseThrow(() -> new NotFoundException("회원이 존재하지 않습니다."));
         member.delete();
         
         return member.getId();
@@ -199,14 +198,14 @@ public class MemberService {
     private void validateEmailDuplication(String email) throws DuplicateKeyException {
         memberRepository.findByEmailAndDeletedAtNull(email)
                 .ifPresent(m -> {
-                    throw new DuplicateKeyException("이미 같은 이메일이 존재합니다.");
+                    throw new DuplicateKeyException("이미 사용중인 이메일입니다.");
                 });
     }
 
     private void validateNickNameDuplication(String nickName) throws DuplicateKeyException {
         memberRepository.findByNickNameAndDeletedAtNull(nickName)
                 .ifPresent(m -> {
-                    throw new DuplicateKeyException("이미 같은 닉네임이 존재합니다.");
+                    throw new DuplicateKeyException("이미 사용중인 닉네임입니다");
                 });
     }
 
