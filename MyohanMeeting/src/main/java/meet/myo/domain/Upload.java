@@ -77,4 +77,8 @@ public class Upload extends BaseAuditingListener {
     public void updateSize(Long size) {
         this.size = size;
     }
+
+    public void delete() {
+        super.delete();
+    }
 }
