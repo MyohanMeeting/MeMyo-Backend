@@ -32,6 +32,9 @@ dependencies {
     // http://server:port/context-path/swagger-ui/index.html
     implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.1.0'
 
+    // oauth2
+    implementation 'org.springframework.boot:spring-boot-starter-oauth2-client'
+
     // lombok
     compileOnly 'org.projectlombok:lombok'
     annotationProcessor 'org.projectlombok:lombok'
