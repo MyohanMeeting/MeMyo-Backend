@@ -60,10 +60,11 @@ public class Member extends BaseAuditingListener {
     }
 
     @Builder(builderMethodName = "oauthJoinBuilder")
-    Member(OauthType oauthType, String oauthId, String email) {
+    Member(OauthType oauthType, String oauthId, String email, String nickName) {
         this.email = email;
         this.certified = Certified.NOT_CERTIFIED; // 미인증을 기본값으로 세팅
         this.oauth = Oauth.createOauth(oauthType, oauthId);
+        this.nickName = nickName;
 
     }
 
