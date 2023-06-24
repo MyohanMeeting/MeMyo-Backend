@@ -33,7 +33,7 @@ public class AdoptApplicationService {
      */
     @Transactional(readOnly = true)
     public List<AdoptApplicationResponseDto> getAdoptApplicationListByNotice(Long memberId, Long noticeId, Pageable pageable, String ordered) throws AuthenticationException {
-        AdoptNotice adoptNotice = adoptNoticeRepository.findById(noticeId)
+        AdoptNotice adoptNotice = (AdoptNotice) adoptNoticeRepository.findByAdoptNoticeId(noticeId)
                 .orElseThrow(() -> new NotFoundException("조회된 분양 글이 없습니다."));
 
         // 작성자만 열람 가능한지 확인
@@ -41,7 +41,7 @@ public class AdoptApplicationService {
             throw new AuthenticationException("작성자만 분양신청 목록을 열람할 수 있습니다.");
         }
 
-        Page<AdoptApplication> adoptApplications = adoptApplicationRepository.findByAdoptNoticeAndDeletedAtNull(adoptNotice, pageable);
+        Page<AdoptApplication> adoptApplications = adoptApplicationRepository.findByAdoptNoticeIdAndDeletedAtNull(adoptNotice, pageable);
 
         return adoptApplications.getContent().stream()
                 .map(AdoptApplicationResponseDto::fromEntity)
@@ -116,6 +116,7 @@ public class AdoptApplicationService {
         adoptApplicationRepository.save(adoptApplication);
         return adoptApplication.getId();
     }
+
     /**
      * 수정
      */
@@ -127,11 +128,35 @@ public class AdoptApplicationService {
             throw new NotFoundException("수정할 권한이 없습니다.");
         }
 
-        adoptApplication.updateContent(dto.getContent());
+        Applicant applicant = Applicant.builder()
+                .name(dto.getApplicant().getName())
+                .age(dto.getApplicant().getAge())
+                .gender(dto.getApplicant().getGender() != null ? Gender.valueOf(dto.getApplicant().getGender()) : adoptApplication.getApplicant().getGender())
+                .address(dto.getApplicant().getAddress())
+                .phoneNumber(dto.getApplicant().getPhoneNumber())
+                .job(dto.getApplicant().getJob())
+                .married(dto.getApplicant().getMarried() != null ? Married.valueOf(dto.getApplicant().getMarried()) : adoptApplication.getApplicant().getMarried())
+                .build();
+
+        Survey survey = Survey.builder()
+                .surveyAnswer1of1(dto.getSurvey().getAnswer1_1() != null ? YesOrNo.valueOf(dto.getSurvey().getAnswer1_1().toUpperCase()) : adoptApplication.getSurvey().getSurveyAnswer1of1())
+                .surveyAnswer1of2(dto.getSurvey().getAnswer1_2() != null ? dto.getSurvey().getAnswer1_2() : adoptApplication.getSurvey().getSurveyAnswer1of2())
+                .surveyAnswer2of1(dto.getSurvey().getAnswer2_1() != null ? YesOrNo.valueOf(dto.getSurvey().getAnswer2_1().toUpperCase()) : adoptApplication.getSurvey().getSurveyAnswer2of1())
+                .surveyAnswer2of2(dto.getSurvey().getAnswer2_2() != null ? dto.getSurvey().getAnswer2_2() : adoptApplication.getSurvey().getSurveyAnswer2of2())
+                .surveyAnswer3(dto.getSurvey().getAnswer3() != null ? dto.getSurvey().getAnswer3() : adoptApplication.getSurvey().getSurveyAnswer3())
+                .surveyAnswer4(dto.getSurvey().getAnswer4() != null ? YesOrNo.valueOf(dto.getSurvey().getAnswer4().toUpperCase()) : adoptApplication.getSurvey().getSurveyAnswer4())
+                .surveyAnswer5(dto.getSurvey().getAnswer5() != null ? dto.getSurvey().getAnswer5() : adoptApplication.getSurvey().getSurveyAnswer5())
+                .surveyAnswer6(dto.getSurvey().getAnswer6() != null ? YesOrNo.valueOf(dto.getSurvey().getAnswer6().toUpperCase()) : adoptApplication.getSurvey().getSurveyAnswer6())
+                .build();
+
+        if (dto.getContent() != null) {
+            adoptApplication.updateContent(dto.getContent());
+        }
 
         adoptApplicationRepository.save(adoptApplication);
         return AdoptApplicationResponseDto.fromEntity(adoptApplication);
     }
+
 
 
     /**

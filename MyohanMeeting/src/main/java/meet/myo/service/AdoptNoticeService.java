@@ -16,7 +16,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.naming.AuthenticationException;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -35,7 +34,18 @@ public class AdoptNoticeService {
     public List<AdoptNoticeSummaryResponseDto> getAdoptNoticeList(Pageable pageable, AdoptNoticeSearch search) {
         Page<AdoptNotice> adoptNotices = adoptNoticeRepository.searchAdoptNotices(pageable, search);
         return adoptNotices.getContent().stream()
-                .map(AdoptNoticeSummaryResponseDto::fromEntity)
+                .map(notice -> {
+                    AdoptNoticeSummaryResponseDto responseDto = new AdoptNoticeSummaryResponseDto();
+                    responseDto.setNoticeId(notice.getId());
+                    responseDto.setNoticeTitle(notice.getTitle());
+                    responseDto.setNoticeStatus(notice.getStatus().toString());
+                    responseDto.setThumbnail(notice.getThumbnail());
+                    responseDto.setAuthorName(notice.getMember().getName());
+                    responseDto.setCatName(notice.getCat().getName());
+                    responseDto.setCatSpecies(notice.getCat().getSpecies());
+                    responseDto.setShelterCity(notice.getShelter().getCity().toString());
+                    return responseDto;
+                })
                 .collect(Collectors.toList());
     }
 
@@ -64,29 +74,17 @@ public class AdoptNoticeService {
      */
     public Long createAdoptNotice(Long memberId, AdoptNoticeCreateRequestDto dto) {
         Member member = memberRepository.findById(memberId)
-                .orElseThrow(() -> new NotFoundException("Member not found"));
+                .orElseThrow(() -> new NotFoundException("회원이 존재하지 않습니다."));
 
-        AdoptNotice adoptNotice = new AdoptNotice(dto.getTitle(), dto.getContent(), member);
+        AdoptNotice adoptNotice = AdoptNotice.builder()
+                .title(dto.getTitle())
+                .content(dto.getContent())
+                .member(member)
+                .build();
+
         adoptNoticeRepository.save(adoptNotice);
         return adoptNotice.getId();
     }
-    /**
-     * 상태 수정
-     */
-    public AdoptNoticeResponseDto updateAdoptNoticeStatus(Long memberId, Long noticeId, AdoptNoticeStatusUpdateRequestDto dto) throws AuthenticationException {
-        AdoptNotice adoptNotice = adoptNoticeRepository.findById(noticeId)
-                .orElseThrow(() -> new NotFoundException("Adopt notice not found"));
-
-        if (!adoptNotice.getMember().getId().equals(memberId)) {
-            throw new AuthenticationException("권한이 없습니다");
-        }
-
-        AdoptNoticeStatus newStatus = AdoptNoticeStatus.valueOf(dto.getStatus());
-        adoptNotice.updateNoticeStatus(newStatus);
-
-        return AdoptNoticeResponseDto.fromEntity(adoptNotice);
-    }
-
     /**
      * 상태수정
      */
@@ -117,6 +115,7 @@ public class AdoptNoticeService {
 
         adoptNotice.updateTitle(dto.getTitle());
         adoptNotice.updateContent(dto.getContent());
+        adoptNotice.updateCat(dto.getCat()); // cat 작성해야함
 
         return AdoptNoticeResponseDto.fromEntity(adoptNotice);
     }
@@ -150,6 +149,7 @@ public class AdoptNoticeService {
     public List<AdoptNoticeCommentResponseDto> getAdoptNoticeCommentList(Long noticeId) {
         return List.of(AdoptNoticeCommentResponseDto.fromEntity());
     }
+
 
     public AdoptNoticeCommentResponseDto updateAdoptNoticeComment(Long memberId, Long noticeId, AdoptNoticeCommentUpdateRequestDto dto) {
         return AdoptNoticeCommentResponseDto.fromEntity();

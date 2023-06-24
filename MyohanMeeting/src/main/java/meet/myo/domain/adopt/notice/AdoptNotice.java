@@ -10,6 +10,7 @@ import meet.myo.domain.Member;
 import meet.myo.domain.Upload;
 import meet.myo.domain.adopt.application.AdoptApplication;
 import meet.myo.domain.cat.Cat;
+import meet.myo.dto.schema.CatRequestSchema;
 
 import java.util.List;
 
@@ -80,4 +81,9 @@ public class AdoptNotice extends BaseAuditingListener {
     public void removeApplication() {
         applicationCount --;
     }
+
+    /**
+     * TODO: updateCat
+     */
+    public void updateCat(CatRequestSchema catRequestSchema) {}
 }

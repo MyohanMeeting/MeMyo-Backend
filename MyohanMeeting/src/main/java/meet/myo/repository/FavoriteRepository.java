@@ -10,8 +10,6 @@ import java.util.Optional;
 
 @Repository
 public interface FavoriteRepository extends JpaRepository<Favorite, Long> {
-    Page<Favorite> findByIdAndDeletedAtNull(Long id, Pageable pageable);
     Optional<Favorite> findByIdAndDeletedAtNull(Long id);
-
-
+    Page<Favorite> findByIdAndDeletedAtNull(Long memberId, Pageable pageable);
 }
