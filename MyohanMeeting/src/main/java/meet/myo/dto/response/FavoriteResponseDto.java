@@ -4,6 +4,7 @@ import meet.myo.domain.Favorite;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Getter;
+import meet.myo.dto.schema.CatSummarySchema;
 
 
 @Schema(name = "Favorite")
@@ -11,7 +12,6 @@ import lombok.Getter;
 public class FavoriteResponseDto {
     private Long favoriteId;
     private Long memberId;
-
 
 
     public static FavoriteResponseDto fromEntity(Favorite favorite) {

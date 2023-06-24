@@ -51,8 +51,7 @@ public class FavoriteService {
         Cat cat = catRepository.findByIdAndDeletedAtNull(catId)
                 .orElseThrow(() -> new NotFoundException("해당하는 고양이를 찾을 수 없습니다."));
 
-        Favorite favorite = Favorite.createFavorite(member, cat);
-        Favorite savedFavorite = favoriteRepository.save(favorite);
+        Favorite savedFavorite = favoriteRepository.save(Favorite.createFavorite(member, cat));
         return savedFavorite.getId();
     }
 
@@ -71,7 +70,7 @@ public class FavoriteService {
             throw new NotFoundException("찜 데이터가 존재하지 않습니다.");
         }
         favorite.delete();
-        return favoriteId;
+        return favorite.getId();
     }
 
 
