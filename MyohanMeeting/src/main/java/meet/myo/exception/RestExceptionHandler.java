@@ -1,4 +1,4 @@
-package meet.myo.domain.exception;
+package meet.myo.exception;
 
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;

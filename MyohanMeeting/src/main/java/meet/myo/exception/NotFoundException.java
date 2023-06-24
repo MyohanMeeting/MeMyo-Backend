@@ -1,4 +1,4 @@
-package meet.myo.domain.exception;
+package meet.myo.exception;
 
 public class NotFoundException extends RuntimeException {
     public NotFoundException(String message) {
