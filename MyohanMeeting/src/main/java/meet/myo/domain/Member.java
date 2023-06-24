@@ -6,6 +6,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import meet.myo.domain.authority.MemberAuthority;
+import org.springframework.dao.DuplicateKeyException;
 
 import java.util.List;
 
@@ -98,8 +99,7 @@ public class Member extends BaseAuditingListener {
         if (this.certified == Certified.NOT_CERTIFIED) {
             this.certified = Certified.CERTIFIED;
         } else {
-            // TODO: 이미 인증된 회원임을 알리는 로직이 필요할까요?
-            // conflict
+            throw new DuplicateKeyException("ALREADY CERTIFIED");
         }
     }
 

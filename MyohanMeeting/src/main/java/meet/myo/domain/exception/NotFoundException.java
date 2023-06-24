@@ -6,6 +6,6 @@ public class NotFoundException extends RuntimeException {
     }
 
     public NotFoundException() {
-        super("Not Found");
+        super("Not Found Resource");
     }
 }
