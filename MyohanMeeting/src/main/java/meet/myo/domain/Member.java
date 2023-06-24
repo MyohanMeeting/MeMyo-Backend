@@ -22,20 +22,14 @@ public class Member extends BaseAuditingListener {
     @Column(nullable = false)
     private String email;
 
-    @Column(nullable = false)
-    private String name;
-
-    @Column(nullable = false)
     private String password;
 
-    @Column(nullable = false)
     private String nickName;
 
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "profile_image_id")
     private Upload profileImage;
 
-    @Column(nullable = false)
     private String phoneNumber;
 
     private String refreshToken;
@@ -50,23 +44,21 @@ public class Member extends BaseAuditingListener {
     @Embedded
     private Oauth oauth;
 
-    @Builder(builderMethodName = "directJoinBuilder")
-    Member(String email, String name, String password, String nickName, String phoneNumber) {
+    @Builder(builderClassName = "DirectJoinMemberBuilder", builderMethodName = "directJoinBuilder")
+    Member(String email, String password, String nickName, String phoneNumber) {
         this.email = email;
-        this.name = name;
         this.password = password;
         this.nickName = nickName;
         this.phoneNumber = phoneNumber;
         this.certified = Certified.NOT_CERTIFIED; // 미인증을 기본값으로 세팅
     }
 
-    @Builder(builderMethodName = "oauthJoinBuilder")
+    @Builder(builderClassName = "OauthJoinMemberBuilder", builderMethodName = "oauthJoinBuilder")
     Member(OauthType oauthType, String oauthId, String email, String nickName) {
         this.email = email;
-        this.certified = Certified.NOT_CERTIFIED; // 미인증을 기본값으로 세팅
         this.oauth = Oauth.createOauth(oauthType, oauthId);
         this.nickName = nickName;
-
+        this.certified = Certified.NOT_CERTIFIED; // 미인증을 기본값으로 세팅
     }
 
     public void updateEmail(String email) {
@@ -75,10 +67,6 @@ public class Member extends BaseAuditingListener {
 
     public void updatePassword(String password) {
         this.password = password;
-    }
-
-    public void updateName(String name) {
-        this.name = name;
     }
 
     public void updateNickName(String nickName) {

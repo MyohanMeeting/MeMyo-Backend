@@ -9,12 +9,5 @@ public class MemberOauthCreateRequestDto {
     private String oauthType;
     private String oauthId;
     private String email;
-
-    public Member toEntity() {
-        return Member.oauthJoinBuilder()
-                .email(this.email)
-                .oauthType(OauthType.valueOf(this.oauthType))
-                .oauthId(this.oauthId)
-                .build();
-    }
+    private String nickName;
 }

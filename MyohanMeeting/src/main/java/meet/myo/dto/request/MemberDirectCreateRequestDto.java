@@ -12,8 +12,6 @@ public class MemberDirectCreateRequestDto {
     @NotBlank(message="EMAIL_IS_MANDATORY")
     private String email;
 
-    private String name;
-
     @NotBlank(message = "PASSWORD_IS_MANDATORY")
     private String password;
 
@@ -24,7 +22,6 @@ public class MemberDirectCreateRequestDto {
     public Member toEntity(String encodedPassword) {
         return Member.directJoinBuilder()
                 .email(this.email)
-                .name(this.name)
                 .nickName(this.nickName)
                 .phoneNumber(this.phoneNumber)
                 .build();
