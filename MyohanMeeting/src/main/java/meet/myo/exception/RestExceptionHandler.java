@@ -14,7 +14,6 @@ import org.springframework.web.ErrorResponse;
 import meet.myo.dto.response.ErrorResponseDto;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
-
 @Order(Ordered.HIGHEST_PRECEDENCE)
 @RestControllerAdvice
 public class RestExceptionHandler extends ResponseEntityExceptionHandler {

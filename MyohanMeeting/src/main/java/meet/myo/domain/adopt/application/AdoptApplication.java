@@ -55,4 +55,8 @@ public class AdoptApplication extends BaseAuditingListener {
         this.content = content;
     }
 
+    public void delete() {
+        super.delete();
+    }
+
 }
