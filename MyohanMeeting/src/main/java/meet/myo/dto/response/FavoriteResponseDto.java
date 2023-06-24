@@ -1,13 +1,18 @@
 package meet.myo.dto.response;
 
 import meet.myo.domain.Favorite;
-import meet.myo.domain.Member;
-import meet.myo.domain.cat.Cat;
 
+import io.swagger.v3.oas.annotations.media.Schema;
+import lombok.Getter;
+
+
+@Schema(name = "Favorite")
+@Getter
 public class FavoriteResponseDto {
     private Long favoriteId;
     private Long memberId;
-    private Cat cat; // 이렇게 엔티티로 받으면 안돼
+
+
 
     public static FavoriteResponseDto fromEntity(Favorite favorite) {
         FavoriteResponseDto dto = new FavoriteResponseDto();

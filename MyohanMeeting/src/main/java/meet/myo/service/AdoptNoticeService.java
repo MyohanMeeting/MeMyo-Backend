@@ -8,6 +8,9 @@ import meet.myo.dto.request.adopt.*;
 import meet.myo.dto.response.adopt.AdoptNoticeCommentResponseDto;
 import meet.myo.dto.response.adopt.AdoptNoticeResponseDto;
 import meet.myo.exception.NotFoundException;
+import meet.myo.dto.response.adopt.AdoptNoticeSummaryResponseDto;
+import meet.myo.repository.AdoptNoticeRepoImpl;
+
 import meet.myo.repository.AdoptNoticeRepository;
 import meet.myo.repository.MemberRepository;
 import meet.myo.search.AdoptNoticeSearch;
@@ -32,6 +35,7 @@ public class AdoptNoticeService {
      */
     @Transactional(readOnly = true)
     public List<AdoptNoticeSummaryResponseDto> getAdoptNoticeList(Pageable pageable, AdoptNoticeSearch search) {
+
         Page<AdoptNotice> adoptNotices = adoptNoticeRepository.searchAdoptNotices(pageable, search);
         return adoptNotices.getContent().stream()
                 .map(notice -> {
@@ -47,6 +51,9 @@ public class AdoptNoticeService {
                     return responseDto;
                 })
                 .collect(Collectors.toList());
+
+        return List.of(AdoptNoticeSummaryResponseDto.fromEntity());
+
     }
 
     /**
@@ -54,10 +61,14 @@ public class AdoptNoticeService {
      */
     @Transactional(readOnly = true)
     public List<AdoptNoticeSummaryResponseDto> getMyAdoptNoticeList(Long memberId, Pageable pageable, String ordered) {
+
         Page<AdoptNotice> adoptNotices = adoptNoticeRepository.searchAdoptNoticesByMemberId(memberId, pageable, ordered);
         return adoptNotices.getContent().stream()
                 .map(AdoptNoticeSummaryResponseDto::fromEntity)
                 .collect(Collectors.toList());
+
+        return List.of(AdoptNoticeSummaryResponseDto.fromEntity());
+
     }
 
     /**
