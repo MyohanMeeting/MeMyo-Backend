@@ -1,4 +1,4 @@
-package meet.myo.domain.exception;
+package meet.myo.exception;
 
 import jakarta.el.MethodNotFoundException;
 import meet.myo.dto.response.ErrorResponseDto;

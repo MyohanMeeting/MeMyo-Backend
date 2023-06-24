@@ -30,4 +30,8 @@ public class Favorite extends BaseAuditingListener {
         favorite.cat = cat;
         return favorite;
     }
+
+    public void delete() {
+        super.delete();
+    }
 }
