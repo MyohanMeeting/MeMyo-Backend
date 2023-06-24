@@ -5,7 +5,7 @@ import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
 import meet.myo.config.SecurityUtil;
 import meet.myo.domain.authority.CustomUser;
-import meet.myo.service.CustomUserDetailsService;
+import meet.myo.service.CustomPrincipalDetailService;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -35,7 +35,7 @@ public class TokenProvider implements InitializingBean {
     private Key accessKey;
     private Key refreshKey;
 
-    private final CustomUserDetailsService customUserDetailsService;
+    private final CustomPrincipalDetailService customPrincipalDetailService;
 
     // yml 파일에서 jwt의 access, refresh를 들고옴
     public TokenProvider(
@@ -43,13 +43,13 @@ public class TokenProvider implements InitializingBean {
             @Value("${jwt.access-secret}") String accessSecret,
             @Value("${jwt.refresh-secret}") String refreshSecret,
             @Value("${jwt.refresh-token-validity-time}") long refreshTokenValidityTime,
-            @Autowired CustomUserDetailsService customUserDetailsService
+            @Autowired CustomPrincipalDetailService customPrincipalDetailService
     ) {
         this.accessTokenValidityTime = accessTokenValidityTime;
         this.refreshTokenValidityTime = refreshTokenValidityTime;
         this.accessSecret = accessSecret;
         this.refreshSecret = refreshSecret;
-        this.customUserDetailsService = customUserDetailsService;
+        this.customPrincipalDetailService = customPrincipalDetailService;
     }
 
     // BASE64로 Decode하는 코드
@@ -87,7 +87,7 @@ public class TokenProvider implements InitializingBean {
             principal = new CustomUser(claims.getSubject(), "", authorities, Long.valueOf(claims.get("memberId").toString()));
 
         } else { // ref 토큰일 경우(클레임 없음) DB접근 후 찾음
-            principal = customUserDetailsService.loadUserByUsername(claims.getSubject());
+            principal = customPrincipalDetailService.loadUserByUsername(claims.getSubject());
             authorities = principal.getAuthorities();
         }
 
