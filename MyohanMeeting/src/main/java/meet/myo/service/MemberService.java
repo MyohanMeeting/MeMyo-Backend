@@ -15,6 +15,8 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.UUID;
+
 @Service
 @Transactional
 @RequiredArgsConstructor
@@ -44,7 +46,6 @@ public class MemberService {
         String encoded = passwordEncoder.encode(dto.getPassword());
         Member member = Member.directJoinBuilder()
                 .email(dto.getEmail())
-                .name(dto.getName())
                 .password(encoded)
                 .nickName(dto.getNickName())
                 .phoneNumber(dto.getPhoneNumber())
@@ -60,13 +61,22 @@ public class MemberService {
 
         validateEmailDuplication(dto.getEmail());
 
-        Member member = Member.oauthJoinBuilder()
+        Member.OauthJoinMemberBuilder memberBuilder = Member.oauthJoinBuilder()
                 .oauthType(dto.getOauthType() != null ? OauthType.valueOf(dto.getOauthType()) : null)
                 .oauthId(dto.getOauthId())
-                .build();
+                .email(dto.getEmail());
+        if (dto.getNickName() != null) {
+            validateNickNameDuplication(dto.getNickName());
+            memberBuilder.nickName(dto.getNickName());
+        } else {
+            String randomNickname = createRandomNickname();
+            validateNickNameDuplication(randomNickname);
+            memberBuilder.nickName(randomNickname);
+        }
+        Member member = memberBuilder.build();
 
-        Member savedMember = memberRepository.save(member);
-        return savedMember.getId();
+        memberRepository.save(member);
+        return member.getId();
     }
 
     /**
@@ -173,7 +183,6 @@ public class MemberService {
         Member member = memberRepository.findByIdAndDeletedAtNull(memberId)
                 .orElseThrow(() -> new NotFoundException("id에 해당하는 회원을 찾을 수 없습니다."));
 
-        member.updateName(dto.getName());
         member.updateNickName(dto.getNickName());
         member.updatePhoneNumber(dto.getPhoneNumber());
 
@@ -208,6 +217,10 @@ public class MemberService {
                 .ifPresent(m -> {
                     throw new DuplicateKeyException("이미 같은 닉네임이 존재합니다.");
                 });
+    }
+
+    private String createRandomNickname() {
+        return "nickname" + UUID.randomUUID();
     }
 
 }

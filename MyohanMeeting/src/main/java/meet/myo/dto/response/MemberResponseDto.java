@@ -8,7 +8,6 @@ import meet.myo.domain.Member;
 @Getter
 public class MemberResponseDto {
 
-    private String name;
     private String email;
     private String nickName;
     private String phoneNumber;
@@ -17,7 +16,6 @@ public class MemberResponseDto {
 
     public static MemberResponseDto fromEntity(Member member) {
         MemberResponseDto dto = new MemberResponseDto();
-        dto.name = member.getName();
         dto.email = member.getEmail();
         dto.nickName = member.getNickName();
         dto.phoneNumber = member.getPhoneNumber();

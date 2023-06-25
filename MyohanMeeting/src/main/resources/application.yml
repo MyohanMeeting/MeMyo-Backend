@@ -8,17 +8,18 @@ spring:
       enabled: true
 
   datasource:
-    url: jdbc:h2:mem:myomeet
+    url: jdbc:h2:tcp://localhost/~/myomeet
     driver-class-name: org.h2.Driver
     username: sa
     password:
 
   jpa:
     hibernate:
-      ddl-auto: create
+      ddl-auto: create-drop
     properties:
       hibernate:
-#        format_sql: true
+        format_sql: false
+        show_sql: false
 
 logging:
   level:

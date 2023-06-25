@@ -22,7 +22,7 @@ public abstract class BaseAuditingListener {
 
     private LocalDateTime deletedAt = null;
 
-    /*
+    /**
         엔티티를 삭제할 경우에는 super.delete(); 형태로 아래의 메서드를 상속받아 처리합니다.
      */
     protected void delete() { deletedAt = LocalDateTime.now(); }
