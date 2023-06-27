@@ -4,5 +4,5 @@ import lombok.Getter;
 
 @Getter
 public class CreateFavoriteRequestDto {
-    private Long catId;
+    private Long noticeId;
 }

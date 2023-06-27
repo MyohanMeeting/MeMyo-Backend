@@ -4,7 +4,8 @@ import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import meet.myo.domain.cat.Cat;
+import meet.myo.domain.adopt.notice.AdoptNotice;
+import meet.myo.domain.adopt.notice.cat.Cat;
 
 @Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -21,13 +22,13 @@ public class Favorite extends BaseAuditingListener {
     private Member member;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "cat_id")
-    private Cat cat;
+    @JoinColumn(name = "notice_id")
+    private AdoptNotice adoptNotice;
 
-    public static Favorite createFavorite(Member member, Cat cat) {
+    public static Favorite createFavorite(Member member, AdoptNotice adoptNotice) {
         Favorite favorite = new Favorite();
         favorite.member = member;
-        favorite.cat = cat;
+        favorite.adoptNotice = adoptNotice;
         return favorite;
     }
 

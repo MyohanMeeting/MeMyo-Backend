@@ -4,7 +4,7 @@ import meet.myo.domain.Favorite;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Getter;
-import meet.myo.dto.schema.CatSummarySchema;
+import meet.myo.dto.response.adopt.AdoptNoticeSummaryResponseDto;
 
 
 @Schema(name = "Favorite")
@@ -12,14 +12,15 @@ import meet.myo.dto.schema.CatSummarySchema;
 public class FavoriteResponseDto {
     private Long favoriteId;
     private Long memberId;
+    private AdoptNoticeSummaryResponseDto notice;
 
 
     public static FavoriteResponseDto fromEntity(Favorite favorite) {
         FavoriteResponseDto dto = new FavoriteResponseDto();
         dto.favoriteId = favorite.getId();
-        dto.cat = favorite.getCat();
+        dto.notice = AdoptNoticeSummaryResponseDto.fromEntity(favorite.getAdoptNotice());
         dto.memberId = favorite.getMember().getId();
+
         return dto;
     }
 }
-

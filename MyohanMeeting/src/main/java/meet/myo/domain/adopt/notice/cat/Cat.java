@@ -1,70 +1,56 @@
-package meet.myo.domain.cat;
+package meet.myo.domain.adopt.notice.cat;
 
 import jakarta.persistence.*;
 import lombok.*;
-import meet.myo.domain.BaseAuditingListener;
 import meet.myo.domain.Upload;
-import meet.myo.domain.adopt.notice.AdoptNotice;
 import meet.myo.domain.adopt.notice.Shelter;
 
-import java.util.List;
-
-@Entity
+@Embeddable
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class Cat extends BaseAuditingListener {
+public class Cat {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "member_id")
-    private Long id;
-
-    @OneToOne(fetch = FetchType.LAZY, mappedBy = "cat")
-    private AdoptNotice adoptNotice;
-
-    @Column(nullable = false)
+    @Column(name = "cat_name")
     private String name;
 
-    @Column(nullable = false)
+    @Column(name = "cat_age")
     private String age;
 
-    @Column(nullable = false)
+    @Column(name = "cat_species")
     private String species;
 
     @Enumerated(EnumType.STRING)
-    @Column(nullable = false)
+    @Column(name = "cat_sex")
     private Sex sex;
 
-    @Column(nullable = false)
+    @Column(name = "cat_weight")
     private Double weight;
 
     @Enumerated(EnumType.STRING)
-    @Column(nullable = false)
+    @Column(name = "cat_neutered")
     private Neutered neutered;
 
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "cat")
-    private List<CatPicture> pictures;
-
-    @Column(nullable = false)
+    @Column(name = "cat_healthStatus", columnDefinition = "TEXT")
     private String healthStatus;
 
-    @Column(nullable = false)
+    @Column(name = "cat_personality", columnDefinition = "TEXT")
     private String personality;
 
     @Enumerated(EnumType.STRING)
+    @Column(name = "cat_registered")
     private Registered registered;
 
+    @Column(name = "cat_registNumber")
     private String registNumber;
 
+    @Column(name = "cat_foundedPlace")
     private String foundedPlace;
 
+    @Column(name = "cat_foundedAt")
     private String foundedAt;
 
-    @Embedded
-    private Shelter shelter;
-
     @Builder
-    Cat(String name, String age, String species, Sex sex, Double weight, Neutered neutered, Upload thumbnail, String healthStatus, String personality, Registered registered, String registNumber, String foundedPlace, String foundedAt, Shelter shelter) {
+    Cat(String name, String age, String species, Sex sex, Double weight, Neutered neutered, String healthStatus, String personality, Registered registered, String registNumber, String foundedPlace, String foundedAt) {
         this.name = name;
         this.age = age;
         this.species = species;
@@ -77,7 +63,6 @@ public class Cat extends BaseAuditingListener {
         this.registNumber = registNumber;
         this.foundedPlace = foundedPlace;
         this.foundedAt = foundedAt;
-        this.shelter = shelter;
     }
 
     public void updateName(String name) {
@@ -104,9 +89,6 @@ public class Cat extends BaseAuditingListener {
         this.neutered = neutered;
     }
 
-    public void updateThumbnail(Upload thumbnail) {
-    }
-
     public void updateHealthStatus(String healthStatus) {
         this.healthStatus = healthStatus;
     }
@@ -129,10 +111,6 @@ public class Cat extends BaseAuditingListener {
 
     public void updateFoundedAt(String foundedAt) {
         this.foundedAt = foundedAt;
-    }
-
-    public void updateShelter(Shelter shelter) {
-        this.shelter = shelter;
     }
 
 }
