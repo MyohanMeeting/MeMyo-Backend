@@ -36,4 +36,8 @@ public class AdoptNoticeComment extends BaseAuditingListener {
     public void updateContent(String content) {
         this.content = content;
     }
+
+    public void delete() {
+        super.delete();
+    }
 }

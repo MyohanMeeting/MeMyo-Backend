@@ -13,10 +13,11 @@ import meet.myo.dto.response.adopt.AdoptNoticeCommentResponseDto;
 import meet.myo.dto.response.adopt.AdoptNoticeResponseDto;
 import meet.myo.exception.NotFoundException;
 import meet.myo.dto.response.adopt.AdoptNoticeSummaryResponseDto;
-import meet.myo.repository.AdoptNoticeRepoImpl;
 
+import meet.myo.repository.AdoptNoticeCommentRepository;
 import meet.myo.repository.AdoptNoticeRepository;
 import meet.myo.repository.MemberRepository;
+import meet.myo.repository.UploadRepository;
 import meet.myo.search.AdoptNoticeSearch;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -33,7 +34,9 @@ import java.util.stream.Collectors;
 public class AdoptNoticeService {
 
     private final AdoptNoticeRepository adoptNoticeRepository;
+    private final AdoptNoticeCommentRepository adoptNoticeCommentRepository;
     private final MemberRepository memberRepository;
+    private final UploadRepository uploadRepository;
 
     /**
      * 공고목록 전체 조회
@@ -41,23 +44,10 @@ public class AdoptNoticeService {
     @Transactional(readOnly = true)
     public List<AdoptNoticeSummaryResponseDto> getAdoptNoticeList(Pageable pageable, AdoptNoticeSearch search) {
 
-        Page<AdoptNotice> adoptNotices = adoptNoticeRepository.searchAdoptNotices(pageable, search);
+        Page<AdoptNotice> adoptNotices = adoptNoticeRepository.findAll(pageable);
         return adoptNotices.getContent().stream()
-                .map(notice -> {
-                    AdoptNoticeSummaryResponseDto responseDto = new AdoptNoticeSummaryResponseDto();
-                    responseDto.setNoticeId(notice.getId());
-                    responseDto.setNoticeTitle(notice.getTitle());
-                    responseDto.setNoticeStatus(notice.getStatus().toString());
-                    responseDto.setThumbnail(notice.getThumbnail());
-                    responseDto.setAuthorName(notice.getMember().getName());
-                    responseDto.setCatName(notice.getCat().getName());
-                    responseDto.setCatSpecies(notice.getCat().getSpecies());
-                    responseDto.setShelterCity(notice.getShelter().getCity().toString());
-                    return responseDto;
-                })
+                .map(AdoptNoticeSummaryResponseDto::fromEntity)
                 .collect(Collectors.toList());
-
-        return List.of(AdoptNoticeSummaryResponseDto.fromEntity());
 
     }
 
@@ -67,13 +57,10 @@ public class AdoptNoticeService {
     @Transactional(readOnly = true)
     public List<AdoptNoticeSummaryResponseDto> getMyAdoptNoticeList(Long memberId, Pageable pageable, String ordered) {
 
-        Page<AdoptNotice> adoptNotices = adoptNoticeRepository.searchAdoptNoticesByMemberId(memberId, pageable, ordered);
+        Page<AdoptNotice> adoptNotices = adoptNoticeRepository.findByMemberIdAndDeletedAtNull(pageable, memberId);
         return adoptNotices.getContent().stream()
                 .map(AdoptNoticeSummaryResponseDto::fromEntity)
                 .collect(Collectors.toList());
-
-        return List.of(AdoptNoticeSummaryResponseDto.fromEntity());
-
     }
 
     /**
@@ -85,6 +72,7 @@ public class AdoptNoticeService {
                 .orElseThrow(() -> new NotFoundException("해당하는 입양공고가 존재하지 않습니다."));
         return AdoptNoticeResponseDto.fromEntity(adoptNotice);
     }
+
     /**
      * 작성
      */
@@ -98,9 +86,34 @@ public class AdoptNoticeService {
                 .member(member)
                 .build();
 
+        Cat cat = Cat.builder()
+                .name(dto.getCat().getName())
+                .age(dto.getCat().getAge())
+                .registered(dto.getCat().getRegistered() != null ? Registered.valueOf(dto.getCat().getRegistered()) : null)
+                .registNumber(dto.getCat().getRegistNumber())
+                .species(dto.getCat().getSpecies())
+                .sex(dto.getCat().getSex() != null ? Sex.valueOf(dto.getCat().getSex()) : null)
+                .weight(dto.getCat().getWeight())
+                .neutered(dto.getCat().getNeutered() != null ? Neutered.valueOf(dto.getCat().getNeutered()) : null)
+                .healthStatus(dto.getCat().getHealthStatus())
+                .personality(dto.getCat().getPersonality())
+                .foundedPlace(dto.getCat().getFoundedPlace())
+                .foundedAt(dto.getCat().getFoundedAt())
+                .build();
+
+        Shelter shelter = Shelter.builder()
+                .name(dto.getShelter().getName())
+                .city(dto.getShelter().getCity() != null ? City.valueOf(dto.getShelter().getCity()) : null)
+                .address(dto.getShelter().getAddress())
+                .phoneNumber(dto.getShelter().getPhoneNumber())
+                .build();
+
+        Upload thumbnail = uploadRepository.findById(dto.getThumbnailId()).orElseThrow(NotFoundException::new);
+
         adoptNoticeRepository.save(adoptNotice);
         return adoptNotice.getId();
     }
+
     /**
      * 상태수정
      */
@@ -129,9 +142,37 @@ public class AdoptNoticeService {
             throw new AccessDeniedException("수정할 권한이 없습니다.");
         }
 
+        //TODO: PATCH 처리
+        Cat cat = Cat.builder()
+                .name(dto.getCat().getName())
+                .age(dto.getCat().getAge())
+                .registered(dto.getCat().getRegistered() != null ? Registered.valueOf(dto.getCat().getRegistered()) : null)
+                .registNumber(dto.getCat().getRegistNumber())
+                .species(dto.getCat().getSpecies())
+                .sex(dto.getCat().getSex() != null ? Sex.valueOf(dto.getCat().getSex()) : null)
+                .weight(dto.getCat().getWeight())
+                .neutered(dto.getCat().getNeutered() != null ? Neutered.valueOf(dto.getCat().getNeutered()) : null)
+                .healthStatus(dto.getCat().getHealthStatus())
+                .personality(dto.getCat().getPersonality())
+                .foundedPlace(dto.getCat().getFoundedPlace())
+                .foundedAt(dto.getCat().getFoundedAt())
+                .build();
+
+        Shelter shelter = Shelter.builder()
+                .name(dto.getShelter().getName())
+                .city(dto.getShelter().getCity() != null ? City.valueOf(dto.getShelter().getCity()) : null)
+                .address(dto.getShelter().getAddress())
+                .phoneNumber(dto.getShelter().getPhoneNumber())
+                .build();
+
+        Upload thumbnail = uploadRepository.findById(dto.getThumbnailId()).orElseThrow(NotFoundException::new);
+
         adoptNotice.updateTitle(dto.getTitle());
         adoptNotice.updateContent(dto.getContent());
-        adoptNotice.updateCat(dto.getCat()); // cat 작성해야함
+        adoptNotice.updateThumbnail(thumbnail);
+        adoptNotice.updateCat(cat);
+        adoptNotice.updateShelter(shelter);
+        // catPictuers collection update 코드 필요
 
         return AdoptNoticeResponseDto.fromEntity(adoptNotice);
     }
@@ -146,32 +187,53 @@ public class AdoptNoticeService {
         if (!adoptNotice.getMember().getId().equals(memberId)) {
             throw new NotFoundException("요청하신 공고가 없습니다");
         }
-        
+
         adoptNoticeRepository.delete(adoptNotice);
-        // soft Delete로 변경
-        return noticeId;
+        return adoptNotice.getId();
     }
 
     /**
      * 댓글 작성
      */
-        return 1L;
     public Long createAdoptNoticeComment(Long memberId, AdoptNoticeCommentRequestDto dto) {
+        AdoptNotice notice = adoptNoticeRepository.findByIdAndDeletedAtNull(dto.getNoticeId()).orElseThrow(NotFoundException::new);
+        Member member = memberRepository.findByIdAndDeletedAtNull(memberId).orElseThrow(NotFoundException::new);
+        AdoptNoticeComment comment = AdoptNoticeComment.builder()
+                .adoptNotice(notice)
+                .member(member)
+                .content(dto.getContent())
+                .build();
+        adoptNoticeCommentRepository.save(comment);
+        notice.addComment();
+        return comment.getId();
     }
 
     /**
      * 특정 공고글에 달린 댓글 목록 조회
      */
     public List<AdoptNoticeCommentResponseDto> getAdoptNoticeCommentList(Long noticeId) {
-        return List.of(AdoptNoticeCommentResponseDto.fromEntity());
+        return adoptNoticeCommentRepository.findByAdoptNoticeIdAndDeletedAtNull(noticeId)
+                .stream().map(AdoptNoticeCommentResponseDto::fromEntity)
+                .toList();
     }
 
 
-        return AdoptNoticeCommentResponseDto.fromEntity();
     public AdoptNoticeCommentResponseDto updateAdoptNoticeComment(Long memberId, Long commentId, AdoptNoticeCommentRequestDto dto) {
+        AdoptNoticeComment comment = adoptNoticeCommentRepository.findByIdAndDeletedAtNull(commentId).orElseThrow(NotFoundException::new);
+        if (comment.getMember().getId() != memberId) {
+            throw new AccessDeniedException("ACCESS DENIED");
+        }
+        comment.updateContent(dto.getContent());
+        return AdoptNoticeCommentResponseDto.fromEntity(comment);
     }
 
     public Long deleteAdoptNoticeComment(Long memberId, Long noticeCommentId) {
-        return 1L;
+        AdoptNoticeComment comment = adoptNoticeCommentRepository.findByIdAndDeletedAtNull(noticeCommentId).orElseThrow(NotFoundException::new);
+        if (comment.getMember().getId() != memberId) {
+            throw new AccessDeniedException("ACCESS DENIED");
+        }
+        comment.delete();
+        comment.getAdoptNotice().removeComment();
+        return comment.getId();
     }
 }
