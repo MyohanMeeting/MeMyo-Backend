@@ -17,6 +17,10 @@ public class Upload extends BaseAuditingListener {
     @Column(name = "upload_id")
     private Long id;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "member_id")
+    private Member member;
+
     @Size(max = 512)
     @Column(nullable = false)
     private String url;
@@ -40,14 +44,20 @@ public class Upload extends BaseAuditingListener {
     private Long size;
 
     @Builder
-    Upload(String url, String path, String originName, String savedName, String type, String extension, Long size) {
+    Upload(String url, Member member, String path, String originName, String savedName, String type, String extension, Long size) {
         this.url = url;
+        this.member = member;
         this.path = path;
         this.originName = originName;
         this.savedName = savedName;
         this.type = type;
         this.extension = extension;
         this.size = size;
+    }
+
+    @Override
+    public String toString() {
+        return this.url;
     }
 
     public void updateUrl(String url) {

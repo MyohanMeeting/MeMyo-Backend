@@ -10,9 +10,8 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
-import meet.myo.dto.request.adopt.AdoptNoticeCreateRequestDto;
+import meet.myo.dto.request.adopt.AdoptNoticeRequestDto;
 import meet.myo.dto.request.adopt.AdoptNoticeStatusUpdateRequestDto;
-import meet.myo.dto.request.adopt.AdoptNoticeUpdateRequestDto;
 import meet.myo.dto.response.adopt.AdoptNoticeResponseDto;
 import meet.myo.dto.response.CommonResponseDto;
 import meet.myo.dto.response.adopt.AdoptNoticeSummaryResponseDto;
@@ -203,7 +202,7 @@ public class AdoptNoticeController {
 """)})) @ApiResponseCommon @ApiResponseSignin
     @SecurityRequirement(name = "JWT")
     @PostMapping("")
-    public CommonResponseDto<Map<String, Long>> createNoticeV1(@Validated @RequestBody final AdoptNoticeCreateRequestDto dto) {
+    public CommonResponseDto<Map<String, Long>> createNoticeV1(@Validated @RequestBody final AdoptNoticeRequestDto dto) {
         Long memberId = 1L; //TODO: security
         return CommonResponseDto.<Map<String, Long>>builder()
                 .data(Map.of("noticeId", adoptNoticeService.createAdoptNotice(memberId, dto)))
@@ -240,7 +239,7 @@ public class AdoptNoticeController {
             @Parameter(name = "noticeId", description = "수정하고자 하는 공고의 id입니다.")
             @PathVariable(name = "noticeId") Long noticeId,
 
-            @Validated @RequestBody final AdoptNoticeUpdateRequestDto dto
+            @Validated @RequestBody final AdoptNoticeRequestDto dto
     ) {
         Long memberId = 1L; //TODO: security
         return CommonResponseDto.<AdoptNoticeResponseDto>builder()

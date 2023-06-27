@@ -9,8 +9,8 @@ import meet.myo.domain.BaseAuditingListener;
 import meet.myo.domain.Member;
 import meet.myo.domain.Upload;
 import meet.myo.domain.adopt.application.AdoptApplication;
-import meet.myo.domain.cat.Cat;
-import meet.myo.dto.schema.CatRequestSchema;
+import meet.myo.domain.adopt.notice.cat.Cat;
+import meet.myo.domain.adopt.notice.cat.CatPicture;
 
 import java.util.List;
 
@@ -24,9 +24,11 @@ public class AdoptNotice extends BaseAuditingListener {
     @Column(name = "adopt_notice_id")
     private Long id;
 
-    @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "cat_id")
+    @Embedded
     private Cat cat;
+
+    @Embedded
+    private Shelter shelter;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name="member_id")
@@ -43,12 +45,17 @@ public class AdoptNotice extends BaseAuditingListener {
     private Upload thumbnail;
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "adoptNotice")
+    private List<CatPicture> catPictures;
+
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "adoptNotice")
     private List<AdoptNoticeComment> commentList;
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "adoptNotice")
     private List<AdoptApplication> applicationList;
 
     private Integer applicationCount;
+
+    private Integer commentCount;
 
     // 접수중 상태로 초기화
     @Enumerated(EnumType.STRING)
@@ -70,9 +77,20 @@ public class AdoptNotice extends BaseAuditingListener {
         this.content = content;
     }
 
+    public void updateThumbnail(Upload upload) {
+        this.thumbnail = upload;
+    }
+
     public void updateNoticeStatus(AdoptNoticeStatus status) {
         this.noticeStatus = status;
     }
+
+    /**
+     * TODO: updateCat
+     */
+    public void updateCat(Cat cat) { this.cat = cat; }
+
+    public void updateShelter(Shelter shelter) { this.shelter = shelter; }
 
     public void addApplication() {
         applicationCount ++;
@@ -82,8 +100,12 @@ public class AdoptNotice extends BaseAuditingListener {
         applicationCount --;
     }
 
-    /**
-     * TODO: updateCat
-     */
-    public void updateCat(CatRequestSchema catRequestSchema) {}
+    public void addComment() {
+        commentCount ++;
+    }
+
+    public void removeComment() {
+        commentCount --;
+    }
+
 }

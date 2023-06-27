@@ -3,15 +3,16 @@ package meet.myo.service;
 import lombok.RequiredArgsConstructor;
 import meet.myo.domain.Favorite;
 import meet.myo.domain.Member;
-import meet.myo.domain.cat.Cat;
+import meet.myo.domain.adopt.notice.AdoptNotice;
 import meet.myo.exception.NotFoundException;
 import meet.myo.dto.request.CreateFavoriteRequestDto;
 import meet.myo.dto.response.FavoriteResponseDto;
-import meet.myo.repository.CatRepository;
+import meet.myo.repository.AdoptNoticeRepository;
 import meet.myo.repository.FavoriteRepository;
 import meet.myo.repository.MemberRepository;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -25,7 +26,7 @@ public class FavoriteService {
 
     private final FavoriteRepository favoriteRepository;
     private final MemberRepository memberRepository;
-    private final CatRepository catRepository;
+    private final AdoptNoticeRepository adoptNoticeRepository;
 
     /*
      * 찜 목록 가져오기
@@ -45,13 +46,12 @@ public class FavoriteService {
      */
     public Long createFavorite(Long memberId, CreateFavoriteRequestDto dto) {
         Member member = memberRepository.findByIdAndDeletedAtNull(memberId)
-                .orElseThrow(() -> new NotFoundException("id에 해당하는 회원을 찾을 수 없습니다."));
+                .orElseThrow(() -> new NotFoundException("회원을 찾을 수 없습니다."));
 
-        Long catId = dto.getCatId();
-        Cat cat = catRepository.findByIdAndDeletedAtNull(catId)
-                .orElseThrow(() -> new NotFoundException("해당하는 고양이를 찾을 수 없습니다."));
+        AdoptNotice notice = adoptNoticeRepository.findByIdAndDeletedAtNull(dto.getNoticeId())
+                .orElseThrow(() -> new NotFoundException("공고를 찾을 수 없습니다."));
 
-        Favorite savedFavorite = favoriteRepository.save(Favorite.createFavorite(member, cat));
+        Favorite savedFavorite = favoriteRepository.save(Favorite.createFavorite(member, notice));
         return savedFavorite.getId();
     }
 
@@ -67,7 +67,7 @@ public class FavoriteService {
 
         // Favorite 엔티티가 해당 회원의 찜 데이터인지 확인
         if (!favorite.getMember().equals(member)) {
-            throw new NotFoundException("찜 데이터가 존재하지 않습니다.");
+            throw new AccessDeniedException("ACCESS DENIED");
         }
         favorite.delete();
         return favorite.getId();

@@ -2,8 +2,8 @@ package meet.myo.controller;
 
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
-import meet.myo.dto.request.DirectSignInRequestDto;
-import meet.myo.dto.request.OauthSignInRequestDto;
+import meet.myo.dto.request.auth.DirectSignInRequestDto;
+import meet.myo.dto.request.auth.OauthSignInRequestDto;
 import meet.myo.dto.response.CommonResponseDto;
 import meet.myo.jwt.TokenDto;
 import meet.myo.service.AuthService;

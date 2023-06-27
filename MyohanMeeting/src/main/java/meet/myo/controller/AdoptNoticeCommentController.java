@@ -9,8 +9,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
-import meet.myo.dto.request.adopt.AdoptNoticeCommentCreateRequestDto;
-import meet.myo.dto.request.adopt.AdoptNoticeCommentUpdateRequestDto;
+import meet.myo.dto.request.adopt.AdoptNoticeCommentRequestDto;
 import meet.myo.dto.response.adopt.AdoptNoticeCommentResponseDto;
 import meet.myo.dto.response.CommonResponseDto;
 import meet.myo.service.AdoptNoticeService;
@@ -65,7 +64,7 @@ public class AdoptNoticeCommentController {
     @SecurityRequirement(name = "JWT")
     @PostMapping("/comments")
     public CommonResponseDto<Map<String, Long>> createNoticeCommentV1(
-            @Validated @RequestBody final AdoptNoticeCommentCreateRequestDto dto
+            @Validated @RequestBody final AdoptNoticeCommentRequestDto dto
     ) {
         Long memberId = 1L; //TODO: security
         return CommonResponseDto.<Map<String, Long>>builder()
@@ -84,7 +83,7 @@ public class AdoptNoticeCommentController {
             @Parameter(name = "noticeCommentId", description = "수정하고자 하는 공고의 id입니다.")
             @PathVariable(name = "noticeCommentId") Long noticeCommentId,
 
-            @Validated @RequestBody final AdoptNoticeCommentUpdateRequestDto dto
+            @Validated @RequestBody final AdoptNoticeCommentRequestDto dto
     ) {
         Long memberId = 1L; //TODO: security
         return CommonResponseDto.<AdoptNoticeCommentResponseDto>builder()
