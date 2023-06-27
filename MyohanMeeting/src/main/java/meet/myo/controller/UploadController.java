@@ -70,6 +70,7 @@ public class UploadController {
             @Parameter(name = "files", description = "업로드하고자 하는 파일 배열입니다.")
             @RequestParam MultipartFile[] files
     ) {
+        //TODO: 유효성 검증(파일 용량, 확장자, 10건 이상 업로드 불가 등)
         Long memberId = 1L; //TODO: security
         return CommonResponseDto.<Map<String, List<Long>>>builder()
                 .data(Map.of("uploadId", uploadService.uploadFiles(memberId, Arrays.stream(files).toList())))
@@ -97,7 +98,7 @@ public class UploadController {
     ) {
         Long memberId = 1L; //TODO: security
         return CommonResponseDto.<Map<String, List<Long>>>builder()
-                .data(Map.of("uploadId", uploadService.deleteFiles(memberId, dto)))
+                .data(Map.of("uploadId", uploadService.deleteFiles(memberId, dto.getUploadIdList())))
                 .build();
     }
 }
