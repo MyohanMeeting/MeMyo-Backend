@@ -12,10 +12,10 @@ import meet.myo.repository.AdoptNoticeRepository;
 import meet.myo.repository.MemberRepository;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.naming.AuthenticationException;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -31,13 +31,13 @@ public class AdoptApplicationService {
      * 특정 공고에 달린 분양신청 목록 조회
      */
     @Transactional(readOnly = true)
-    public List<AdoptApplicationResponseDto> getAdoptApplicationListByNotice(Long memberId, Long noticeId, Pageable pageable, String ordered) throws AuthenticationException {
         AdoptNotice adoptNotice = (AdoptNotice) adoptNoticeRepository.findByAdoptNoticeId(noticeId)
+    public List<AdoptApplicationResponseDto> getAdoptApplicationListByNotice(Long memberId, Long noticeId, Pageable pageable, String ordered) {
                 .orElseThrow(() -> new NotFoundException("조회된 분양 글이 없습니다."));
 
         // 작성자만 열람 가능한지 확인
         if (!adoptNotice.getMember().getId().equals(memberId)) {
-            throw new AuthenticationException("작성자만 분양신청 목록을 열람할 수 있습니다.");
+            throw new AccessDeniedException("작성자만 분양신청 목록을 열람할 수 있습니다.");
         }
 
         Page<AdoptApplication> adoptApplications = adoptApplicationRepository.findByAdoptNoticeIdAndDeletedAtNull(adoptNotice, pageable);
@@ -124,7 +124,7 @@ public class AdoptApplicationService {
                 .orElseThrow(() -> new NotFoundException("해당하는 분양신청이 존재하지 않습니다."));
 
         if (!adoptApplication.getMember().getId().equals(memberId)) {
-            throw new NotFoundException("수정할 권한이 없습니다.");
+            throw new AccessDeniedException("수정할 권한이 없습니다.");
         }
 
         Applicant applicant = Applicant.builder()

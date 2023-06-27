@@ -12,6 +12,7 @@ import meet.myo.repository.FavoriteRepository;
 import meet.myo.repository.MemberRepository;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -45,7 +46,7 @@ public class FavoriteService {
      */
     public Long createFavorite(Long memberId, CreateFavoriteRequestDto dto) {
         Member member = memberRepository.findByIdAndDeletedAtNull(memberId)
-                .orElseThrow(() -> new NotFoundException("id에 해당하는 회원을 찾을 수 없습니다."));
+                .orElseThrow(() -> new NotFoundException("회원을 찾을 수 없습니다."));
 
         AdoptNotice notice = adoptNoticeRepository.findByIdAndDeletedAtNull(dto.getNoticeId())
                 .orElseThrow(() -> new NotFoundException("공고를 찾을 수 없습니다."));
@@ -66,7 +67,7 @@ public class FavoriteService {
 
         // Favorite 엔티티가 해당 회원의 찜 데이터인지 확인
         if (!favorite.getMember().equals(member)) {
-            throw new NotFoundException("찜 데이터가 존재하지 않습니다.");
+            throw new AccessDeniedException("ACCESS DENIED");
         }
         favorite.delete();
         return favorite.getId();

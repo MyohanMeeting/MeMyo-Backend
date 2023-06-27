@@ -20,6 +20,7 @@ import meet.myo.repository.MemberRepository;
 import meet.myo.search.AdoptNoticeSearch;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -108,7 +109,7 @@ public class AdoptNoticeService {
                 .orElseThrow(() -> new NotFoundException("요청하신 공고가 없습니다"));
 
         if (!adoptNotice.getMember().getId().equals(memberId)) {
-            throw new NotFoundException("수정할 권한이 없습니다.");
+            throw new AccessDeniedException("수정할 권한이 없습니다.");
         }
 
         AdoptNoticeStatus newStatus = AdoptNoticeStatus.valueOf(dto.getStatus());
@@ -125,7 +126,7 @@ public class AdoptNoticeService {
                 .orElseThrow(() -> new NotFoundException("요청하신 공고가 없습니다"));
 
         if (!adoptNotice.getMember().getId().equals(memberId)) {
-            throw new NotFoundException("수정할 권한이 없습니다.");
+            throw new AccessDeniedException("수정할 권한이 없습니다.");
         }
 
         adoptNotice.updateTitle(dto.getTitle());
@@ -143,7 +144,7 @@ public class AdoptNoticeService {
                 .orElseThrow(() -> new NotFoundException("Adopt notice not found"));
 
         if (!adoptNotice.getMember().getId().equals(memberId)) {
-            throw new new NotFoundException("요청하신 공고가 없습니다");
+            throw new NotFoundException("요청하신 공고가 없습니다");
         }
         
         adoptNoticeRepository.delete(adoptNotice);

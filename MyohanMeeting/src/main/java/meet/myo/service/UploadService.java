@@ -8,6 +8,7 @@ import meet.myo.exception.NotFoundException;
 import meet.myo.dto.response.UploadResponseDto;
 import meet.myo.repository.MemberRepository;
 import meet.myo.repository.UploadRepository;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -34,6 +35,9 @@ public class UploadService {
     public UploadResponseDto getFileDetail(Long memberId, Long id) {
         Upload upload = uploadRepository.findByIdAndDeletedAtNull(id)
                 .orElseThrow(() -> new NotFoundException("파일을 찾을 수 없습니다."));
+        if (!upload.getMember().getId().equals(memberId)) {
+            throw new AccessDeniedException("ACCESS DENIED");
+        }
         return UploadResponseDto.fromEntity(upload);
     }
 
