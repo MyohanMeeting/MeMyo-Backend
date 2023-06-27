@@ -1,4 +1,4 @@
-package meet.myo.dto.request;
+package meet.myo.dto.request.member;
 
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
@@ -11,19 +11,9 @@ public class MemberDirectCreateRequestDto {
     @Email(message = "INVALID_EMAIL")
     @NotBlank(message="EMAIL_IS_MANDATORY")
     private String email;
-
     @NotBlank(message = "PASSWORD_IS_MANDATORY")
     private String password;
-
     private String nickName;
-
     private String phoneNumber;
-
-    public Member toEntity(String encodedPassword) {
-        return Member.directJoinBuilder()
-                .email(this.email)
-                .nickName(this.nickName)
-                .phoneNumber(this.phoneNumber)
-                .build();
-    }
+    private String profileImage;
 }

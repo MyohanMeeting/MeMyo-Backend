@@ -1,9 +1,7 @@
-package meet.myo.dto.response;
+package meet.myo.dto.response.member;
 
 import lombok.Getter;
 import meet.myo.domain.Member;
-import meet.myo.domain.OauthType;
-import meet.myo.dto.request.OauthUpdateRequestDto;
 
 @Getter
 public class OauthUpdateResponseDto {

@@ -1,7 +1,7 @@
 package meet.myo.service;
 
 import lombok.RequiredArgsConstructor;
-import meet.myo.dto.response.MemberAuthorityResponseDto;
+import meet.myo.dto.response.member.MemberAuthorityResponseDto;
 import meet.myo.repository.MemberAuthorityRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;

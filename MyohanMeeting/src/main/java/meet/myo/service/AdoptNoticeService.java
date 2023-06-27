@@ -2,8 +2,12 @@ package meet.myo.service;
 
 import lombok.RequiredArgsConstructor;
 import meet.myo.domain.Member;
-import meet.myo.domain.adopt.notice.AdoptNotice;
-import meet.myo.domain.adopt.notice.AdoptNoticeStatus;
+import meet.myo.domain.Upload;
+import meet.myo.domain.adopt.notice.*;
+import meet.myo.domain.adopt.notice.cat.Cat;
+import meet.myo.domain.adopt.notice.cat.Neutered;
+import meet.myo.domain.adopt.notice.cat.Registered;
+import meet.myo.domain.adopt.notice.cat.Sex;
 import meet.myo.dto.request.adopt.*;
 import meet.myo.dto.response.adopt.AdoptNoticeCommentResponseDto;
 import meet.myo.dto.response.adopt.AdoptNoticeResponseDto;
@@ -83,7 +87,7 @@ public class AdoptNoticeService {
     /**
      * 작성
      */
-    public Long createAdoptNotice(Long memberId, AdoptNoticeCreateRequestDto dto) {
+    public Long createAdoptNotice(Long memberId, AdoptNoticeRequestDto dto) {
         Member member = memberRepository.findById(memberId)
                 .orElseThrow(() -> new NotFoundException("회원이 존재하지 않습니다."));
 
@@ -116,7 +120,7 @@ public class AdoptNoticeService {
     /**
      * 수정
      */
-    public AdoptNoticeResponseDto updateAdoptNotice(Long memberId, Long noticeId, AdoptNoticeUpdateRequestDto dto) {
+    public AdoptNoticeResponseDto updateAdoptNotice(Long memberId, Long noticeId, AdoptNoticeRequestDto dto) {
         AdoptNotice adoptNotice = adoptNoticeRepository.findById(noticeId)
                 .orElseThrow(() -> new NotFoundException("요청하신 공고가 없습니다"));
 
@@ -150,8 +154,8 @@ public class AdoptNoticeService {
     /**
      * 댓글 작성
      */
-    public Long createAdoptNoticeComment(Long memberId, AdoptNoticeCommentCreateRequestDto dto) {
         return 1L;
+    public Long createAdoptNoticeComment(Long memberId, AdoptNoticeCommentRequestDto dto) {
     }
 
     /**
@@ -162,8 +166,8 @@ public class AdoptNoticeService {
     }
 
 
-    public AdoptNoticeCommentResponseDto updateAdoptNoticeComment(Long memberId, Long noticeId, AdoptNoticeCommentUpdateRequestDto dto) {
         return AdoptNoticeCommentResponseDto.fromEntity();
+    public AdoptNoticeCommentResponseDto updateAdoptNoticeComment(Long memberId, Long commentId, AdoptNoticeCommentRequestDto dto) {
     }
 
     public Long deleteAdoptNoticeComment(Long memberId, Long noticeCommentId) {

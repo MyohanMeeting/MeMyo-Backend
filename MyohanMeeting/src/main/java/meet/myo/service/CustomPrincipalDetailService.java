@@ -7,7 +7,7 @@ import meet.myo.domain.Member;
 import meet.myo.domain.OauthType;
 import meet.myo.domain.authority.CustomOAuth2User;
 import meet.myo.domain.authority.CustomUser;
-import meet.myo.domain.exception.NotFoundException;
+import meet.myo.exception.NotFoundException;
 import meet.myo.repository.MemberRepository;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;

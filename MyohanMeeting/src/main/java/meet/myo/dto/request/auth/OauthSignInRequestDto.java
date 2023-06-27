@@ -1,4 +1,4 @@
-package meet.myo.dto.request;
+package meet.myo.dto.request.auth;
 
 import lombok.Getter;
 

@@ -4,8 +4,7 @@ import lombok.RequiredArgsConstructor;
 import meet.myo.domain.Member;
 import meet.myo.domain.adopt.application.*;
 import meet.myo.domain.adopt.notice.AdoptNotice;
-import meet.myo.dto.request.adopt.AdoptApplicationCreateRequestDto;
-import meet.myo.dto.request.adopt.AdoptApplicationUpdateRequestDto;
+import meet.myo.dto.request.adopt.AdoptApplicationRequestDto;
 import meet.myo.dto.response.adopt.AdoptApplicationResponseDto;
 import meet.myo.exception.NotFoundException;
 import meet.myo.repository.AdoptApplicationRepository;
@@ -77,7 +76,7 @@ public class AdoptApplicationService {
     /**
      * 작성
      */
-    public Long createAdoptApplication(Long memberId, AdoptApplicationCreateRequestDto dto) {
+    public Long createAdoptApplication(Long memberId, AdoptApplicationRequestDto dto) {
         Member member = memberRepository.findById(memberId)
                 .orElseThrow(() -> new NotFoundException("Member not found"));
 
@@ -120,7 +119,7 @@ public class AdoptApplicationService {
     /**
      * 수정
      */
-    public AdoptApplicationResponseDto updateAdoptApplication(Long memberId, Long applicationId, AdoptApplicationUpdateRequestDto dto) {
+    public AdoptApplicationResponseDto updateAdoptApplication(Long memberId, Long applicationId, AdoptApplicationRequestDto dto) {
         AdoptApplication adoptApplication = adoptApplicationRepository.findById(applicationId)
                 .orElseThrow(() -> new NotFoundException("해당하는 분양신청이 존재하지 않습니다."));
 

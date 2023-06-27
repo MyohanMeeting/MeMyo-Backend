@@ -1,8 +1,6 @@
-package meet.myo.dto.response;
+package meet.myo.dto.response.member;
 
 import lombok.Getter;
-import lombok.RequiredArgsConstructor;
-import lombok.Setter;
 import meet.myo.domain.Member;
 
 @Getter

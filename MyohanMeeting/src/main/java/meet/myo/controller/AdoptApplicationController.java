@@ -10,8 +10,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
-import meet.myo.dto.request.adopt.AdoptApplicationCreateRequestDto;
-import meet.myo.dto.request.adopt.AdoptApplicationUpdateRequestDto;
+import meet.myo.dto.request.adopt.AdoptApplicationRequestDto;
 import meet.myo.dto.response.adopt.AdoptApplicationResponseDto;
 import meet.myo.dto.response.CommonResponseDto;
 import meet.myo.service.AdoptApplicationService;
@@ -140,7 +139,7 @@ public class AdoptApplicationController {
 """)})) @ApiResponseCommon @ApiResponseResource @ApiResponseSignin
     @PostMapping("")
     public CommonResponseDto<Map<String, Long>> createApplicationV1(
-            @Validated @RequestBody final AdoptApplicationCreateRequestDto dto
+            @Validated @RequestBody final AdoptApplicationRequestDto dto
     ) {
         Long memberId = 1L; // TODO: security
         return CommonResponseDto.<Map<String, Long>>builder()
@@ -158,7 +157,7 @@ public class AdoptApplicationController {
             @Parameter(name = "applicationId", description = "수정하고자 하는 분양신청의 id입니다.")
             @PathVariable(name = "applicationId") Long applicationId,
 
-            @Validated @RequestBody final AdoptApplicationUpdateRequestDto dto
+            @Validated @RequestBody final AdoptApplicationRequestDto dto
     ) {
         Long memberId = 1L; //TODO: security
         return CommonResponseDto.<AdoptApplicationResponseDto>builder()
