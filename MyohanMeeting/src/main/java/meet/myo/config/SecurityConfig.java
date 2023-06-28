@@ -53,11 +53,13 @@ public class SecurityConfig {
                 .requestMatchers(HttpMethod.GET, "/h2/console").permitAll()
                 .requestMatchers(HttpMethod.GET, "/h2/console/**").permitAll()
 
-                // 회원가입, 로그인 요청은 권한 없이도 permit하도록 설정
+                // 회원가입, 로그인, 중복확인 요청은 권한 없이도 permit하도록 설정
                 .requestMatchers(HttpMethod.POST, "/v1/member/direct").permitAll()
                 .requestMatchers(HttpMethod.POST, "v1/member/oauth").permitAll()
                 .requestMatchers(HttpMethod.GET, "/v1/auth/signin/direct").permitAll()
                 .requestMatchers(HttpMethod.GET, "/v1/auth/signin/oauth").permitAll()
+                .requestMatchers(HttpMethod.GET, "/v1/member/email").permitAll()
+                .requestMatchers(HttpMethod.GET, "/v1/member/nickName").permitAll()
                 .anyRequest().authenticated()
 
                 // JwtSecurityConfig 적용
