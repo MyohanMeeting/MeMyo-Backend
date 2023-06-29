@@ -17,10 +17,10 @@ public class MemberResponseDto {
     public static MemberResponseDto fromEntity(Member member) {
         MemberResponseDto dto = new MemberResponseDto();
         dto.email = member.getEmail();
-        dto.phoneNumber = member.getPhoneNumber();
-        dto.profileImage = member.getProfileImage().getUrl();
-        dto.oauthType = member.getOauth().getOauthType().toString();
         dto.nickname = member.getNickname();
+        dto.phoneNumber = member.getPhoneNumber() != null ? member.getPhoneNumber() : null;
+        dto.profileImage = member.getProfileImage() != null ? member.getProfileImage().toString() : null;
+        dto.oauthType = member.getOauth() != null ? member.getOauth().getOauthType().toString() : null;
         return dto;
     }
 }
