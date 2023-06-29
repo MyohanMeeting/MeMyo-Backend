@@ -59,7 +59,7 @@ public class SecurityConfig {
                 .requestMatchers(HttpMethod.GET, "/v1/auth/signin/direct").permitAll()
                 .requestMatchers(HttpMethod.GET, "/v1/auth/signin/oauth").permitAll()
                 .requestMatchers(HttpMethod.GET, "/v1/member/email").permitAll()
-                .requestMatchers(HttpMethod.GET, "/v1/member/nickName").permitAll()
+                .requestMatchers(HttpMethod.GET, "/v1/member/nickname").permitAll()
                 .anyRequest().authenticated()
 
                 // JwtSecurityConfig 적용

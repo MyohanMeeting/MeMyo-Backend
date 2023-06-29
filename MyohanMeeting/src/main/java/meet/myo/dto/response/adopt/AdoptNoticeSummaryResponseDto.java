@@ -29,7 +29,7 @@ public class AdoptNoticeSummaryResponseDto {
         dto.noticeTitle = entity.getTitle();
         dto.noticeStatus = entity.getNoticeStatus().toString();
         dto.thumbnail = entity.getThumbnail().toString();
-        dto.authorName = entity.getMember().getNickName();
+        dto.authorName = entity.getMember().getNickname();
         dto.catName = entity.getCat().getName();
         dto.catSpecies = entity.getCat().getSpecies();
         dto.shelterCity = entity.getShelter().getCity().toString();

@@ -50,13 +50,13 @@ public class MemberService {
      */
     public Long directJoin(MemberDirectCreateRequestDto dto) {
         validateEmailDuplication(dto.getEmail());
-        validateNickNameDuplication(dto.getNickName());
+        validateNicknameDuplication(dto.getNickname());
 
         String encoded = passwordEncoder.encode(dto.getPassword());
         Member member = Member.directJoinBuilder()
                 .email(dto.getEmail())
                 .password(encoded)
-                .nickName(dto.getNickName())
+                .nickname(dto.getNickname())
                 .phoneNumber(dto.getPhoneNumber())
                 .build();
         MemberAuthority memberAuthority = MemberAuthority.createMemberAuthority(
@@ -77,13 +77,13 @@ public class MemberService {
                 .oauthType(dto.getOauthType() != null ? OauthType.valueOf(dto.getOauthType()) : null)
                 .oauthId(dto.getOauthId())
                 .email(dto.getEmail());
-        if (dto.getNickName() != null) {
-            validateNickNameDuplication(dto.getNickName());
-            memberBuilder.nickName(dto.getNickName());
+        if (dto.getNickname() != null) {
+            validateNicknameDuplication(dto.getNickname());
+            memberBuilder.nickname(dto.getNickname());
         } else {
             String randomNickname = createRandomNickname();
-            validateNickNameDuplication(randomNickname);
-            memberBuilder.nickName(randomNickname);
+            validateNicknameDuplication(randomNickname);
+            memberBuilder.nickname(randomNickname);
         }
         Member member = memberBuilder.build();
         MemberAuthority memberAuthority = MemberAuthority.createMemberAuthority(
@@ -104,8 +104,8 @@ public class MemberService {
     /**
      * 닉네임 중복체크
      */
-    public void nickNameDuplicationCheck(NickNameDuplicationCheckRequestDto dto) {
-        validateNickNameDuplication(dto.getNickName());
+    public void nicknameDuplicationCheck(NicknameDuplicationCheckRequestDto dto) {
+        validateNicknameDuplication(dto.getNickname());
     }
 
     /**
@@ -198,7 +198,7 @@ public class MemberService {
         Member member = memberRepository.findByIdAndDeletedAtNull(memberId)
                 .orElseThrow(() -> new NotFoundException("id에 해당하는 회원을 찾을 수 없습니다."));
 
-        member.updateNickName(dto.getNickName());
+        member.updateNickname(dto.getNickname());
         member.updatePhoneNumber(dto.getPhoneNumber());
 
         return MemberUpdateResponseDto.fromEntity(member);
@@ -230,8 +230,8 @@ public class MemberService {
                 });
     }
 
-    private void validateNickNameDuplication(String nickName) throws DuplicateKeyException {
-        memberRepository.findByNickNameAndDeletedAtNull(nickName)
+    private void validateNicknameDuplication(String nickname) throws DuplicateKeyException {
+        memberRepository.findByNicknameAndDeletedAtNull(nickname)
                 .ifPresent(m -> {
                     throw new DuplicateKeyException("이미 같은 닉네임이 존재합니다.");
                 });

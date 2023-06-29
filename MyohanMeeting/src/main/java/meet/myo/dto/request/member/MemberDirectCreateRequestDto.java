@@ -13,7 +13,7 @@ public class MemberDirectCreateRequestDto {
     private String email;
     @NotBlank(message = "PASSWORD_IS_MANDATORY")
     private String password;
-    private String nickName;
+    private String nickname;
     private String phoneNumber;
     private String profileImage;
 }
