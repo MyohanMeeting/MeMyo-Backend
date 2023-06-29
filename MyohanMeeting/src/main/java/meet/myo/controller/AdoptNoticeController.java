@@ -10,16 +10,19 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
+import meet.myo.config.SecurityUtil;
 import meet.myo.dto.request.adopt.AdoptNoticeRequestDto;
 import meet.myo.dto.request.adopt.AdoptNoticeStatusUpdateRequestDto;
 import meet.myo.dto.response.adopt.AdoptNoticeResponseDto;
 import meet.myo.dto.response.CommonResponseDto;
 import meet.myo.dto.response.adopt.AdoptNoticeSummaryResponseDto;
+import meet.myo.exception.NotAuthenticatedException;
 import meet.myo.search.AdoptNoticeSearch;
 import meet.myo.service.AdoptNoticeService;
 import meet.myo.springdoc.annotations.*;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -30,6 +33,7 @@ import java.util.Map;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/v1/adoption/notices")
+@PreAuthorize("hasAnyRole('ROLE_USER')")
 public class AdoptNoticeController {
 
     private final AdoptNoticeService adoptNoticeService;
@@ -162,7 +166,7 @@ public class AdoptNoticeController {
                     in = ParameterIn.QUERY, example = "-createdAt,applicationCount")
             @RequestParam(value = "sort", required = false) String sort
     ) {
-        Long memberId = 1L; // TODO: security
+        Long memberId = SecurityUtil.getCurrentUserPK().orElseThrow(() -> new NotAuthenticatedException("INVALID_ID"));
         Pageable pageable = PageRequest.of(page, size);
         return CommonResponseDto.<List<AdoptNoticeSummaryResponseDto>>builder()
                 .data(adoptNoticeService.getMyAdoptNoticeList(memberId, pageable, sort))
@@ -179,7 +183,6 @@ public class AdoptNoticeController {
             @Parameter(name = "noticeId", description = "조회하고자 하는 공고의 id입니다.")
             @PathVariable(name = "noticeId") Long noticeId
     ) {
-        if (noticeId == 1L) throw new IllegalArgumentException("test");
         return CommonResponseDto.<AdoptNoticeResponseDto>builder()
                 .data(adoptNoticeService.getAdoptNotice(noticeId))
                 .build();
@@ -203,7 +206,7 @@ public class AdoptNoticeController {
     @SecurityRequirement(name = "JWT")
     @PostMapping("")
     public CommonResponseDto<Map<String, Long>> createNoticeV1(@Validated @RequestBody final AdoptNoticeRequestDto dto) {
-        Long memberId = 1L; //TODO: security
+        Long memberId = SecurityUtil.getCurrentUserPK().orElseThrow(() -> new NotAuthenticatedException("INVALID_ID"));
         return CommonResponseDto.<Map<String, Long>>builder()
                 .data(Map.of("noticeId", adoptNoticeService.createAdoptNotice(memberId, dto)))
                 .build();
@@ -222,7 +225,7 @@ public class AdoptNoticeController {
 
             @Validated @RequestBody final AdoptNoticeStatusUpdateRequestDto dto
     ) {
-        Long memberId = 1L; //TODO: security
+        Long memberId = SecurityUtil.getCurrentUserPK().orElseThrow(() -> new NotAuthenticatedException("INVALID_ID"));
         return CommonResponseDto.<AdoptNoticeResponseDto>builder()
                 .data(adoptNoticeService.updateAdoptNoticeStatus(memberId, noticeId, dto))
                 .build();
@@ -241,7 +244,7 @@ public class AdoptNoticeController {
 
             @Validated @RequestBody final AdoptNoticeRequestDto dto
     ) {
-        Long memberId = 1L; //TODO: security
+        Long memberId = SecurityUtil.getCurrentUserPK().orElseThrow(() -> new NotAuthenticatedException("INVALID_ID"));
         return CommonResponseDto.<AdoptNoticeResponseDto>builder()
                 .data(adoptNoticeService.updateAdoptNotice(memberId, noticeId, dto))
                 .build();
@@ -268,7 +271,7 @@ public class AdoptNoticeController {
             @Parameter(name = "noticeId", description = "삭제하고자 하는 공고의 id입니다.")
             @PathVariable(name = "noticeId") Long noticeId
     ) {
-        Long memberId = 1L; //TODO: security
+        Long memberId = SecurityUtil.getCurrentUserPK().orElseThrow(() -> new NotAuthenticatedException("INVALID_ID"));
         return CommonResponseDto.<Map<String, Long>>builder()
                 .data(Map.of("noticeId", adoptNoticeService.deleteAdoptNotice(memberId, noticeId)))
                 .build();

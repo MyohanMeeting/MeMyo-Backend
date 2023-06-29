@@ -10,9 +10,11 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
+import meet.myo.config.SecurityUtil;
 import meet.myo.dto.request.adopt.AdoptApplicationRequestDto;
 import meet.myo.dto.response.adopt.AdoptApplicationResponseDto;
 import meet.myo.dto.response.CommonResponseDto;
+import meet.myo.exception.NotAuthenticatedException;
 import meet.myo.service.AdoptApplicationService;
 import meet.myo.springdoc.annotations.ApiResponseAuthority;
 import meet.myo.springdoc.annotations.ApiResponseCommon;
@@ -20,6 +22,8 @@ import meet.myo.springdoc.annotations.ApiResponseResource;
 import meet.myo.springdoc.annotations.ApiResponseSignin;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.AuthenticationException;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -31,6 +35,7 @@ import java.util.Map;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/v1/adoption/applications")
+@PreAuthorize("hasAnyRole('ROLE_USER')")
 public class AdoptApplicationController {
 
     private final AdoptApplicationService adoptApplicationService;
@@ -78,7 +83,7 @@ public class AdoptApplicationController {
                     in = ParameterIn.QUERY, example = "-createdAt,applicationCount")
             @RequestParam(value = "sort", required = false) String sort
     ) {
-        Long memberId = 1L; // TODO: security
+        Long memberId = SecurityUtil.getCurrentUserPK().orElseThrow(() -> new NotAuthenticatedException("INVALID_ID"));
         Pageable pageable = PageRequest.of(page, size);
         return CommonResponseDto.<List<AdoptApplicationResponseDto>>builder()
                 .data(adoptApplicationService.getMyAdoptApplicationList(memberId, pageable, sort))
@@ -115,7 +120,7 @@ public class AdoptApplicationController {
                     in = ParameterIn.QUERY, example = "-createdAt,applicationCount")
             @RequestParam(value = "sort", required = false) String sort
     ) {
-        Long memberId = 1L; // TODO: security
+        Long memberId = SecurityUtil.getCurrentUserPK().orElseThrow(() -> new NotAuthenticatedException("INVALID_ID"));
         Pageable pageable = PageRequest.of(page, size);
         return CommonResponseDto.<List<AdoptApplicationResponseDto>>builder()
                 .data(adoptApplicationService.getAdoptApplicationListByNotice(memberId, noticeId, pageable, sort))
@@ -141,7 +146,7 @@ public class AdoptApplicationController {
     public CommonResponseDto<Map<String, Long>> createApplicationV1(
             @Validated @RequestBody final AdoptApplicationRequestDto dto
     ) {
-        Long memberId = 1L; // TODO: security
+        Long memberId = SecurityUtil.getCurrentUserPK().orElseThrow(() -> new NotAuthenticatedException("INVALID_ID"));
         return CommonResponseDto.<Map<String, Long>>builder()
                 .data(Map.of("applicationId", adoptApplicationService.createAdoptApplication(memberId, dto)))
                 .build();
@@ -159,7 +164,7 @@ public class AdoptApplicationController {
 
             @Validated @RequestBody final AdoptApplicationRequestDto dto
     ) {
-        Long memberId = 1L; //TODO: security
+        Long memberId = SecurityUtil.getCurrentUserPK().orElseThrow(() -> new NotAuthenticatedException("INVALID_ID"));
         return CommonResponseDto.<AdoptApplicationResponseDto>builder()
                 .data(adoptApplicationService.updateAdoptApplication(memberId, applicationId, dto))
                 .build();
@@ -185,7 +190,7 @@ public class AdoptApplicationController {
             @Parameter(name = "applicationId", description = "삭제하고자 하는 분양신청의 id입니다.")
             @PathVariable(name = "applicationId") Long applicationId
     ) {
-        Long memberId = 1L; //TODO: security
+        Long memberId = SecurityUtil.getCurrentUserPK().orElseThrow(() -> new NotAuthenticatedException("INVALID_ID"));
         return CommonResponseDto.<Map<String, Long>>builder()
                 .data(Map.of("applicationId", adoptApplicationService.deleteAdoptApplication(memberId, applicationId)))
                 .build();

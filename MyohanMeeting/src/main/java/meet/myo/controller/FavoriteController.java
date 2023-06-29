@@ -10,9 +10,11 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
+import meet.myo.config.SecurityUtil;
 import meet.myo.dto.request.CreateFavoriteRequestDto;
 import meet.myo.dto.response.CommonResponseDto;
 import meet.myo.dto.response.FavoriteResponseDto;
+import meet.myo.exception.NotAuthenticatedException;
 import meet.myo.service.FavoriteService;
 import meet.myo.springdoc.annotations.ApiResponseAuthority;
 import meet.myo.springdoc.annotations.ApiResponseCommon;
@@ -20,6 +22,7 @@ import meet.myo.springdoc.annotations.ApiResponseResource;
 import meet.myo.springdoc.annotations.ApiResponseSignin;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -31,6 +34,7 @@ import java.util.Map;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/v1/favorite")
+@PreAuthorize("hasAnyRole('ROLE_USER')")
 public class FavoriteController {
 
     private final FavoriteService favoriteService;
@@ -52,7 +56,7 @@ public class FavoriteController {
             @Parameter(name = "limit", description = "리미트를 설정합니다.", in = ParameterIn.QUERY)
             @RequestParam(value = "limit", required = false, defaultValue = "100") int size
     ) {
-        Long memberId = 1L; //TODO: security
+        Long memberId = SecurityUtil.getCurrentUserPK().orElseThrow(() -> new NotAuthenticatedException("INVALID_ID"));
         Pageable pageable = PageRequest.of(page, size);
         return CommonResponseDto.<List<FavoriteResponseDto>>builder()
                 .data(favoriteService.getFavoriteList(memberId, pageable))
@@ -79,7 +83,7 @@ public class FavoriteController {
     public CommonResponseDto<Map<String, Long>> createFavoriteV1(
             @Validated @RequestBody final CreateFavoriteRequestDto dto
     ) {
-        Long memberId = 1L; //TODO: security
+        Long memberId = SecurityUtil.getCurrentUserPK().orElseThrow(() -> new NotAuthenticatedException("INVALID_ID"));
         return CommonResponseDto.<Map<String, Long>>builder()
                 .data(Map.of("favoriteId", favoriteService.createFavorite(memberId, dto)))
                 .build();
@@ -106,7 +110,7 @@ public class FavoriteController {
             @Parameter(name = "favoriteId", description = "삭제하고자 하는 최애친구의 id입니다.")
             @PathVariable(name = "favoriteId") Long favoriteId
     ) {
-        Long memberId = 1L; //TODO: security
+        Long memberId = SecurityUtil.getCurrentUserPK().orElseThrow(() -> new NotAuthenticatedException("INVALID_ID"));
         return CommonResponseDto.<Map<String, Long>>builder()
                 .data(Map.of("favoriteId", favoriteService.deleteFavorite(memberId, favoriteId)))
                 .build();
