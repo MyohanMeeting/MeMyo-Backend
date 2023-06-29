@@ -61,7 +61,7 @@ public class AuthController {
     @Operation(summary = "토큰 리프레시", description = "토큰 리프레시를 요청합니다.", operationId = "refreshToken")
     @ApiResponse(responseCode = "200") @ApiResponseCommon @ApiResponseSignin @ApiResponseAuthority
     @SecurityRequirement(name = "")
-    @GetMapping("/refresh")
+    @PostMapping("/refresh")
     public CommonResponseDto<TokenDto> refreshTokenV1(
             @Validated @RequestBody final TokenRefreshRequestDto dto
     ) {
