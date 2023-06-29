@@ -97,15 +97,15 @@ public class MemberService {
     /**
      * 이메일 중복체크
      */
-    public void emailDuplicationCheck(EmailDuplicationCheckRequestDto dto) {
-        validateEmailDuplication(dto.getEmail());
+    public void emailDuplicationCheck(String email) {
+        validateEmailDuplication(email);
     }
 
     /**
      * 닉네임 중복체크
      */
-    public void nicknameDuplicationCheck(NicknameDuplicationCheckRequestDto dto) {
-        validateNicknameDuplication(dto.getNickname());
+    public void nicknameDuplicationCheck(String nickname) {
+        validateNicknameDuplication(nickname);
     }
 
     /**

@@ -1,6 +1,8 @@
 package meet.myo.controller;
 
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.enums.ParameterIn;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -66,9 +68,10 @@ public class MemberController {
     @SecurityRequirement(name = "")
     @GetMapping("/email")
     public CommonResponseDto emailDuplicationCheckV1(
-            @Validated @RequestBody final EmailDuplicationCheckRequestDto dto
+            @Parameter(name = "email", description = "중복을 확인할 이메일입니다.", in = ParameterIn.QUERY)
+            @RequestParam(value = "email") String email
     ) {
-        memberService.emailDuplicationCheck(dto);
+        memberService.emailDuplicationCheck(email);
         return CommonResponseDto.builder().build();
     }
 
@@ -81,9 +84,10 @@ public class MemberController {
     @SecurityRequirement(name = "")
     @GetMapping("/nickname")
     public CommonResponseDto nicknameDuplicationCheckV1(
-            @Validated @RequestBody final NicknameDuplicationCheckRequestDto dto
+            @Parameter(name = "nickname", description = "중복을 확인할 닉네임입니다.", in = ParameterIn.QUERY)
+            @RequestParam(value = "nickname") String nickname
     ) {
-        memberService.nicknameDuplicationCheck(dto);
+        memberService.nicknameDuplicationCheck(nickname);
         return CommonResponseDto.builder().build();
     }
 
