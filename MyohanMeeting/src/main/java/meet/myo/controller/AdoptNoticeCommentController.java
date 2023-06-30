@@ -9,14 +9,17 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
+import meet.myo.config.SecurityUtil;
 import meet.myo.dto.request.adopt.AdoptNoticeCommentRequestDto;
 import meet.myo.dto.response.adopt.AdoptNoticeCommentResponseDto;
 import meet.myo.dto.response.CommonResponseDto;
+import meet.myo.exception.NotAuthenticatedException;
 import meet.myo.service.AdoptNoticeService;
 import meet.myo.springdoc.annotations.ApiResponseAuthority;
 import meet.myo.springdoc.annotations.ApiResponseCommon;
 import meet.myo.springdoc.annotations.ApiResponseResource;
 import meet.myo.springdoc.annotations.ApiResponseSignin;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -27,6 +30,7 @@ import java.util.Map;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/v1/adoption/notices")
+@PreAuthorize("hasAnyRole('ROLE_USER')")
 public class AdoptNoticeCommentController {
 
     private final AdoptNoticeService adoptNoticeService;
@@ -66,7 +70,7 @@ public class AdoptNoticeCommentController {
     public CommonResponseDto<Map<String, Long>> createNoticeCommentV1(
             @Validated @RequestBody final AdoptNoticeCommentRequestDto dto
     ) {
-        Long memberId = 1L; //TODO: security
+        Long memberId = SecurityUtil.getCurrentUserPK().orElseThrow(() -> new NotAuthenticatedException("INVALID_ID"));
         return CommonResponseDto.<Map<String, Long>>builder()
                 .data(Map.of("noticeId", adoptNoticeService.createAdoptNoticeComment(memberId, dto)))
                 .build();
@@ -85,7 +89,7 @@ public class AdoptNoticeCommentController {
 
             @Validated @RequestBody final AdoptNoticeCommentRequestDto dto
     ) {
-        Long memberId = 1L; //TODO: security
+        Long memberId = SecurityUtil.getCurrentUserPK().orElseThrow(() -> new NotAuthenticatedException("INVALID_ID"));
         return CommonResponseDto.<AdoptNoticeCommentResponseDto>builder()
                 .data(adoptNoticeService.updateAdoptNoticeComment(memberId, noticeCommentId, dto))
                 .build();
@@ -112,7 +116,7 @@ public class AdoptNoticeCommentController {
             @Parameter(name = "noticeCommentId", description = "삭제하고자 하는 댓글의 id입니다.")
             @PathVariable(name = "noticeCommentId") Long noticeCommentId
     ) {
-        Long memberId = 1L; //TODO: security
+        Long memberId = SecurityUtil.getCurrentUserPK().orElseThrow(() -> new NotAuthenticatedException("INVALID_ID"));
         return CommonResponseDto.<Map<String, Long>>builder()
                 .data(Map.of("noticeCommentId", adoptNoticeService.deleteAdoptNoticeComment(memberId, noticeCommentId)))
                 .build();

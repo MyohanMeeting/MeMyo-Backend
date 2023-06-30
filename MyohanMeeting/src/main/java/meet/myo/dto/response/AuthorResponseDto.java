@@ -8,13 +8,13 @@ import meet.myo.domain.Member;
 @Getter
 public class AuthorResponseDto {
     private Long authorId;
-    private String nickName;
+    private String nickname;
     private String profileImageUrl;
 
     public static AuthorResponseDto fromEntity(Member entity) {
         AuthorResponseDto author = new AuthorResponseDto();
         author.authorId = entity.getId();
-        author.nickName = entity.getNickName();
+        author.nickname = entity.getNickname();
         author.profileImageUrl = entity.getProfileImage().getUrl(); //TODO: QueryDsl로 최적화
         return author;
     }

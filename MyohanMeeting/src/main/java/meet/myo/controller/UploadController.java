@@ -9,14 +9,17 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
+import meet.myo.config.SecurityUtil;
 import meet.myo.dto.request.DeleteFilesRequestDto;
 import meet.myo.dto.response.CommonResponseDto;
 import meet.myo.dto.response.UploadResponseDto;
+import meet.myo.exception.NotAuthenticatedException;
 import meet.myo.service.UploadService;
 import meet.myo.springdoc.annotations.ApiResponseAuthority;
 import meet.myo.springdoc.annotations.ApiResponseCommon;
 import meet.myo.springdoc.annotations.ApiResponseResource;
 import meet.myo.springdoc.annotations.ApiResponseSignin;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -30,6 +33,7 @@ import java.util.Map;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/v1/files")
+@PreAuthorize("hasAnyRole('ROLE_USER')")
 public class UploadController {
 
     private final UploadService uploadService;
@@ -44,7 +48,7 @@ public class UploadController {
             @Parameter(name = "uploadId", description = "조회하고자 하는 파일의 id입니다.")
             @PathVariable(name = "uploadId") Long uploadId
     ) {
-        Long memberId = 1L; //TODO: security
+        Long memberId = SecurityUtil.getCurrentUserPK().orElseThrow(() -> new NotAuthenticatedException("INVALID_ID"));
         return CommonResponseDto.<UploadResponseDto>builder()
                 .data(uploadService.getFileDetail(memberId, uploadId))
                 .build();
@@ -71,7 +75,7 @@ public class UploadController {
             @RequestParam MultipartFile[] files
     ) {
         //TODO: 유효성 검증(파일 용량, 확장자, 10건 이상 업로드 불가 등)
-        Long memberId = 1L; //TODO: security
+        Long memberId = SecurityUtil.getCurrentUserPK().orElseThrow(() -> new NotAuthenticatedException("INVALID_ID"));
         return CommonResponseDto.<Map<String, List<Long>>>builder()
                 .data(Map.of("uploadId", uploadService.uploadFiles(memberId, Arrays.stream(files).toList())))
                 .build();
@@ -96,7 +100,7 @@ public class UploadController {
     public CommonResponseDto<Map<String, List<Long>>> deleteFilesV1(
             @Validated @RequestBody final DeleteFilesRequestDto dto
     ) {
-        Long memberId = 1L; //TODO: security
+        Long memberId = SecurityUtil.getCurrentUserPK().orElseThrow(() -> new NotAuthenticatedException("INVALID_ID"));
         return CommonResponseDto.<Map<String, List<Long>>>builder()
                 .data(Map.of("uploadId", uploadService.deleteFiles(memberId, dto.getUploadIdList())))
                 .build();

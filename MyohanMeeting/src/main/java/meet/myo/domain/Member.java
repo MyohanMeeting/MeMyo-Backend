@@ -24,7 +24,7 @@ public class Member extends BaseAuditingListener {
 
     private String password;
 
-    private String nickName;
+    private String nickname;
 
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "profile_image_id")
@@ -45,19 +45,19 @@ public class Member extends BaseAuditingListener {
     private Oauth oauth;
 
     @Builder(builderClassName = "DirectJoinMemberBuilder", builderMethodName = "directJoinBuilder")
-    Member(String email, String password, String nickName, String phoneNumber) {
+    Member(String email, String password, String nickname, String phoneNumber) {
         this.email = email;
         this.password = password;
-        this.nickName = nickName;
+        this.nickname = nickname;
         this.phoneNumber = phoneNumber;
         this.certified = Certified.NOT_CERTIFIED; // 미인증을 기본값으로 세팅
     }
 
     @Builder(builderClassName = "OauthJoinMemberBuilder", builderMethodName = "oauthJoinBuilder")
-    Member(OauthType oauthType, String oauthId, String email, String nickName) {
+    Member(OauthType oauthType, String oauthId, String email, String nickname) {
         this.email = email;
         this.oauth = Oauth.createOauth(oauthType, oauthId);
-        this.nickName = nickName;
+        this.nickname = nickname;
         this.certified = Certified.NOT_CERTIFIED; // 미인증을 기본값으로 세팅
     }
 
@@ -69,8 +69,8 @@ public class Member extends BaseAuditingListener {
         this.password = password;
     }
 
-    public void updateNickName(String nickName) {
-        this.nickName = nickName;
+    public void updateNickname(String nickname) {
+        this.nickname = nickname;
     }
 
     public void updateProfileImage(Upload upload) {
