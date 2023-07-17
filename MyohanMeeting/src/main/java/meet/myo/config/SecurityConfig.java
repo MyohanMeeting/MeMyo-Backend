@@ -1,6 +1,8 @@
 package meet.myo.config;
 
 import lombok.RequiredArgsConstructor;
+import meet.myo.jwt.JwtAccessDeniedHandler;
+import meet.myo.jwt.JwtAuthenticationEntryPoint;
 import meet.myo.jwt.JwtSecurityConfig;
 import meet.myo.jwt.TokenProvider;
 import org.springframework.context.annotation.Bean;
@@ -12,6 +14,7 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.security.web.SecurityFilterChain;
 
 
@@ -22,6 +25,9 @@ import org.springframework.security.web.SecurityFilterChain;
 public class SecurityConfig {
 
     private final TokenProvider tokenProvider;
+    private final JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint;
+    private final JwtAccessDeniedHandler jwtAccessDeniedHandler;
+
 
     // 패스워드 암호화
     @Bean
@@ -31,12 +37,18 @@ public class SecurityConfig {
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+        AuthenticationEntryPoint jwtAuthenticationEntryPoint = null;
         http
                 // csrf가 필요없어서 disable
                 .csrf().disable()
                 .headers()
                 .frameOptions()
                 .sameOrigin()
+
+                .and()
+                .exceptionHandling()
+                .authenticationEntryPoint(jwtAuthenticationEntryPoint)
+                .accessDeniedHandler(jwtAccessDeniedHandler)
 
                 // 세션 사용하지 않음
                 .and()
@@ -52,8 +64,9 @@ public class SecurityConfig {
                 .requestMatchers(HttpMethod.GET, "/favicon.ico").permitAll()
                 .requestMatchers(HttpMethod.GET, "/h2/console").permitAll()
                 .requestMatchers(HttpMethod.GET, "/h2/console/**").permitAll()
-                .requestMatchers(HttpMethod.GET, "/swagger-ui/index.html").permitAll()
-                .requestMatchers(HttpMethod.GET, "/v3/api-docs").permitAll()
+                .requestMatchers(HttpMethod.GET, "/swagger-ui/**").permitAll()
+//                .requestMatchers(HttpMethod.GET, "/swagger-resources/**").permitAll()
+                .requestMatchers(HttpMethod.GET, "/v3/api-docs/**").permitAll()
 
                 // 회원가입, 로그인, 중복확인 요청은 권한 없이도 permit하도록 설정
                 .requestMatchers(HttpMethod.POST, "/v1/member/direct").permitAll()
