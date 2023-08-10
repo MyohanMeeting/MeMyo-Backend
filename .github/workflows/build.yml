@@ -21,7 +21,10 @@ jobs:
       with:
         java-version: '17'
         distribution: 'temurin'
-        
+    - name: Open Web Client Directory
+      working-directory: ./MyohanMeeting/src/main/resources
+      run: |
+        ls -la
     - uses: actions/checkout@v3
     - run: touch ./MyohanMeeting/src/main/resources/config/secret.yml
     - run: echo "${{ secrets.DEV_SECRET_PROPERTIES }}" > ./MyohanMeeting/src/main/resources/config/secret.yml
