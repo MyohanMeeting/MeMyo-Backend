@@ -1,15 +1,19 @@
 spring:
   config:
     import:
-      - classpath: secret.yml
+      - classpath:./config/secret.yml
+
+  h2:
+    console:
+      enabled: true
 
   datasource:
-    url: jdbc:mysql://localhost/myo-db?useSSL=false&characterEncoding=UTF-8&characterEncoding=UTF-8
-    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:h2:mem:myomeet
+    driver-class-name: org.h2.Driver
+    username: sa
+    password:
 
   jpa:
-    database: mysql
-    database-platform: org.hibernate.dialect.MySQL8Dialect
     hibernate:
       ddl-auto: create-drop
     properties:

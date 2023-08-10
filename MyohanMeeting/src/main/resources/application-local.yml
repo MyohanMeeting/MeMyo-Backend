@@ -1,14 +1,13 @@
 spring:
   config:
-    import:
-      - classpath: secret.yml
+    import: classpath:./config/secret.yml
 
   h2:
     console:
       enabled: true
 
   datasource:
-    url: jdbc:h2:tcp://localhost/~/myomeet
+    url: jdbc:h2:mem:myomeet
     driver-class-name: org.h2.Driver
     username: sa
     password:

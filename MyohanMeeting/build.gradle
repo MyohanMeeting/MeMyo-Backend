@@ -21,10 +21,6 @@ repositories {
 ext.profile = (!project.hasProperty('profile') || !profile) ? 'local' : profile
 
 sourceSets {
-    prod {
-        resources.srcDirs = ['src/main/resources', 'src/main/resources-prod']
-    }
-
     dev {
         resources.srcDirs = ['src/main/resources', 'src/main/resources-dev']
     }
