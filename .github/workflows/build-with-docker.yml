@@ -21,7 +21,7 @@ on:
     branches: [ "feat/github-action-cicd" ]
 
 env:
-  PROJECT_ID: stone-bounty-392000
+  PROJECT_ID: ${{ secrets.GCP_PROJECT_ID }}
   GCE_INSTANCE: myo2
   GCE_INSTANCE_ZONE: us-west1-b
 
@@ -37,7 +37,7 @@ jobs:
       - id: 'auth'
         uses: 'google-github-actions/auth@v1'
         with:
-          credentials_json: '${{ secrets.GCE_SA_KEY }}'
+          credentials_json: '${{ secrets.GCE_CREDENTIAL_MYO_BACKEND }}'
 #       - name: Set up Python
 #         uses: actions/setup-python@v4
 #         with:
