@@ -1,7 +1,7 @@
 spring:
   config:
     import:
-      - classpath:/config/secret.yml
+      - classpath: secret.yml
 
   h2:
     console:
