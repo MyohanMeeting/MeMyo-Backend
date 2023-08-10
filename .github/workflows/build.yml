@@ -1,8 +1,8 @@
 name: MyohanMeeting Backend CI
 
 on:
-  push:
-    branches: [ "feat/github-action-cicd" ]
+#   push:
+#     branches: [ "feat/github-action-cicd" ]
   pull_request:
     branches: [ "feat/github-action-cicd" ]
 
