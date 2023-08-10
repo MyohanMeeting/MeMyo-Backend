@@ -21,16 +21,22 @@ jobs:
       with:
         java-version: '17'
         distribution: 'temurin'
+        
+    - uses: actions/checkout@v3
+    - run: touch ./src/main/resources/config/secret.yml
+    - run: echo "${{ secrets.DEV_SECRET_PROPERTIES }}" > ./src/main/resources/config/secret.yml
+    - run: cat ./src/main/resources/config/secret.yml
+    
     - name: Init with Gradle
       uses: gradle/gradle-build-action@bd5760595778326ba7f1441bcf7e88b49de61a25 # v2.6.0
       with:
         gradle-version: 7.6.1
         arguments: init
         build-root-directory: ./MyohanMeeting
+        
     - name: Build with Gradle
       uses: gradle/gradle-build-action@bd5760595778326ba7f1441bcf7e88b49de61a25 # v2.6.0
       with:
         gradle-version: 7.6.1
         arguments: build -Dspring.profiles.active=dev
         build-root-directory: ./MyohanMeeting
-#       run : MyohanMeeting/gradlew build
