@@ -51,12 +51,10 @@ jobs:
       # helper for authentication
       - run: |-
           gcloud --quiet auth configure-docker
-      # Change Directory
-      - run: cd /home/runner/work/MeMyo-Backend/MeMyo-Backend/MyohanMeeting
       # Build the Docker image
       - name: Build
         run: |-
-          docker build --tag "gcr.io/$PROJECT_ID/$GCE_INSTANCE-image:$GITHUB_SHA" .
+          docker build --tag "gcr.io/$PROJECT_ID/$GCE_INSTANCE-image:$GITHUB_SHA" /home/runner/work/MeMyo-Backend/MeMyo-Backend/MyohanMeeting
       # Push the Docker image to Google Container Registry
       - name: Publish
         run: |-
