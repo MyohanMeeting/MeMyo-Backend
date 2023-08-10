@@ -23,9 +23,9 @@ jobs:
         distribution: 'temurin'
         
     - uses: actions/checkout@v3
-    - run: touch ./src/main/resources/config/secret.yml
-    - run: echo "${{ secrets.DEV_SECRET_PROPERTIES }}" > ./src/main/resources/config/secret.yml
-    - run: cat ./src/main/resources/config/secret.yml
+    - run: touch /MyohanMeeting/src/main/resources/config/secret.yml
+    - run: echo "${{ secrets.DEV_SECRET_PROPERTIES }}" > /MyohanMeeting/src/main/resources/config/secret.yml
+    - run: cat /MyohanMeeting/src/main/resources/config/secret.yml
     
     - name: Init with Gradle
       uses: gradle/gradle-build-action@bd5760595778326ba7f1441bcf7e88b49de61a25 # v2.6.0
