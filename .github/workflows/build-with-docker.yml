@@ -51,6 +51,8 @@ jobs:
       # helper for authentication
       - run: |-
           gcloud --quiet auth configure-docker
+      # Change Directory
+      - run: cd /home/runner/work/MeMyo-Backend/MeMyo-Backend/MyohanMeeting
       # Build the Docker image
       - name: Build
         run: |-
