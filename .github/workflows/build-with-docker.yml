@@ -21,7 +21,7 @@ on:
     branches: [ "feat/github-action-cicd" ]
 
 env:
-  PROJECT_ID: ${{ secrets.GCP_PROJECT_ID }}
+  PROJECT_ID: stone-bounty-392000
   GCE_INSTANCE: myo2
   GCE_INSTANCE_ZONE: us-west1-b
 
