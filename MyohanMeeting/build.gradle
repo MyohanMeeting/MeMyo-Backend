@@ -18,6 +18,22 @@ repositories {
     mavenCentral()
 }
 
+ext.profile = (!project.hasProperty('profile') || !profile) ? 'local' : profile
+
+sourceSets {
+    prod {
+        resources.srcDirs = ['src/main/resources', 'src/main/resources-prod']
+    }
+
+    dev {
+        resources.srcDirs = ['src/main/resources', 'src/main/resources-dev']
+    }
+
+    local {
+        resources.srcDirs = ['src/main/resources', 'src/main/resources-local']
+    }
+}
+
 dependencies {
     // spring boot
     implementation 'org.springframework.boot:spring-boot-starter-web'

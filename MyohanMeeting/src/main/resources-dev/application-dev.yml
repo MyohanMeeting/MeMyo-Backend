@@ -1,0 +1,33 @@
+spring:
+  cloud:
+    gcp:
+      secretmanager:
+        project-id: stone-bounty-392000
+
+  datasource:
+    url: jdbc:mysql://34.82.48.107:3306/myo-db?useSSL=false&characterEncoding=UTF-8&characterEncoding=UTF-8
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    username: admin
+    password: ${sm://mysql-dev-password}
+
+  jpa:
+    database: mysql
+    database-platform: org.hibernate.dialect.MySQL8Dialect
+    hibernate:
+      ddl-auto: create-drop
+    properties:
+      hibernate:
+        format_sql: false
+        show_sql: false
+
+logging:
+  level:
+    org.hibernate.SQL: debug
+#    org.hibernate.type: trace
+
+
+jwt:
+  access-token-validity-time: 180000 # 3분
+  refresh-token-validity-time: 60480000 # 1008분
+  access-secret: ${sm://jwt-access-secret}
+  refresh-secret: ${sm://jwt-refresh-secret}
