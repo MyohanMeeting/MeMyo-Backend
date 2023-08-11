@@ -22,7 +22,7 @@ on:
 
 env:
   PROJECT_ID: ${{ secrets.GCP_PROJECT_ID }}
-  GCE_INSTANCE: myo2
+  GCE_INSTANCE: myo-back
   GCE_INSTANCE_ZONE: us-west1-b
 
 jobs:
@@ -44,10 +44,6 @@ jobs:
         uses: 'google-github-actions/auth@v1'
         with:
           credentials_json: '${{ secrets.GCE_CREDENTIAL_MYO_BACKEND }}'
-#       - name: Set up Python
-#         uses: actions/setup-python@v4
-#         with:
-#           python-version: '3.9'
       - name: 'Set up Cloud SDK'
         uses: 'google-github-actions/setup-gcloud@v1'
         with:
