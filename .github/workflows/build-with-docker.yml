@@ -21,13 +21,13 @@ on:
     branches: [ "feat/github-action-cicd" ]
 
 env:
-  PROJECT_ID: ${{ secrets.GCP_PROJECT_ID }}
+  PROJECT_ID: ${{ secrets.BOM_PROJECT_ID }}
   GCE_INSTANCE: instance-2
   GCE_INSTANCE_ZONE: us-central1-a
 
 jobs:
-  setup-build-publish-deploy:
-    name: Setup, Build, Publish, and Deploy
+  setup-build-publish:
+    name: Setup, Build, Publish
     runs-on: ubuntu-latest
 
     steps:
@@ -43,7 +43,7 @@ jobs:
       - id: 'auth'
         uses: 'google-github-actions/auth@v1'
         with:
-          credentials_json: '${{ secrets.GCE_CREDENTIAL_MYO_BACKEND }}'
+          credentials_json: '${{ secrets.BOM_GCP_CREDENTIAL }}'
       - name: 'Set up Cloud SDK'
         uses: 'google-github-actions/setup-gcloud@v1'
         with:
@@ -61,9 +61,9 @@ jobs:
       - name: Publish
         run: |-
           docker push "gcr.io/$PROJECT_ID/myoback-dev:$GITHUB_SHA"
-      - name: Deploy
-        run: |-
-          gcloud compute instances update-container "$GCE_INSTANCE" \
-            --zone "$GCE_INSTANCE_ZONE" \
-            --container-image "gcr.io/$PROJECT_ID/myoback-dev:$GITHUB_SHA"
-          docker run -d -p 8080:8080 "gcr.io/$PROJECT_ID/myoback-dev:$GITHUB_SHA"
+      # - name: Deploy
+      #   run: |-
+      #     gcloud compute instances update-container "$GCE_INSTANCE" \
+      #       --zone "$GCE_INSTANCE_ZONE" \
+      #       --container-image "gcr.io/$PROJECT_ID/myoback-dev:$GITHUB_SHA"
+      #     docker run -d -p 8080:8080 "gcr.io/$PROJECT_ID/myoback-dev:$GITHUB_SHA"
