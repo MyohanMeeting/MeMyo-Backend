@@ -3,7 +3,6 @@ package meet.myo.dto.request.member;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import lombok.Getter;
-import meet.myo.domain.Member;
 
 @Getter
 public class MemberDirectCreateRequestDto {
@@ -15,5 +14,5 @@ public class MemberDirectCreateRequestDto {
     private String password;
     private String nickname;
     private String phoneNumber;
-    private String profileImage;
+    private Long profileImageId;
 }

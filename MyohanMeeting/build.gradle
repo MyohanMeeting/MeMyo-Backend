@@ -47,6 +47,10 @@ dependencies {
     // database
     runtimeOnly 'com.h2database:h2'
 
+    // Google Cloud Storage
+    implementation 'org.springframework.cloud:spring-cloud-gcp-starter:1.2.8.RELEASE'
+    implementation 'org.springframework.cloud:spring-cloud-gcp-storage:1.2.8.RELEASE'
+
     // p6spy
     implementation 'com.github.gavlyukovskiy:p6spy-spring-boot-starter:1.9.0'
 
