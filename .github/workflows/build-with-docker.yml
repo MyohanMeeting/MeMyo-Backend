@@ -21,7 +21,7 @@ on:
     branches: [ "feat/github-action-cicd" ]
 
 env:
-  PROJECT_ID: ${{ secrets.BOM_PROJECT_ID }}
+  PROJECT_ID: ${{ secrets.GCP_PROJECT_ID }}
   GCE_INSTANCE: instance-2
   GCE_INSTANCE_ZONE: us-central1-a
 
@@ -43,7 +43,7 @@ jobs:
       - id: 'auth'
         uses: 'google-github-actions/auth@v1'
         with:
-          credentials_json: '${{ secrets.BOM_GCP_SA }}'
+          credentials_json: '${{ secrets.GCP_SA_KEY }}'
       - name: 'Set up Cloud SDK'
         uses: 'google-github-actions/setup-gcloud@v1'
         with:
