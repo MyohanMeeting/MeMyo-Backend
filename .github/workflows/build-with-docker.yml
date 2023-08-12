@@ -26,8 +26,8 @@ env:
   GCE_INSTANCE_ZONE: us-west4-b
 
 jobs:
-  setup-build-publish:
-    name: Setup, Build, Publish
+  setup-build-publish-deploy:
+    name: Setup, Build, Publish, and Deploy
     runs-on: ubuntu-latest
 
     steps:
