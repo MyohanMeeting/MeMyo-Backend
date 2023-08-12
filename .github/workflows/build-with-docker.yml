@@ -22,8 +22,8 @@ on:
 
 env:
   PROJECT_ID: ${{ secrets.GCP_PROJECT_ID }}
-  GCE_INSTANCE: instance-2
-  GCE_INSTANCE_ZONE: us-central1-a
+  GCE_INSTANCE: myoback-dev
+  GCE_INSTANCE_ZONE: us-west4-b
 
 jobs:
   setup-build-publish:
@@ -61,9 +61,8 @@ jobs:
       - name: Publish
         run: |-
           docker push "gcr.io/$PROJECT_ID/myoback-dev:$GITHUB_SHA"
-      # - name: Deploy
-      #   run: |-
-      #     gcloud compute instances update-container "$GCE_INSTANCE" \
-      #       --zone "$GCE_INSTANCE_ZONE" \
-      #       --container-image "gcr.io/$PROJECT_ID/myoback-dev:$GITHUB_SHA"
-      #     docker run -d -p 8080:8080 "gcr.io/$PROJECT_ID/myoback-dev:$GITHUB_SHA"
+      - name: Deploy
+        run: |-
+          gcloud compute instances update-container "$GCE_INSTANCE" \
+            --zone "$GCE_INSTANCE_ZONE" \
+            --container-image "gcr.io/$PROJECT_ID/myoback-dev:$GITHUB_SHA"
