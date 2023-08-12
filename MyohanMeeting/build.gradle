@@ -55,10 +55,6 @@ dependencies {
     testImplementation 'org.springframework.security:spring-security-test'
 }
 
-tasks.bootJar {
-    archiveFileName.set("myoback.jar")
-}
-
 tasks.named('test') {
     useJUnitPlatform()
 }

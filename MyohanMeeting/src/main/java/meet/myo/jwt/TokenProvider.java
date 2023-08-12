@@ -9,7 +9,6 @@ import meet.myo.service.CustomPrincipalDetailService;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.annotation.PropertySource;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
@@ -41,9 +40,9 @@ public class TokenProvider implements InitializingBean {
     // yml 파일에서 jwt의 access, refresh를 들고옴
     public TokenProvider(
             @Value("${jwt.access-token-validity-time}") long accessTokenValidityTime,
+            @Value("${jwt.refresh-token-validity-time}") long refreshTokenValidityTime,
             @Value("${jwt.access-secret}") String accessSecret,
             @Value("${jwt.refresh-secret}") String refreshSecret,
-            @Value("${jwt.refresh-token-validity-time}") long refreshTokenValidityTime,
             @Autowired CustomPrincipalDetailService customPrincipalDetailService
     ) {
         this.accessTokenValidityTime = accessTokenValidityTime;
@@ -69,10 +68,11 @@ public class TokenProvider implements InitializingBean {
     }
 
     // 인증 부분
-    public Authentication getAuthentication(String token) {
+    public Authentication getAuthentication(String token, boolean isAccessToken) {
+        Key key = isAccessToken ? accessKey : refreshKey;
         Claims claims = Jwts
                 .parserBuilder()
-                .setSigningKey(accessKey)
+                .setSigningKey(key)
                 .build()
                 .parseClaimsJws(token)
                 .getBody();
@@ -96,9 +96,13 @@ public class TokenProvider implements InitializingBean {
     }
 
     // 토큰 검증 부분
-    public boolean validateToken(String token) {
+    public boolean validateToken(String token, boolean isAccessToken) {
         try {
-            Jwts.parserBuilder().setSigningKey(accessKey).build().parseClaimsJws(token);
+            if (isAccessToken) {
+                Jwts.parserBuilder().setSigningKey(accessKey).build().parseClaimsJws(token);
+            } else {
+                Jwts.parserBuilder().setSigningKey(refreshKey).build().parseClaimsJws(token);
+            }
             return true;
         } catch (SecurityException | MalformedJwtException e) {
             // 잘못된 JWT 형식
