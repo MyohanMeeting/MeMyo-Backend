@@ -1,0 +1,33 @@
+spring:
+  config:
+    import: classpath:./config/secret.yml
+
+  h2:
+    console:
+      enabled: true
+      settings:
+        web-allow-others: true
+
+  datasource:
+    url: jdbc:h2:mem:myomeet
+    driver-class-name: org.h2.Driver
+    username: sa
+    password:
+
+  jpa:
+    hibernate:
+      ddl-auto: create-drop
+    properties:
+      hibernate:
+        format_sql: false
+        show_sql: false
+
+logging:
+  level:
+    org.hibernate.SQL: debug
+#    org.hibernate.type: trace
+
+
+jwt:
+  access-token-validity-time: 180000 # 3분
+  refresh-token-validity-time: 60480000 # 1008분

@@ -14,8 +14,8 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
 
 @RequiredArgsConstructor
@@ -37,7 +37,6 @@ public class SecurityConfig {
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
-        AuthenticationEntryPoint jwtAuthenticationEntryPoint = null;
         http
                 // csrf가 필요없어서 disable
                 .csrf().disable()
@@ -62,10 +61,8 @@ public class SecurityConfig {
                 // h2 console 관련 세팅
                 // TODO: test 환경에서만 작동하도록 설정해야 함
                 .requestMatchers(HttpMethod.GET, "/favicon.ico").permitAll()
-                .requestMatchers(HttpMethod.GET, "/h2/console").permitAll()
-                .requestMatchers(HttpMethod.GET, "/h2/console/**").permitAll()
+                .requestMatchers(AntPathRequestMatcher.antMatcher("/h2-console/**")).permitAll()
                 .requestMatchers(HttpMethod.GET, "/swagger-ui/**").permitAll()
-//                .requestMatchers(HttpMethod.GET, "/swagger-resources/**").permitAll()
                 .requestMatchers(HttpMethod.GET, "/v3/api-docs/**").permitAll()
 
                 // 회원가입, 로그인, 중복확인 요청은 권한 없이도 permit하도록 설정

@@ -66,13 +66,15 @@ public class AuthService {
      * 토큰 리프레시 요청 처리
      */
     public TokenDto tokenRefresh(String refreshToken) throws JwtException {
+
         // 토큰의 유효성 체크
-        if (!tokenProvider.validateToken(refreshToken)) {
+        if (!tokenProvider.validateToken(refreshToken, false)) {
             log.warn("Invalid refresh token excepted");
             throw new JwtException("INVALID_TOKEN");
         }
 
-        Authentication authentication = tokenProvider.getAuthentication(refreshToken);
+        Authentication authentication = tokenProvider.getAuthentication(refreshToken, false);
+
         Member member = memberRepository.findByEmailAndDeletedAtNull(authentication.getName())
                 .orElseThrow(NotFoundException::new);
 
