@@ -43,7 +43,7 @@ jobs:
       - id: 'auth'
         uses: 'google-github-actions/auth@v1'
         with:
-          credentials_json: '${{ secrets.BOM_GCP_CREDENTIAL }}'
+          credentials_json: '${{ secrets.BOM_GCP_SA }}'
       - name: 'Set up Cloud SDK'
         uses: 'google-github-actions/setup-gcloud@v1'
         with:
