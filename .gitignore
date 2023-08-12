@@ -37,6 +37,7 @@ out/
 .vscode/
 
 ### SECRET ###
+cloud-storage-key.json
 secret.yml
 
 ### Mac OS ###
