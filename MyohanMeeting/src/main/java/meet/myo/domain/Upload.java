@@ -25,9 +25,9 @@ public class Upload extends BaseAuditingListener {
     @Column(nullable = false)
     private String url;
 
-    @Size(max = 512)
+    @Enumerated(EnumType.STRING)
     @Column(nullable = false)
-    private String path;
+    private FileCategory fileCategory;
 
     private String originName;
 
@@ -44,10 +44,10 @@ public class Upload extends BaseAuditingListener {
     private Long size;
 
     @Builder
-    Upload(String url, Member member, String path, String originName, String savedName, String type, String extension, Long size) {
+    Upload(String url, Member member, FileCategory fileCategory, String originName, String savedName, String type, String extension, Long size) {
         this.url = url;
         this.member = member;
-        this.path = path;
+        this.fileCategory = fileCategory;
         this.originName = originName;
         this.savedName = savedName;
         this.type = type;
@@ -64,8 +64,8 @@ public class Upload extends BaseAuditingListener {
         this.url = url;
     }
 
-    public void updatePath(String path) {
-        this.path = path;
+    public void updateFileCategory(FileCategory fileCategory) {
+        this.fileCategory = fileCategory;
     }
 
     public void updateOriginName(String originName) {

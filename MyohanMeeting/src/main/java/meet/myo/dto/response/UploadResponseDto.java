@@ -1,7 +1,11 @@
 package meet.myo.dto.response;
 
+import io.swagger.v3.oas.annotations.media.Schema;
+import lombok.Getter;
 import meet.myo.domain.Upload;
 
+@Schema(name = "Upload")
+@Getter
 public class UploadResponseDto {
     private Long id;
     private String url;

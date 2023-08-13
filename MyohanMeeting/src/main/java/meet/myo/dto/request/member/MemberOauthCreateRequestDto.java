@@ -10,4 +10,5 @@ public class MemberOauthCreateRequestDto {
     private String oauthId;
     private String email;
     private String nickname;
+    private Long profileImageId;
 }

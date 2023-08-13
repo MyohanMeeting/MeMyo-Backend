@@ -34,16 +34,25 @@ jobs:
     
       - name: Checkout
         uses: actions/checkout@v3
-        
-      - run: mkdir ./MyohanMeeting/src/main/resources/config
-      - run: touch ./MyohanMeeting/src/main/resources/config/secret.yml
-      - run: echo "${{ secrets.DEV_SECRET_PROPERTIES }}" > ./MyohanMeeting/src/main/resources/config/secret.yml
-      - run: cat ./MyohanMeeting/src/main/resources/config/secret.yml
+
+      - name: Create Secret
+        run: |-
+          mkdir ./MyohanMeeting/src/main/resources/config
+          touch ./MyohanMeeting/src/main/resources/config/secret.yml
+          echo "${{ secrets.DEV_SECRET_PROPERTIES }}" > ./MyohanMeeting/src/main/resources/config/secret.yml
+          cat ./MyohanMeeting/src/main/resources/config/secret.yml
+
+      - name: Create Google Cloud Storage Key
+        run: |-
+          touch ./MyohanMeeting/src/main/resources/config/cloud-storage-key.json
+          echo "${{ secrets.GCS_SA_KEY }}" > ./MyohanMeeting/src/main/resources/config/cloud-storage-key.json
+          cat ./MyohanMeeting/src/main/resources/config/cloud-storage-key.json
 
       - id: 'auth'
         uses: 'google-github-actions/auth@v1'
         with:
           credentials_json: '${{ secrets.GCP_SA_KEY }}'
+
       - name: 'Set up Cloud SDK'
         uses: 'google-github-actions/setup-gcloud@v1'
         with:

@@ -72,12 +72,12 @@ public class UploadController {
     @PostMapping("")
     public CommonResponseDto<Map<String, List<Long>>> uploadFilesV1(
             @Parameter(name = "files", description = "업로드하고자 하는 파일 배열입니다.")
-            @RequestParam MultipartFile[] files
+            @RequestParam MultipartFile[] files,
+            @RequestParam(value = "category") String fileCategory
     ) {
-        //TODO: 유효성 검증(파일 용량, 확장자, 10건 이상 업로드 불가 등)
         Long memberId = SecurityUtil.getCurrentUserPK().orElseThrow(() -> new NotAuthenticatedException("INVALID_ID"));
         return CommonResponseDto.<Map<String, List<Long>>>builder()
-                .data(Map.of("uploadId", uploadService.uploadFiles(memberId, Arrays.stream(files).toList())))
+                .data(Map.of("uploadId", uploadService.uploadFiles(memberId, Arrays.stream(files).toList(), fileCategory)))
                 .build();
     }
 

@@ -10,7 +10,6 @@ import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.ErrorResponse;
 import meet.myo.dto.response.ErrorResponseDto;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
@@ -75,9 +74,12 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
     }
 
     @ExceptionHandler(DuplicateKeyException.class)
-    protected ResponseEntity<ErrorResponse> handleDuplicateKeyException(DuplicateKeyException ex) {
-        ErrorResponse errorResponse = ErrorResponse.builder(ex, HttpStatus.CONFLICT, "Duplicate resource")
-                .build();
-        return ResponseEntity.status(HttpStatus.CONFLICT).body(errorResponse);
+    protected ResponseEntity<ErrorResponseDto> handleDuplicateKeyException(DuplicateKeyException ex) {
+        return ResponseEntity.status(HttpStatus.CONFLICT).body(
+                ErrorResponseDto.builder()
+                        .status(HttpStatus.CONFLICT.toString())
+                        .message("Duplicate resource")
+                        .debugMessage(ex.getMessage())
+                        .build());
     }
 }
