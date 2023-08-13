@@ -1,4 +1,17 @@
 spring:
+  mail:
+    host: smtp.gmail.com
+    port: 587
+    username: myohanmeeting@gmail.com
+    password: cgxpnvrzebktfaly
+    properties:
+      mail:
+        smtp:
+          auth: true
+          timeout: 5000
+          starttls:
+            required: true
+            enable: true
   config:
     import: classpath:./config/secret.yml
 

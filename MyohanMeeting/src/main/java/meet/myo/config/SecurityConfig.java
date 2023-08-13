@@ -64,6 +64,8 @@ public class SecurityConfig {
                 .requestMatchers(AntPathRequestMatcher.antMatcher("/h2-console/**")).permitAll()
                 .requestMatchers(HttpMethod.GET, "/swagger-ui/**").permitAll()
                 .requestMatchers(HttpMethod.GET, "/v3/api-docs/**").permitAll()
+                // 이메일발송
+                .requestMatchers(HttpMethod.POST, "/v1/member/certification").permitAll()
 
                 // 회원가입, 로그인, 중복확인 요청은 권한 없이도 permit하도록 설정
                 .requestMatchers(HttpMethod.POST, "/v1/member/direct").permitAll()

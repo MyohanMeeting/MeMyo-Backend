@@ -15,6 +15,7 @@ import meet.myo.dto.response.member.MemberResponseDto;
 import meet.myo.dto.response.member.MemberUpdateResponseDto;
 import meet.myo.dto.response.member.OauthUpdateResponseDto;
 import meet.myo.exception.NotAuthenticatedException;
+import meet.myo.service.EmailService;
 import meet.myo.service.MemberService;
 import meet.myo.springdoc.annotations.ApiResponseCommon;
 import meet.myo.springdoc.annotations.ApiResponseSignin;
@@ -102,8 +103,11 @@ public class MemberController {
     @PreAuthorize("hasAnyRole('ROLE_USER')")
     @PostMapping("/certification")
     public CommonResponseDto sendCertificationEmailV1() {
+        System.out.println("?????????????");
         Long memberId = SecurityUtil.getCurrentUserPK().orElseThrow(() -> new NotAuthenticatedException("INVALID_ID"));
+        System.out.println("memberId ?? :" + memberId);
         memberService.sendCertificationEmail(memberId);
+        System.out.println("return 값 있나??" + memberId);
         return CommonResponseDto.builder().build();
     }
 
