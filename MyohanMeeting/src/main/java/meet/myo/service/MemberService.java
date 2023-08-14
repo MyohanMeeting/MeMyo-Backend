@@ -125,7 +125,8 @@ public class MemberService {
         try {
             EmailCertification emailCertification = EmailCertification.createEmailCertification(member);
             emailCertificationRepository.save(emailCertification);
-            emailService.sendEmail(member.getEmail(), emailCertification.getUUID());
+            System.out.println("emailCertification.getUUID:  "+ emailCertification.getUuid());
+            emailService.sendEmail(member.getEmail(), emailCertification.getUuid());
 
         } catch (MessagingException | UnsupportedEncodingException e) {
             // TODO: 에러 처리 로직 추가
@@ -138,13 +139,14 @@ public class MemberService {
      */
     public void verifyCertificationEmail(Long memberId, CertifyEmailRequestDto dto) {
         EmailCertification latestCertification =
-                emailCertificationRepository.findLatestByMemberIdAndUUIDAndDeletedAtNull(memberId, dto.getUUID())
+                emailCertificationRepository.findByMemberIdAndUuid (memberId, dto.getUUID())
                 .orElseThrow(() -> new NotFoundException("해당하는 이메일을 찾을 수 없습니다."));
 
         if (latestCertification.isExpired()) {
             throw new RuntimeException("UUID가 만료되었습니다.");
         }
-
+        Member member = latestCertification.getMember();
+        member.updateCertified();
     }
 
     /**

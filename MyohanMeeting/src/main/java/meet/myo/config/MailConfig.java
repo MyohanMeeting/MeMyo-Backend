@@ -16,7 +16,7 @@ public class MailConfig {
         mailSender.setHost("smtp.gmail.com"); // SMTP 호스트 설정
         mailSender.setPort(587); // 포트 설정
         mailSender.setUsername("myohanmeeting@gmail.com"); // 이메일 계정
-        mailSender.setPassword("cgxpnvrzebktfaly"); // 이메일 계정 비밀번호
+        mailSender.setPassword("${MAIL_PASSWORD}"); // 이메일 계정 비밀번호
 
         Properties props = mailSender.getJavaMailProperties();
         props.put("mail.transport.protocol", "smtp");

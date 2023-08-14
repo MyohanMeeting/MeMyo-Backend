@@ -64,6 +64,7 @@ public class SecurityConfig {
                 .requestMatchers(AntPathRequestMatcher.antMatcher("/h2-console/**")).permitAll()
                 .requestMatchers(HttpMethod.GET, "/swagger-ui/**").permitAll()
                 .requestMatchers(HttpMethod.GET, "/v3/api-docs/**").permitAll()
+
                 // 이메일발송
                 .requestMatchers(HttpMethod.POST, "/v1/member/certification").permitAll()
 

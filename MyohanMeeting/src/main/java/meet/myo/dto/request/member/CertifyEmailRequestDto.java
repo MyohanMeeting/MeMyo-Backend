@@ -1,10 +1,10 @@
 package meet.myo.dto.request.member;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
 
 @Getter
 public class CertifyEmailRequestDto {
+    @JsonProperty("UUID")
     private String UUID;
 }

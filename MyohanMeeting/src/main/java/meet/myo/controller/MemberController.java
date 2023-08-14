@@ -103,11 +103,8 @@ public class MemberController {
     @PreAuthorize("hasAnyRole('ROLE_USER')")
     @PostMapping("/certification")
     public CommonResponseDto sendCertificationEmailV1() {
-        System.out.println("?????????????");
         Long memberId = SecurityUtil.getCurrentUserPK().orElseThrow(() -> new NotAuthenticatedException("INVALID_ID"));
-        System.out.println("memberId ?? :" + memberId);
         memberService.sendCertificationEmail(memberId);
-        System.out.println("return 값 있나??" + memberId);
         return CommonResponseDto.builder().build();
     }
 
