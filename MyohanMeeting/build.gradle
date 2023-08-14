@@ -51,6 +51,9 @@ dependencies {
     implementation 'org.springframework.cloud:spring-cloud-gcp-starter:1.2.8.RELEASE'
     implementation 'org.springframework.cloud:spring-cloud-gcp-storage:1.2.8.RELEASE'
 
+    // Google Gmail SMTP
+    implementation 'org.springframework.boot:spring-boot-starter-mail'
+
     // p6spy
     implementation 'com.github.gavlyukovskiy:p6spy-spring-boot-starter:1.9.0'
 
