@@ -19,9 +19,7 @@ public class EmailService {
 
     //메일 양식 작성
     public MimeMessage createEmailForm(String email, String authNum) throws MessagingException {
-        System.out.println("autnNum ?? : " + authNum);
         String setFrom = "myohanmeeting@gmail.com"; //email-config 에 설정한 (보내는 사람)
-        String toEmail = email; //받는 사람
         String title = "MyohanMeeting 회원가입 인증 번호"; //제목
         String content = "인증 번호: " + authNum; //내용
 
@@ -30,8 +28,6 @@ public class EmailService {
         message.setSubject(title); //제목 설정
         message.setFrom(setFrom); //보내는 이메일
         message.setText(content); //내용 설정
-
-        System.out.println("message??? : " + message);
         return message;
     }
 

@@ -10,9 +10,9 @@ import java.util.Optional;
 public interface EmailCertificationRepository extends JpaRepository<EmailCertification, Long> {
     @Query("SELECT ec FROM EmailCertification ec " +
             "WHERE ec.member.id = :memberId " +
-            "AND ec.uuid = :uuid " +
+            "AND ec.certCode = :certCode " +
             "AND ec.deletedAt IS NULL")
-    Optional<EmailCertification> findByMemberIdAndUuid(@Param("memberId") Long memberId,
-                                                       @Param("uuid") String uuid);
+    Optional<EmailCertification> findByMemberIdAndCertCode(@Param("memberId") Long memberId,
+                                                       @Param("certCode") String certCode);
 
 }

@@ -113,7 +113,7 @@ public class MemberService {
     }
 
     /**
-     * 이메일 인증용 메일발송 및 UUID 저장
+     * 이메일 인증용 메일발송 및 CertCode 저장
      */
     public void sendCertificationEmail(Long memberId) { // TODO: 리턴항목 생각
         Member member = memberRepository.findByIdAndDeletedAtNull(memberId)
@@ -122,7 +122,7 @@ public class MemberService {
         try {
             EmailCertification emailCertification = EmailCertification.createEmailCertification(member);
             emailCertificationRepository.save(emailCertification);
-            emailService.sendEmail(member.getEmail(), emailCertification.getUuid());
+            emailService.sendEmail(member.getEmail(), emailCertification.getCertCode());
 
         } catch (MessagingException | UnsupportedEncodingException e) {
             // TODO: 에러 처리 로직 추가
@@ -131,15 +131,15 @@ public class MemberService {
     }
 
     /**
-     * 이메일 인증 UUID 비교
+     * 이메일 인증 CertCode 비교
      */
     public void verifyCertificationEmail(Long memberId, CertifyEmailRequestDto dto) {
         EmailCertification latestCertification =
-                emailCertificationRepository.findByMemberIdAndUuid(memberId, dto.getUUID())
+                emailCertificationRepository.findByMemberIdAndCertCode(memberId, dto.getCertCode())
                 .orElseThrow(() -> new NotFoundException("해당하는 이메일을 찾을 수 없습니다."));
 
         if (latestCertification.isExpired()) {
-            throw new RuntimeException("UUID가 만료되었습니다.");
+            throw new RuntimeException("인증코드가 만료되었습니다.");
         }
         Member member = latestCertification.getMember();
         member.updateCertified();
