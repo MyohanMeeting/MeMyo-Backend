@@ -170,8 +170,6 @@ public class AdoptNoticeService {
         adoptNotice.updateTitle(dto.getTitle());
         adoptNotice.updateContent(dto.getContent());
         adoptNotice.updateThumbnail(thumbnail);
-        adoptNotice.updateCat(cat);
-        adoptNotice.updateShelter(shelter);
         // catPictuers collection update 코드 필요
 
         return AdoptNoticeResponseDto.fromEntity(adoptNotice);
