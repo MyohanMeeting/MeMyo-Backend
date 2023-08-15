@@ -33,7 +33,6 @@ import java.util.Map;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/v1/adoption/notices")
-@PreAuthorize("hasAnyRole('ROLE_USER')")
 public class AdoptNoticeController {
 
     private final AdoptNoticeService adoptNoticeService;
@@ -140,6 +139,7 @@ public class AdoptNoticeController {
      */
     @Operation(summary = "내가 올린 분양공고 목록조회", description = "자신이 업로드한 분양 공고 목록을 조회합니다.", operationId = "getMyNoticeList")
     @ApiResponse(responseCode = "200") @ApiResponseCommon @ApiResponseSignin
+    @PreAuthorize("hasAnyRole('ROLE_USER')")
     @GetMapping("/my")
     public CommonResponseDto<List<AdoptNoticeSummaryResponseDto>> getMyNoticeListV1(
             /**
@@ -203,6 +203,7 @@ public class AdoptNoticeController {
   }
 }
 """)})) @ApiResponseCommon @ApiResponseSignin
+    @PreAuthorize("hasAnyRole('ROLE_USER')")
     @SecurityRequirement(name = "JWT")
     @PostMapping("")
     public CommonResponseDto<Map<String, Long>> createNoticeV1(@Validated @RequestBody final AdoptNoticeRequestDto dto) {
@@ -217,6 +218,7 @@ public class AdoptNoticeController {
      */
     @Operation(summary = "분양공고 상태 업데이트", description = "분양공고의 상태를 업데이트합니다.", operationId = "updateNoticeStatus")
     @ApiResponse(responseCode = "200") @ApiResponseCommon @ApiResponseResource @ApiResponseAuthority
+    @PreAuthorize("hasAnyRole('ROLE_USER')")
     @SecurityRequirement(name = "JWT")
     @PatchMapping("/{noticeId}/status")
     public CommonResponseDto<AdoptNoticeResponseDto> updateNoticeStatusV1(
@@ -237,6 +239,7 @@ public class AdoptNoticeController {
     @Operation(summary = "분양공고 수정", description = "분양공고의 내용을 수정합니다.", operationId = "updateNotice")
     @ApiResponse(responseCode = "200") @ApiResponseCommon @ApiResponseResource @ApiResponseAuthority
     @PatchMapping("/{noticeId}")
+    @PreAuthorize("hasAnyRole('ROLE_USER')")
     @SecurityRequirement(name = "JWT")
     public CommonResponseDto<AdoptNoticeResponseDto> updateNoticeV1(
             @Parameter(name = "noticeId", description = "수정하고자 하는 공고의 id입니다.")
@@ -265,6 +268,7 @@ public class AdoptNoticeController {
   }
 }
 """)})) @ApiResponseCommon @ApiResponseResource @ApiResponseAuthority
+    @PreAuthorize("hasAnyRole('ROLE_USER')")
     @SecurityRequirement(name = "JWT")
     @DeleteMapping("/{noticeId}")
     public CommonResponseDto<Map<String, Long>> deleteNoticeV1(

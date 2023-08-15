@@ -180,7 +180,9 @@ public class MemberService {
     public void deleteOauth(Long memberId) {
         Member member = memberRepository.findByIdAndDeletedAtNull(memberId)
                 .orElseThrow(() -> new NotFoundException("id에 해당하는 회원을 찾을 수 없습니다."));
-
+        if (member.getPassword() == null) {
+            throw new IllegalArgumentException("SNS 로그인 정보를 삭제하려면 먼저 비밀번호를 설정해야 합니다.");
+        }
         member.updateOauth(null);
     }
 
@@ -194,7 +196,8 @@ public class MemberService {
                 .orElseThrow(() -> new NotFoundException("id에 해당하는 회원을 찾을 수 없습니다."));
 
         String currentPassword = dto.getCurrentPassword();
-        if (!passwordEncoder.matches(currentPassword, member.getPassword())) {
+        // 현재 설정된 비밀번호가 없다면 비밀번호를 검증하지 않음. 있다면 검증.
+        if (member.getPassword() != null && !passwordEncoder.matches(currentPassword, member.getPassword())) {
             throw new IllegalArgumentException("비밀번호가 일치하지 않습니다.");
         }
 
@@ -210,8 +213,13 @@ public class MemberService {
         Member member = memberRepository.findByIdAndDeletedAtNull(memberId)
                 .orElseThrow(() -> new NotFoundException("id에 해당하는 회원을 찾을 수 없습니다."));
 
-        member.updateNickname(dto.getNickname());
-        member.updatePhoneNumber(dto.getPhoneNumber());
+        if (dto.getNickname().isPresent()) { member.updateNickname(dto.getNickname().get()); }
+        if (dto.getPhoneNumber().isPresent()) { member.updatePhoneNumber(dto.getPhoneNumber().get()); }
+        if (dto.getProfileImageId().isPresent()) {
+            Upload profileImage = uploadRepository.findByIdAndDeletedAtNull(dto.getProfileImageId().get())
+                    .orElseThrow(() -> new NotFoundException("id에 해당하는 파일을 찾을 수 없습니다."));
+            member.updateProfileImage(profileImage);
+        }
 
         return MemberUpdateResponseDto.fromEntity(member);
     }
