@@ -44,7 +44,7 @@ public class AdoptNoticeService {
     @Transactional(readOnly = true)
     public List<AdoptNoticeSummaryResponseDto> getAdoptNoticeList(Pageable pageable, AdoptNoticeSearch search) {
 
-        Page<AdoptNotice> adoptNotices = adoptNoticeRepository.findAll(pageable);
+        Page<AdoptNotice> adoptNotices = adoptNoticeRepository.findByDeletedAtNull(pageable);
         return adoptNotices.getContent().stream()
                 .map(AdoptNoticeSummaryResponseDto::fromEntity)
                 .collect(Collectors.toList());
@@ -68,7 +68,7 @@ public class AdoptNoticeService {
      */
     @Transactional(readOnly = true)
     public AdoptNoticeResponseDto getAdoptNotice(Long noticeId) {
-        AdoptNotice adoptNotice = adoptNoticeRepository.findById(noticeId)
+        AdoptNotice adoptNotice = adoptNoticeRepository.findByIdAndDeletedAtNull(noticeId)
                 .orElseThrow(() -> new NotFoundException("해당하는 입양공고가 존재하지 않습니다."));
         return AdoptNoticeResponseDto.fromEntity(adoptNotice);
     }
@@ -77,7 +77,7 @@ public class AdoptNoticeService {
      * 작성
      */
     public Long createAdoptNotice(Long memberId, AdoptNoticeRequestDto dto) {
-        Member member = memberRepository.findById(memberId)
+        Member member = memberRepository.findByIdAndDeletedAtNull(memberId)
                 .orElseThrow(() -> new NotFoundException("회원이 존재하지 않습니다."));
 
         AdoptNotice adoptNotice = AdoptNotice.builder()
@@ -108,7 +108,7 @@ public class AdoptNoticeService {
                 .phoneNumber(dto.getShelter().getPhoneNumber())
                 .build();
 
-        Upload thumbnail = uploadRepository.findById(dto.getThumbnailId()).orElseThrow(NotFoundException::new);
+        Upload thumbnail = uploadRepository.findByIdAndDeletedAtNull(dto.getThumbnailId()).orElseThrow(NotFoundException::new);
 
         adoptNoticeRepository.save(adoptNotice);
         return adoptNotice.getId();
@@ -118,7 +118,7 @@ public class AdoptNoticeService {
      * 상태수정
      */
     public AdoptNoticeResponseDto updateAdoptNoticeStatus(Long memberId, Long noticeId, AdoptNoticeStatusUpdateRequestDto dto) {
-        AdoptNotice adoptNotice = adoptNoticeRepository.findById(noticeId)
+        AdoptNotice adoptNotice = adoptNoticeRepository.findByIdAndDeletedAtNull(noticeId)
                 .orElseThrow(() -> new NotFoundException("요청하신 공고가 없습니다"));
 
         if (!adoptNotice.getMember().getId().equals(memberId)) {
@@ -135,8 +135,8 @@ public class AdoptNoticeService {
      * 수정
      */
     public AdoptNoticeResponseDto updateAdoptNotice(Long memberId, Long noticeId, AdoptNoticeRequestDto dto) {
-        AdoptNotice adoptNotice = adoptNoticeRepository.findById(noticeId)
-                .orElseThrow(() -> new NotFoundException("요청하신 공고가 없습니다"));
+        AdoptNotice adoptNotice = adoptNoticeRepository.findByIdAndDeletedAtNull(noticeId)
+                .orElseThrow(() -> new NotFoundException("id에 해당하는 공고가 없습니다."));
 
         if (!adoptNotice.getMember().getId().equals(memberId)) {
             throw new AccessDeniedException("수정할 권한이 없습니다.");
@@ -170,8 +170,6 @@ public class AdoptNoticeService {
         adoptNotice.updateTitle(dto.getTitle());
         adoptNotice.updateContent(dto.getContent());
         adoptNotice.updateThumbnail(thumbnail);
-        adoptNotice.updateCat(cat);
-        adoptNotice.updateShelter(shelter);
         // catPictuers collection update 코드 필요
 
         return AdoptNoticeResponseDto.fromEntity(adoptNotice);
@@ -181,14 +179,14 @@ public class AdoptNoticeService {
      * 삭제
      */
     public Long deleteAdoptNotice(Long memberId, Long noticeId) {
-        AdoptNotice adoptNotice = adoptNoticeRepository.findById(noticeId)
+        AdoptNotice adoptNotice = adoptNoticeRepository.findByIdAndDeletedAtNull(noticeId)
                 .orElseThrow(() -> new NotFoundException("Adopt notice not found"));
 
         if (!adoptNotice.getMember().getId().equals(memberId)) {
             throw new NotFoundException("요청하신 공고가 없습니다");
         }
 
-        adoptNoticeRepository.delete(adoptNotice);
+        adoptNotice.delete();
         return adoptNotice.getId();
     }
 

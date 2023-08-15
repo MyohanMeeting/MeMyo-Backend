@@ -12,4 +12,6 @@ import java.util.Optional;
 public interface AdoptNoticeRepository extends JpaRepository<AdoptNotice, Long> {
     Optional<AdoptNotice> findByIdAndDeletedAtNull(Long noticeId);
     Page<AdoptNotice> findByMemberIdAndDeletedAtNull(Pageable pageable, Long memberId);
+
+    Page<AdoptNotice> findByDeletedAtNull(Pageable pageable);
 }
