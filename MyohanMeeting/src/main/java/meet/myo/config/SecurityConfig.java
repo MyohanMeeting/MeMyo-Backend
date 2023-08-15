@@ -16,6 +16,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
+import org.springframework.security.web.util.matcher.RegexRequestMatcher;
 
 
 @RequiredArgsConstructor
@@ -38,7 +39,6 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
-                // csrf가 필요없어서 disable
                 .csrf().disable()
                 .headers()
                 .frameOptions()
@@ -49,29 +49,42 @@ public class SecurityConfig {
                 .authenticationEntryPoint(jwtAuthenticationEntryPoint)
                 .accessDeniedHandler(jwtAccessDeniedHandler)
 
-                // 세션 사용하지 않음
                 .and()
                 .sessionManagement()
                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
 
-                // HttpServletRequest를 사용하는 요청에 대한 접근 제한 설정 부분
                 .and()
                 .authorizeHttpRequests()
 
-                // h2 console 관련 세팅
+                // 문서, h2 console 관련 세팅
                 // TODO: test 환경에서만 작동하도록 설정해야 함
                 .requestMatchers(HttpMethod.GET, "/favicon.ico").permitAll()
+                .requestMatchers(AntPathRequestMatcher.antMatcher("/h2-console")).permitAll()
                 .requestMatchers(AntPathRequestMatcher.antMatcher("/h2-console/**")).permitAll()
                 .requestMatchers(HttpMethod.GET, "/swagger-ui/**").permitAll()
                 .requestMatchers(HttpMethod.GET, "/v3/api-docs/**").permitAll()
 
-                // 회원가입, 로그인, 중복확인 요청은 권한 없이도 permit하도록 설정
-                .requestMatchers(HttpMethod.POST, "/v1/member/direct").permitAll()
-                .requestMatchers(HttpMethod.POST, "v1/member/oauth").permitAll()
+                // 로그인 및 토큰 refresh
                 .requestMatchers(HttpMethod.POST, "/v1/auth/signin/direct").permitAll()
                 .requestMatchers(HttpMethod.POST, "/v1/auth/signin/oauth").permitAll()
+                .requestMatchers(HttpMethod.POST, "/v1/auth/refresh").permitAll()
+
+                // 회원가입
+                .requestMatchers(HttpMethod.POST, "/v1/member/direct").permitAll()
+                .requestMatchers(HttpMethod.POST, "v1/member/oauth").permitAll()
+
+                // 이메일, 닉네임 중복확인
                 .requestMatchers(HttpMethod.GET, "/v1/member/email").permitAll()
                 .requestMatchers(HttpMethod.GET, "/v1/member/nickname").permitAll()
+
+                // 입양공고, 입양공고 덧글
+                .requestMatchers(HttpMethod.GET, "/v1/adoption/notices").permitAll()
+                .requestMatchers(
+                        RegexRequestMatcher.regexMatcher(
+                                HttpMethod.GET, "/v1/adoption/notices/[0-9]+")).permitAll()
+                .requestMatchers(
+                        RegexRequestMatcher.regexMatcher(
+                                HttpMethod.GET, "/v1/adoption/notices/[0-9]+/comments")).permitAll()
                 .anyRequest().authenticated()
 
                 // JwtSecurityConfig 적용
