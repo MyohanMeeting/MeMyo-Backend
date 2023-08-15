@@ -21,12 +21,13 @@ import org.springframework.security.oauth2.client.authentication.OAuth2Authentic
 import org.springframework.stereotype.Service;
 
 /**
- * Controller 단에서 직접 호출하는 서비스
+ * 인증 서비스
  *
- * TokenProvider: JWT 생성
- * AuthenticationManagerBuilder: 폼로그인 시 authenticate() -> loadUserByName() 호출, 비밀번호를 대조
- * CustomPrincipalDetailService: 폼로그인 시 필요한 User + Oauth 로그인 시 필요한 OAuth2DefaultUser 객체 획득
+ * TokenProvider: 토큰에 관련된 작업(생성, 파싱) 위임
+ * AuthenticationManagerBuilder: UsernamePasswordAuthenticationToken으로 authenticate() -> loadUserByUsername() 호출, 비밀번호를 대조
+ * CustomPrincipalDetailService: loadUserByUsername(), loadUserByOauth() 갖고 있는 클래스
  */
+
 @Service
 @Transactional
 @RequiredArgsConstructor

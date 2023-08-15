@@ -4,6 +4,7 @@ import io.jsonwebtoken.*;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
 import meet.myo.config.SecurityUtil;
+import meet.myo.domain.authority.CustomOAuth2User;
 import meet.myo.domain.authority.CustomUser;
 import meet.myo.service.CustomPrincipalDetailService;
 import org.springframework.beans.factory.InitializingBean;
@@ -14,6 +15,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.oauth2.client.authentication.OAuth2AuthenticationToken;
 import org.springframework.stereotype.Component;
 
 import java.security.Key;
@@ -22,6 +24,9 @@ import java.util.Collection;
 import java.util.Date;
 import java.util.stream.Collectors;
 
+/**
+ * 토큰을 생성, 처리하는 클래스
+ */
 @Component
 public class TokenProvider implements InitializingBean {
 
@@ -37,7 +42,6 @@ public class TokenProvider implements InitializingBean {
 
     private final CustomPrincipalDetailService customPrincipalDetailService;
 
-    // yml 파일에서 jwt의 access, refresh를 들고옴
     public TokenProvider(
             @Value("${jwt.access-token-validity-time}") long accessTokenValidityTime,
             @Value("${jwt.refresh-token-validity-time}") long refreshTokenValidityTime,
@@ -52,22 +56,29 @@ public class TokenProvider implements InitializingBean {
         this.customPrincipalDetailService = customPrincipalDetailService;
     }
 
-    // BASE64로 Decode하는 코드
     @Override
     public void afterPropertiesSet() {
         this.accessKey = Keys.hmacShaKeyFor(Decoders.BASE64.decode(accessSecret));
         this.refreshKey = Keys.hmacShaKeyFor(Decoders.BASE64.decode(refreshSecret));
     }
 
+    /**
+     * authentication 객체로 액세스 토큰 생성
+     */
     public String getAccessToken(Authentication authentication) {
         return createToken(authentication, accessTokenValidityTime, accessKey, true);
     }
 
+    /**
+     * authentication 객체로 리프레시 토큰 생성
+     */
     public String getRefreshToken(Authentication authentication) {
         return createToken(authentication, refreshTokenValidityTime, refreshKey, false);
     }
 
-    // 인증 부분
+    /**
+     * 액세스/리프레시 토큰으로부터 authentication 객체 생성
+     */
     public Authentication getAuthentication(String token, boolean isAccessToken) {
         Key key = isAccessToken ? accessKey : refreshKey;
         Claims claims = Jwts
@@ -80,14 +91,17 @@ public class TokenProvider implements InitializingBean {
         UserDetails principal;
         Collection<? extends GrantedAuthority> authorities;
 
-        if (claims.containsKey(AUTH_CLAIM_NAME) && claims.containsKey("memberId")) { // 액세스 토큰일 경우(클레임 존재) DB접근 없이 클레임에서 찾음
+
+        // 토큰에 클레임 존재할 경우 DB 접근 없이 클레임에서 정보를 찾음
+        if (claims.containsKey(AUTH_CLAIM_NAME) && claims.containsKey("memberId")) {
             authorities = Arrays.stream(claims.get(AUTH_CLAIM_NAME).toString().split(","))
                     .map(SimpleGrantedAuthority::new)
                     .collect(Collectors.toList());
 
             principal = new CustomUser(claims.getSubject(), "", authorities, Long.valueOf(claims.get("memberId").toString()));
 
-        } else { // ref 토큰일 경우(클레임 없음) DB접근 후 찾음
+        // 토큰에 클레임 존재하지 않을 경우 DB 접근 후 정보를 찾음
+        } else {
             principal = customPrincipalDetailService.loadUserByUsername(claims.getSubject());
             authorities = principal.getAuthorities();
         }
@@ -128,10 +142,17 @@ public class TokenProvider implements InitializingBean {
         JwtBuilder builder = Jwts.builder()
                 .setSubject(authentication.getName());
 
-        // 이미 클레임이 존재하면 refreshtoken 만드는 부분
         if (claimIncluded) {
+            Long userPK = null;
+
+            if (authentication instanceof UsernamePasswordAuthenticationToken) {
+                userPK = ((CustomUser)authentication.getPrincipal()).getUserPK();
+            } else if (authentication instanceof OAuth2AuthenticationToken) {
+                userPK = ((CustomOAuth2User)authentication.getPrincipal()).getUserPK();
+            }
+
             builder.claim(AUTH_CLAIM_NAME, authorities)
-                    .claim("memberId", SecurityUtil.getCurrentUserPK().orElse(null));
+                    .claim("memberId", userPK);
         }
 
 
