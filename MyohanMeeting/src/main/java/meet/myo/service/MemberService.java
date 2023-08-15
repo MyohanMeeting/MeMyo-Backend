@@ -2,10 +2,7 @@ package meet.myo.service;
 
 import jakarta.mail.MessagingException;
 import lombok.RequiredArgsConstructor;
-import meet.myo.domain.EmailCertification;
-import meet.myo.domain.Member;
-import meet.myo.domain.Oauth;
-import meet.myo.domain.OauthType;
+import meet.myo.domain.*;
 import meet.myo.domain.authority.MemberAuthority;
 import meet.myo.dto.request.member.*;
 import meet.myo.dto.response.member.EmailUpdateResponseDto;
@@ -13,10 +10,7 @@ import meet.myo.dto.response.member.MemberResponseDto;
 import meet.myo.dto.response.member.MemberUpdateResponseDto;
 import meet.myo.dto.response.member.OauthUpdateResponseDto;
 import meet.myo.exception.NotFoundException;
-import meet.myo.repository.AuthorityRepository;
-import meet.myo.repository.EmailCertificationRepository;
-import meet.myo.repository.MemberAuthorityRepository;
-import meet.myo.repository.MemberRepository;
+import meet.myo.repository.*;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -37,6 +31,7 @@ public class MemberService {
     private final EmailCertificationRepository emailCertificationRepository;
     private final AuthorityRepository authorityRepository;
     private final MemberAuthorityRepository memberAuthorityRepository;
+    private final UploadRepository uploadRepository;
     private final EmailService emailService;
 
     /**
@@ -57,11 +52,13 @@ public class MemberService {
         validateNicknameDuplication(dto.getNickname());
 
         String encoded = passwordEncoder.encode(dto.getPassword());
+        Upload profileImage = uploadRepository.findByIdAndDeletedAtNull(1L).orElseThrow(NotFoundException::new);
         Member member = Member.directJoinBuilder()
                 .email(dto.getEmail())
                 .password(encoded)
                 .nickname(dto.getNickname())
                 .phoneNumber(dto.getPhoneNumber())
+                .profileImage(profileImage)
                 .build();
         MemberAuthority memberAuthority = MemberAuthority.createMemberAuthority(
                 member, authorityRepository.findByAuthorityName("ROLE_USER").orElseThrow(NotFoundException::new));
@@ -77,10 +74,12 @@ public class MemberService {
 
         validateEmailDuplication(dto.getEmail());
 
+        Upload profileImage = uploadRepository.findByIdAndDeletedAtNull(1L).orElseThrow(NotFoundException::new);
         Member.OauthJoinMemberBuilder memberBuilder = Member.oauthJoinBuilder()
                 .oauthType(dto.getOauthType() != null ? OauthType.valueOf(dto.getOauthType()) : null)
                 .oauthId(dto.getOauthId())
-                .email(dto.getEmail());
+                .email(dto.getEmail())
+                .profileImage(profileImage);
         if (dto.getNickname() != null) {
             validateNicknameDuplication(dto.getNickname());
             memberBuilder.nickname(dto.getNickname());

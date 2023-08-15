@@ -14,6 +14,7 @@ import java.util.List;
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Member extends BaseAuditingListener {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "member_id")
@@ -45,19 +46,21 @@ public class Member extends BaseAuditingListener {
     private Oauth oauth;
 
     @Builder(builderClassName = "DirectJoinMemberBuilder", builderMethodName = "directJoinBuilder")
-    Member(String email, String password, String nickname, String phoneNumber) {
+    Member(String email, String password, String nickname, String phoneNumber, Upload profileImage) {
         this.email = email;
         this.password = password;
         this.nickname = nickname;
         this.phoneNumber = phoneNumber;
+        this.profileImage = profileImage;
         this.certified = Certified.NOT_CERTIFIED; // 미인증을 기본값으로 세팅
     }
 
     @Builder(builderClassName = "OauthJoinMemberBuilder", builderMethodName = "oauthJoinBuilder")
-    Member(OauthType oauthType, String oauthId, String email, String nickname) {
+    Member(OauthType oauthType, String oauthId, String email, String nickname, Upload profileImage) {
         this.email = email;
         this.oauth = Oauth.createOauth(oauthType, oauthId);
         this.nickname = nickname;
+        this.profileImage = profileImage;
         this.certified = Certified.NOT_CERTIFIED; // 미인증을 기본값으로 세팅
     }
 
