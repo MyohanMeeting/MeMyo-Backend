@@ -33,6 +33,7 @@ public class CatPicture extends BaseAuditingListener {
         return this.upload.getUrl();
     }
 
+    public void delete() { super.delete(); }
     public static CatPicture createCatPicture(AdoptNotice notice, Upload upload) {
         CatPicture catPicture = new CatPicture();
         catPicture.adoptNotice = notice;

@@ -41,7 +41,7 @@ public class AdoptNotice extends BaseAuditingListener {
     private String content;
 
     @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "upload_id")
+    @JoinColumn(name = "thumbnail_id")
     private Upload thumbnail;
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "adoptNotice")
@@ -53,18 +53,20 @@ public class AdoptNotice extends BaseAuditingListener {
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "adoptNotice")
     private List<AdoptApplication> applicationList;
 
-    private Integer applicationCount;
+    private Integer applicationCount = 0;
 
-    private Integer commentCount;
+    private Integer commentCount = 0;
 
     // 접수중 상태로 초기화
     @Enumerated(EnumType.STRING)
     private AdoptNoticeStatus noticeStatus = AdoptNoticeStatus.ACCEPTING;
 
     @Builder
-    AdoptNotice(Cat cat, Member member, String title, String content) {
-        this.cat = cat;
+    AdoptNotice(Member member, Cat cat, Shelter shelter, Upload thumbnail, String title, String content) {
         this.member = member;
+        this.cat = cat;
+        this.shelter = shelter;
+        this.thumbnail = thumbnail;
         this.title = title;
         this.content = content;
     }
@@ -85,13 +87,6 @@ public class AdoptNotice extends BaseAuditingListener {
         this.noticeStatus = status;
     }
 
-    /**
-     * TODO: updateCat
-     */
-    public void updateCat(Cat cat) { this.cat = cat; }
-
-    public void updateShelter(Shelter shelter) { this.shelter = shelter; }
-
     public void addApplication() {
         applicationCount ++;
     }
@@ -108,4 +103,10 @@ public class AdoptNotice extends BaseAuditingListener {
         commentCount --;
     }
 
+    public void delete() {
+        catPictures.forEach(CatPicture::delete);
+        commentList.forEach(AdoptNoticeComment::delete);
+        applicationList.forEach(AdoptApplication::delete);
+        super.delete();
+    }
 }
