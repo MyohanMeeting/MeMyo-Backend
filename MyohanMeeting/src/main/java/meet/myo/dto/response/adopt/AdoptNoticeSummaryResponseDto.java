@@ -4,8 +4,6 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Getter;
 import meet.myo.domain.adopt.notice.AdoptNotice;
 
-import java.time.LocalDateTime;
-
 @Schema(name = "AdoptNoticeSummary")
 @Getter
 public class AdoptNoticeSummaryResponseDto {
@@ -21,7 +19,8 @@ public class AdoptNoticeSummaryResponseDto {
                                 // GYEONGSANG_BUK, GYEONGSANG_NAM, JEJU
     private Integer applicationCount;
     private Integer commentCount;
-    private LocalDateTime createdAt;
+
+    private String createdAt;
 
     public static AdoptNoticeSummaryResponseDto fromEntity(AdoptNotice entity) {
         AdoptNoticeSummaryResponseDto dto = new AdoptNoticeSummaryResponseDto();
@@ -35,7 +34,7 @@ public class AdoptNoticeSummaryResponseDto {
         dto.shelterCity = entity.getShelter().getCity().toString();
         dto.applicationCount = entity.getApplicationCount();
         dto.commentCount = entity.getCommentCount();
-        dto.createdAt = entity.getCreatedAt();
+        dto.createdAt = entity.getCreatedAt().toString();
         return dto;
     }
 }
