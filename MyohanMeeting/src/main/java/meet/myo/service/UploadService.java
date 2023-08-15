@@ -103,7 +103,7 @@ public class UploadService {
      * 파일 삭제
      */
     public List<Long> deleteFiles(Long memberId, List<Long> uploadIdList) {
-        List<Upload> uploadList = uploadRepository.findAllById(uploadIdList);
+        List<Upload> uploadList = uploadRepository.findByIdInAndDeletedAtNull(uploadIdList);
         Member member = memberRepository.findByIdAndDeletedAtNull(memberId)
                 .orElseThrow(() -> new NotFoundException("id에 해당하는 회원을 찾을 수 없습니다."));
 
