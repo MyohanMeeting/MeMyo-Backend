@@ -81,10 +81,10 @@ public class AdoptNoticeCommentController {
      */
     @Operation(summary = "분양공고 댓글 수정", description = "분양공고 댓글의 내용을 수정합니다.", operationId = "updateNoticeCommentV1")
     @ApiResponse(responseCode = "200") @ApiResponseCommon @ApiResponseResource @ApiResponseAuthority
-    @PatchMapping("/comments/{noticeCommentId}")
+    @PutMapping("/comments/{noticeCommentId}")
     @SecurityRequirement(name = "JWT")
     public CommonResponseDto<AdoptNoticeCommentResponseDto> updateNoticeCommentV1(
-            @Parameter(name = "noticeCommentId", description = "수정하고자 하는 공고의 id입니다.")
+            @Parameter(name = "noticeCommentId", description = "수정하고자 하는 댓글의 id입니다.")
             @PathVariable(name = "noticeCommentId") Long noticeCommentId,
 
             @Validated @RequestBody final AdoptNoticeCommentRequestDto dto

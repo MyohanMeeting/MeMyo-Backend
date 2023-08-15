@@ -1,11 +1,11 @@
 package meet.myo.dto.request.member;
 
 import lombok.Getter;
+import org.openapitools.jackson.nullable.JsonNullable;
 
 @Getter
 public class MemberUpdateRequestDto {
-    private String name;
-    private String nickname;
-    private String phoneNumber;
-    private String profileImage;
+    private JsonNullable<String> nickname = JsonNullable.undefined();
+    private JsonNullable<String> phoneNumber = JsonNullable.undefined();
+    private JsonNullable<Long> profileImageId = JsonNullable.undefined();
 }
