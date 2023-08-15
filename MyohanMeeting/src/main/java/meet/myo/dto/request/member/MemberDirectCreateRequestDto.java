@@ -14,5 +14,4 @@ public class MemberDirectCreateRequestDto {
     private String password;
     private String nickname;
     private String phoneNumber;
-    private Long profileImageId;
 }
