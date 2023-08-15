@@ -1,5 +1,6 @@
 package meet.myo.service;
 
+import jakarta.mail.MessagingException;
 import lombok.RequiredArgsConstructor;
 import meet.myo.domain.*;
 import meet.myo.domain.authority.MemberAuthority;
@@ -11,10 +12,12 @@ import meet.myo.dto.response.member.OauthUpdateResponseDto;
 import meet.myo.exception.NotFoundException;
 import meet.myo.repository.*;
 import org.springframework.dao.DuplicateKeyException;
+import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.io.UnsupportedEncodingException;
 import java.util.List;
 import java.util.UUID;
 
@@ -29,6 +32,7 @@ public class MemberService {
     private final AuthorityRepository authorityRepository;
     private final MemberAuthorityRepository memberAuthorityRepository;
     private final UploadRepository uploadRepository;
+    private final EmailService emailService;
 
     /**
      * 회원정보 조회
@@ -108,28 +112,36 @@ public class MemberService {
     }
 
     /**
-     * 이메일 인증용 메일발송 및 UUID 저장
+     * 이메일 인증용 메일발송 및 CertCode 저장
      */
     public void sendCertificationEmail(Long memberId) { // TODO: 리턴항목 생각
         Member member = memberRepository.findByIdAndDeletedAtNull(memberId)
                 .orElseThrow(() -> new NotFoundException("id에 해당하는 회원을 찾을 수 없습니다."));
         // 메일은 이곳에서 발송
-        EmailCertification emailCertification = EmailCertification.createEmailCertification(member);
-        emailCertificationRepository.save(emailCertification);
+        try {
+            EmailCertification emailCertification = EmailCertification.createEmailCertification(member);
+            emailCertificationRepository.save(emailCertification);
+            emailService.sendEmail(member.getEmail(), emailCertification.getCertCode());
+
+        } catch (MessagingException | UnsupportedEncodingException e) {
+            // TODO: 에러 처리 로직 추가
+            throw new RuntimeException("메일 전송에 실패했습니다", e);
+        }
     }
 
     /**
-     * 이메일 인증 UUID 비교
+     * 이메일 인증 CertCode 비교
      */
     public void verifyCertificationEmail(Long memberId, CertifyEmailRequestDto dto) {
         EmailCertification latestCertification =
-                emailCertificationRepository.findLatestByMemberIdAndUUIDAndDeletedAtNull(memberId, dto.getUUID())
+                emailCertificationRepository.findByMemberIdAndCertCode(memberId, dto.getCertCode())
                 .orElseThrow(() -> new NotFoundException("해당하는 이메일을 찾을 수 없습니다."));
 
         if (latestCertification.isExpired()) {
-            throw new RuntimeException("UUID가 만료되었습니다.");
+            throw new RuntimeException("인증코드가 만료되었습니다.");
         }
-
+        Member member = latestCertification.getMember();
+        member.updateCertified();
     }
 
     /**

@@ -7,6 +7,8 @@ import lombok.NoArgsConstructor;
 
 import java.time.Duration;
 import java.time.LocalDateTime;
+import java.util.Random;
+import java.util.UUID;
 
 @Entity
 @Getter
@@ -23,20 +25,23 @@ public class EmailCertification extends BaseAuditingListener {
     private Member member;
 
     @Column(nullable = false)
-    private String UUID;
+    private String certCode;
 
     private EmailCertification(Member member) {
         this.member = member;
-        this.UUID = createUUID();
+        this.certCode = createCertCode();
     }
 
     public static EmailCertification createEmailCertification(Member member) {
         return new EmailCertification(member);
     }
 
-    private String createUUID() {
-        return "";
-    } //TODO: 로직 짜기
+    private String createCertCode() {
+        Random random = new Random();
+        int min = 100000;
+        int max = 999999;
+        return String.valueOf(random.nextInt(max - min + 1) + min);
+    }
 
     public boolean isExpired() {
         return Duration.between(super.getCreatedAt(), LocalDateTime.now())
