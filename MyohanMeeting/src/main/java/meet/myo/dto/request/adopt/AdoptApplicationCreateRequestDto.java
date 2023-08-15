@@ -5,7 +5,7 @@ import lombok.Getter;
 
 @Schema(name = "adoptApplicationForm")
 @Getter
-public class AdoptApplicationRequestDto {
+public class AdoptApplicationCreateRequestDto {
 
     private Long noticeId;
     private Applicant applicant;

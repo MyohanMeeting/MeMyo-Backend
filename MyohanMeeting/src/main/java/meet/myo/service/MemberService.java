@@ -212,8 +212,13 @@ public class MemberService {
         Member member = memberRepository.findByIdAndDeletedAtNull(memberId)
                 .orElseThrow(() -> new NotFoundException("id에 해당하는 회원을 찾을 수 없습니다."));
 
-        member.updateNickname(dto.getNickname());
-        member.updatePhoneNumber(dto.getPhoneNumber());
+        if (dto.getNickname().isPresent()) { member.updateNickname(dto.getNickname().get()); }
+        if (dto.getPhoneNumber().isPresent()) { member.updatePhoneNumber(dto.getPhoneNumber().get()); }
+        if (dto.getProfileImageId().isPresent()) {
+            Upload profileImage = uploadRepository.findByIdAndDeletedAtNull(dto.getProfileImageId().get())
+                    .orElseThrow(NotFoundException::new);
+            member.updateProfileImage(profileImage);
+        }
         return MemberUpdateResponseDto.fromEntity(member);
     }
 

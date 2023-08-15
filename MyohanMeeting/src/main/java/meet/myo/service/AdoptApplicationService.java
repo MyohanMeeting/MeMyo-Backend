@@ -4,7 +4,8 @@ import lombok.RequiredArgsConstructor;
 import meet.myo.domain.Member;
 import meet.myo.domain.adopt.application.*;
 import meet.myo.domain.adopt.notice.AdoptNotice;
-import meet.myo.dto.request.adopt.AdoptApplicationRequestDto;
+import meet.myo.dto.request.adopt.AdoptApplicationCreateRequestDto;
+import meet.myo.dto.request.adopt.AdoptApplicationUpdateRequestDto;
 import meet.myo.dto.response.adopt.AdoptApplicationResponseDto;
 import meet.myo.exception.NotFoundException;
 import meet.myo.repository.AdoptApplicationRepository;
@@ -76,7 +77,7 @@ public class AdoptApplicationService {
     /**
      * 작성
      */
-    public Long createAdoptApplication(Long memberId, AdoptApplicationRequestDto dto) {
+    public Long createAdoptApplication(Long memberId, AdoptApplicationCreateRequestDto dto) {
         Member member = memberRepository.findByIdAndDeletedAtNull(memberId)
                 .orElseThrow(() -> new NotFoundException("Member not found"));
 
@@ -122,7 +123,7 @@ public class AdoptApplicationService {
     /**
      * 수정
      */
-    public AdoptApplicationResponseDto updateAdoptApplication(Long memberId, Long applicationId, AdoptApplicationRequestDto dto) {
+    public AdoptApplicationResponseDto updateAdoptApplication(Long memberId, Long applicationId, AdoptApplicationUpdateRequestDto dto) {
         AdoptApplication adoptApplication = adoptApplicationRepository.findByIdAndDeletedAtNull(applicationId)
                 .orElseThrow(() -> new NotFoundException("해당하는 분양신청이 존재하지 않습니다."));
 
@@ -130,32 +131,64 @@ public class AdoptApplicationService {
             throw new AccessDeniedException("수정할 권한이 없습니다.");
         }
 
-        //TODO: PATCH 처리
-        if (dto.getApplicant() != null) {
-            Applicant applicant = Applicant.builder()
-                    .name(dto.getApplicant().getName())
-                    .age(dto.getApplicant().getAge())
-                    .gender(dto.getApplicant().getGender() != null ? Gender.valueOf(dto.getApplicant().getGender()) : adoptApplication.getApplicant().getGender())
-                    .address(dto.getApplicant().getAddress())
-                    .phoneNumber(dto.getApplicant().getPhoneNumber())
-                    .job(dto.getApplicant().getJob())
-                    .married(dto.getApplicant().getMarried() != null ? Married.valueOf(dto.getApplicant().getMarried()) : adoptApplication.getApplicant().getMarried())
-                    .build();
+        // 신청자 정보 수정
+        if (dto.getApplicant().isPresent()) {
+            AdoptApplicationUpdateRequestDto.Applicant applicantDto = dto.getApplicant().get();
+            Applicant applicant = adoptApplication.getApplicant();
+
+            if (applicantDto.getName().isPresent()) { applicant.updateName(applicantDto.getName().get()); }
+            if (applicantDto.getAge().isPresent()) { applicant.updateAge(applicantDto.getAge().get()); }
+            if (applicantDto.getGender().isPresent() && applicantDto.getGender().get() != null) {
+                applicant.updateGender(Gender.valueOf(applicantDto.getGender().get()));
+            }
+            if (applicantDto.getAddress().isPresent()) { applicant.updateAddress(applicantDto.getAddress().get()); }
+            if (applicantDto.getPhoneNumber().isPresent()) { applicant.updatePhoneNumber(applicantDto.getPhoneNumber().get()); }
+            if (applicantDto.getJob().isPresent()) { applicant.updateJob(applicantDto.getJob().get()); }
+            if (applicantDto.getMarried().isPresent() && applicantDto.getMarried().get() != null) {
+                applicant.updateMarried(Married.valueOf(applicantDto.getMarried().get()));
+            }
         }
-        if (dto.getSurvey() != null) {
-            Survey survey = Survey.builder()
-                    .surveyAnswer1of1(dto.getSurvey().getAnswer1_1() != null ? YesOrNo.valueOf(dto.getSurvey().getAnswer1_1().toUpperCase()) : adoptApplication.getSurvey().getSurveyAnswer1of1())
-                    .surveyAnswer1of2(dto.getSurvey().getAnswer1_2() != null ? dto.getSurvey().getAnswer1_2() : adoptApplication.getSurvey().getSurveyAnswer1of2())
-                    .surveyAnswer2of1(dto.getSurvey().getAnswer2_1() != null ? YesOrNo.valueOf(dto.getSurvey().getAnswer2_1().toUpperCase()) : adoptApplication.getSurvey().getSurveyAnswer2of1())
-                    .surveyAnswer2of2(dto.getSurvey().getAnswer2_2() != null ? dto.getSurvey().getAnswer2_2() : adoptApplication.getSurvey().getSurveyAnswer2of2())
-                    .surveyAnswer3(dto.getSurvey().getAnswer3() != null ? dto.getSurvey().getAnswer3() : adoptApplication.getSurvey().getSurveyAnswer3())
-                    .surveyAnswer4(dto.getSurvey().getAnswer4() != null ? YesOrNo.valueOf(dto.getSurvey().getAnswer4().toUpperCase()) : adoptApplication.getSurvey().getSurveyAnswer4())
-                    .surveyAnswer5(dto.getSurvey().getAnswer5() != null ? dto.getSurvey().getAnswer5() : adoptApplication.getSurvey().getSurveyAnswer5())
-                    .surveyAnswer6(dto.getSurvey().getAnswer6() != null ? YesOrNo.valueOf(dto.getSurvey().getAnswer6().toUpperCase()) : adoptApplication.getSurvey().getSurveyAnswer6())
-                    .build();
+
+        // 설문조사 정보 수정
+        if (dto.getSurvey().isPresent()) {
+            AdoptApplicationUpdateRequestDto.Survey surveyDto = dto.getSurvey().get();
+            Survey survey = adoptApplication.getSurvey();
+
+            if (surveyDto.getAnswer1_1().isPresent() && surveyDto.getAnswer1_1().get() != null) {
+                survey.updateSurveyAnswer1of1(YesOrNo.valueOf(surveyDto.getAnswer1_1().get().toUpperCase()));
+            }
+
+            if (surveyDto.getAnswer1_2().isPresent()) {
+                survey.updateSurveyAnswer1of2(surveyDto.getAnswer1_2().get());
+            }
+
+            if (surveyDto.getAnswer2_1().isPresent() && surveyDto.getAnswer2_1().get() != null) {
+                survey.updateSurveyAnswer2of1(YesOrNo.valueOf(surveyDto.getAnswer1_1().get().toUpperCase()));
+            }
+
+            if (surveyDto.getAnswer2_2().isPresent()) {
+                survey.updateSurveyAnswer2of2(surveyDto.getAnswer2_2().get());
+            }
+
+            if (surveyDto.getAnswer3().isPresent()) {
+                survey.updateSurveyAnswer3(surveyDto.getAnswer3().get());
+            }
+
+            if (surveyDto.getAnswer4().isPresent() && surveyDto.getAnswer4().get() != null) {
+                survey.updateSurveyAnswer4(YesOrNo.valueOf(surveyDto.getAnswer4().get().toUpperCase()));
+            }
+
+            if (surveyDto.getAnswer5().isPresent()) {
+                survey.updateSurveyAnswer5(surveyDto.getAnswer5().get());
+            }
+
+            if (surveyDto.getAnswer6().isPresent() && surveyDto.getAnswer6().get() != null) {
+                survey.updateSurveyAnswer6(YesOrNo.valueOf(surveyDto.getAnswer6().get().toUpperCase()));
+            }
         }
-        if (dto.getContent() != null) {
-            adoptApplication.updateContent(dto.getContent());
+
+        if (dto.getContent().isPresent()) {
+            adoptApplication.updateContent(dto.getContent().get());
         }
 
         return AdoptApplicationResponseDto.fromEntity(adoptApplication);
