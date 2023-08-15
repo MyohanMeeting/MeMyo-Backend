@@ -11,8 +11,9 @@ import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import meet.myo.config.SecurityUtil;
-import meet.myo.dto.request.adopt.AdoptNoticeRequestDto;
+import meet.myo.dto.request.adopt.AdoptNoticeCreateRequestDto;
 import meet.myo.dto.request.adopt.AdoptNoticeStatusUpdateRequestDto;
+import meet.myo.dto.request.adopt.AdoptNoticeUpdateRequestDto;
 import meet.myo.dto.response.adopt.AdoptNoticeResponseDto;
 import meet.myo.dto.response.CommonResponseDto;
 import meet.myo.dto.response.adopt.AdoptNoticeSummaryResponseDto;
@@ -206,7 +207,7 @@ public class AdoptNoticeController {
     @PreAuthorize("hasAnyRole('ROLE_USER')")
     @SecurityRequirement(name = "JWT")
     @PostMapping("")
-    public CommonResponseDto<Map<String, Long>> createNoticeV1(@Validated @RequestBody final AdoptNoticeRequestDto dto) {
+    public CommonResponseDto<Map<String, Long>> createNoticeV1(@Validated @RequestBody final AdoptNoticeCreateRequestDto dto) {
         Long memberId = SecurityUtil.getCurrentUserPK().orElseThrow(() -> new NotAuthenticatedException("INVALID_ID"));
         return CommonResponseDto.<Map<String, Long>>builder()
                 .data(Map.of("noticeId", adoptNoticeService.createAdoptNotice(memberId, dto)))
@@ -220,7 +221,7 @@ public class AdoptNoticeController {
     @ApiResponse(responseCode = "200") @ApiResponseCommon @ApiResponseResource @ApiResponseAuthority
     @PreAuthorize("hasAnyRole('ROLE_USER')")
     @SecurityRequirement(name = "JWT")
-    @PatchMapping("/{noticeId}/status")
+    @PutMapping("/{noticeId}/status")
     public CommonResponseDto<AdoptNoticeResponseDto> updateNoticeStatusV1(
             @Parameter(name = "noticeId", description = "수정하고자 하는 공고의 id입니다.")
             @PathVariable(name = "noticeId") Long noticeId,
@@ -238,14 +239,14 @@ public class AdoptNoticeController {
      */
     @Operation(summary = "분양공고 수정", description = "분양공고의 내용을 수정합니다.", operationId = "updateNotice")
     @ApiResponse(responseCode = "200") @ApiResponseCommon @ApiResponseResource @ApiResponseAuthority
-    @PatchMapping("/{noticeId}")
     @PreAuthorize("hasAnyRole('ROLE_USER')")
     @SecurityRequirement(name = "JWT")
+    @PatchMapping("/{noticeId}")
     public CommonResponseDto<AdoptNoticeResponseDto> updateNoticeV1(
             @Parameter(name = "noticeId", description = "수정하고자 하는 공고의 id입니다.")
             @PathVariable(name = "noticeId") Long noticeId,
 
-            @Validated @RequestBody final AdoptNoticeRequestDto dto
+            @Validated @RequestBody final AdoptNoticeUpdateRequestDto dto
     ) {
         Long memberId = SecurityUtil.getCurrentUserPK().orElseThrow(() -> new NotAuthenticatedException("INVALID_ID"));
         return CommonResponseDto.<AdoptNoticeResponseDto>builder()

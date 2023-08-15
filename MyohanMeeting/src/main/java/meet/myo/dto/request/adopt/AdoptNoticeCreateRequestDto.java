@@ -8,10 +8,10 @@ import java.util.List;
 
 @Schema(name = "adoptNoticeForm")
 @Getter
-public class AdoptNoticeRequestDto {
+public class AdoptNoticeCreateRequestDto {
 
     private Cat cat;
-    private Shelter Shelter;
+    private Shelter shelter;
     private Long thumbnailId;
     private List<Long> catPictures;
     private String title;
