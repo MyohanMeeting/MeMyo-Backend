@@ -40,7 +40,7 @@ public class AdoptApplicationService {
             throw new AccessDeniedException("작성자만 분양신청 목록을 열람할 수 있습니다.");
         }
 
-        Page<AdoptApplication> adoptApplications = adoptApplicationRepository.findByAdoptNoticeIdAndDeletedAtNull(adoptNotice, pageable);
+        Page<AdoptApplication> adoptApplications = adoptApplicationRepository.findByAdoptNoticeIdAndDeletedAtNull(adoptNotice.getId(), pageable);
 
         return adoptApplications.getContent().stream()
                 .map(AdoptApplicationResponseDto::fromEntity)
@@ -66,7 +66,7 @@ public class AdoptApplicationService {
      */
     @Transactional(readOnly = true)
     public AdoptApplicationResponseDto getAdoptApplication(Long applicationId) {
-        AdoptApplication adoptApplication = adoptApplicationRepository.findById(applicationId)
+        AdoptApplication adoptApplication = adoptApplicationRepository.findByIdAndDeletedAtNull(applicationId)
                 .orElseThrow(() -> new NotFoundException("해당하는 분양신청이 존재하지 않습니다."));
         return AdoptApplicationResponseDto.fromEntity(adoptApplication);
     }
@@ -77,10 +77,10 @@ public class AdoptApplicationService {
      * 작성
      */
     public Long createAdoptApplication(Long memberId, AdoptApplicationRequestDto dto) {
-        Member member = memberRepository.findById(memberId)
+        Member member = memberRepository.findByIdAndDeletedAtNull(memberId)
                 .orElseThrow(() -> new NotFoundException("Member not found"));
 
-        AdoptNotice adoptNotice = adoptNoticeRepository.findById(dto.getNoticeId())
+        AdoptNotice adoptNotice = adoptNoticeRepository.findByIdAndDeletedAtNull(dto.getNoticeId())
                 .orElseThrow(() -> new NotFoundException("Adopt notice not found"));
 
         Applicant applicant = Applicant.builder()
@@ -123,7 +123,7 @@ public class AdoptApplicationService {
      * 수정
      */
     public AdoptApplicationResponseDto updateAdoptApplication(Long memberId, Long applicationId, AdoptApplicationRequestDto dto) {
-        AdoptApplication adoptApplication = adoptApplicationRepository.findById(applicationId)
+        AdoptApplication adoptApplication = adoptApplicationRepository.findByIdAndDeletedAtNull(applicationId)
                 .orElseThrow(() -> new NotFoundException("해당하는 분양신청이 존재하지 않습니다."));
 
         if (!adoptApplication.getMember().getId().equals(memberId)) {
@@ -158,7 +158,6 @@ public class AdoptApplicationService {
             adoptApplication.updateContent(dto.getContent());
         }
 
-        adoptApplicationRepository.save(adoptApplication);
         return AdoptApplicationResponseDto.fromEntity(adoptApplication);
     }
 
@@ -168,7 +167,7 @@ public class AdoptApplicationService {
      * 삭제
      */
     public Long deleteAdoptApplication(Long memberId, Long applicationId) {
-        AdoptApplication adoptApplication = adoptApplicationRepository.findById(applicationId)
+        AdoptApplication adoptApplication = adoptApplicationRepository.findByIdAndDeletedAtNull(applicationId)
                 .orElseThrow(() -> new NotFoundException("해당하는 분양신청이 존재하지 않습니다."));
 
         if (!adoptApplication.getMember().getId().equals(memberId)) {
