@@ -11,5 +11,6 @@ import java.util.Optional;
 @Repository
 public interface FavoriteRepository extends JpaRepository<Favorite, Long> {
     Optional<Favorite> findByIdAndDeletedAtNull(Long id);
-    Page<Favorite> findByIdAndDeletedAtNull(Long memberId, Pageable pageable);
+    Optional<Favorite> findByMemberIdAndAdoptNoticeIdAndDeletedAtNull(Long memberId, Long adoptNoticeId);
+    Page<Favorite> findByMemberIdAndDeletedAtNull(Long memberId, Pageable pageable);
 }
