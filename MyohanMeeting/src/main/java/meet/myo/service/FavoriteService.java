@@ -10,6 +10,7 @@ import meet.myo.dto.response.FavoriteResponseDto;
 import meet.myo.repository.AdoptNoticeRepository;
 import meet.myo.repository.FavoriteRepository;
 import meet.myo.repository.MemberRepository;
+import org.springframework.dao.DuplicateKeyException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.access.AccessDeniedException;
@@ -32,7 +33,7 @@ public class FavoriteService {
      * 찜 목록 가져오기
      */
     public List<FavoriteResponseDto> getFavoriteList(Long memberId, Pageable pageable) {
-        Page<Favorite> favoritePage = favoriteRepository.findByIdAndDeletedAtNull(memberId, pageable);
+        Page<Favorite> favoritePage = favoriteRepository.findByMemberIdAndDeletedAtNull(memberId, pageable);
 
         List<FavoriteResponseDto> favoriteList = favoritePage.stream()
                 .map(FavoriteResponseDto::fromEntity)
@@ -45,11 +46,16 @@ public class FavoriteService {
      * 찜하기
      */
     public Long createFavorite(Long memberId, CreateFavoriteRequestDto dto) {
+
         Member member = memberRepository.findByIdAndDeletedAtNull(memberId)
                 .orElseThrow(() -> new NotFoundException("회원을 찾을 수 없습니다."));
 
         AdoptNotice notice = adoptNoticeRepository.findByIdAndDeletedAtNull(dto.getNoticeId())
                 .orElseThrow(() -> new NotFoundException("공고를 찾을 수 없습니다."));
+
+        if (favoriteRepository.findByMemberIdAndAdoptNoticeIdAndDeletedAtNull(member.getId(), notice.getId()).isPresent()) {
+            throw new DuplicateKeyException("이미 등록한 최애친구입니다.");
+        }
 
         Favorite savedFavorite = favoriteRepository.save(Favorite.createFavorite(member, notice));
         return savedFavorite.getId();
