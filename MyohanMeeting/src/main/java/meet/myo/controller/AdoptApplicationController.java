@@ -9,6 +9,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import meet.myo.config.SecurityUtil;
 import meet.myo.dto.request.adopt.AdoptApplicationCreateRequestDto;
@@ -24,7 +25,6 @@ import meet.myo.springdoc.annotations.ApiResponseSignin;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -144,7 +144,7 @@ public class AdoptApplicationController {
 """)})) @ApiResponseCommon @ApiResponseResource @ApiResponseSignin
     @PostMapping("")
     public CommonResponseDto<Map<String, Long>> createApplicationV1(
-            @Validated @RequestBody final AdoptApplicationCreateRequestDto dto
+            @Valid @RequestBody final AdoptApplicationCreateRequestDto dto
     ) {
         Long memberId = SecurityUtil.getCurrentUserPK().orElseThrow(() -> new NotAuthenticatedException("INVALID_ID"));
         return CommonResponseDto.<Map<String, Long>>builder()
@@ -162,7 +162,7 @@ public class AdoptApplicationController {
             @Parameter(name = "applicationId", description = "수정하고자 하는 분양신청의 id입니다.")
             @PathVariable(name = "applicationId") Long applicationId,
 
-            @Validated @RequestBody final AdoptApplicationUpdateRequestDto dto
+            @RequestBody final AdoptApplicationUpdateRequestDto dto
     ) {
         Long memberId = SecurityUtil.getCurrentUserPK().orElseThrow(() -> new NotAuthenticatedException("INVALID_ID"));
         return CommonResponseDto.<AdoptApplicationResponseDto>builder()

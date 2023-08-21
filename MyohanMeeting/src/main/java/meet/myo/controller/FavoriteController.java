@@ -9,6 +9,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import meet.myo.config.SecurityUtil;
 import meet.myo.dto.request.CreateFavoriteRequestDto;
@@ -23,7 +24,6 @@ import meet.myo.springdoc.annotations.ApiResponseSignin;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -81,11 +81,12 @@ public class FavoriteController {
 """)})) @ApiResponseCommon @ApiResponseResource @ApiResponseSignin
     @PostMapping("")
     public CommonResponseDto<Map<String, Long>> createFavoriteV1(
-            @Validated @RequestBody final CreateFavoriteRequestDto dto
+            @Parameter(name = "noticeId", description = "최애친구로 등록하고자 하는 공고의 id입니다.", in = ParameterIn.QUERY)
+            @RequestParam(name = "noticeId") Long noticeId
     ) {
         Long memberId = SecurityUtil.getCurrentUserPK().orElseThrow(() -> new NotAuthenticatedException("INVALID_ID"));
         return CommonResponseDto.<Map<String, Long>>builder()
-                .data(Map.of("favoriteId", favoriteService.createFavorite(memberId, dto)))
+                .data(Map.of("favoriteId", favoriteService.createFavorite(memberId, noticeId)))
                 .build();
     }
 

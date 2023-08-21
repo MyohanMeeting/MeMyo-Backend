@@ -25,10 +25,10 @@ public class ErrorResponseDto {
     private String message;
 
     @Schema(description = "오류에 관한 상세 디버깅 메시지를 나타냅니다.")
-    private String debugMessage;
+    private Object debugMessage;
 
     @Builder
-    ErrorResponseDto(String status, String message, String debugMessage) {
+    ErrorResponseDto(String status, String message, Object debugMessage) {
         this.status = status;
         this.message = message;
         this.debugMessage = debugMessage;

@@ -78,12 +78,12 @@ public class AdoptNoticeService {
         Cat cat = Cat.builder()
                 .name(dto.getCat().getName())
                 .age(dto.getCat().getAge())
-                .registered(dto.getCat().getRegistered() != null ? Registered.valueOf(dto.getCat().getRegistered()) : null)
+                .registered(Registered.valueOf(dto.getCat().getRegistered()))
                 .registNumber(dto.getCat().getRegistNumber())
                 .species(dto.getCat().getSpecies())
-                .sex(dto.getCat().getSex() != null ? Sex.valueOf(dto.getCat().getSex()) : null)
+                .sex(Sex.valueOf(dto.getCat().getSex()))
                 .weight(dto.getCat().getWeight())
-                .neutered(dto.getCat().getNeutered() != null ? Neutered.valueOf(dto.getCat().getNeutered()) : null)
+                .neutered(Neutered.valueOf(dto.getCat().getNeutered()))
                 .healthStatus(dto.getCat().getHealthStatus())
                 .personality(dto.getCat().getPersonality())
                 .foundedPlace(dto.getCat().getFoundedPlace())
@@ -92,7 +92,7 @@ public class AdoptNoticeService {
 
         Shelter shelter = Shelter.builder()
                 .name(dto.getShelter().getName())
-                .city(dto.getShelter().getCity() != null ? City.valueOf(dto.getShelter().getCity()) : null)
+                .city(City.valueOf(dto.getShelter().getCity()))
                 .address(dto.getShelter().getAddress())
                 .phoneNumber(dto.getShelter().getPhoneNumber())
                 .build();
@@ -121,7 +121,7 @@ public class AdoptNoticeService {
     /**
      * 상태수정
      */
-    public AdoptNoticeResponseDto updateAdoptNoticeStatus(Long memberId, Long noticeId, AdoptNoticeStatusUpdateRequestDto dto) {
+    public AdoptNoticeResponseDto updateAdoptNoticeStatus(Long memberId, Long noticeId, String status) {
         AdoptNotice adoptNotice = adoptNoticeRepository.findByIdAndDeletedAtNull(noticeId)
                 .orElseThrow(() -> new NotFoundException("요청하신 공고가 없습니다"));
 
@@ -129,7 +129,7 @@ public class AdoptNoticeService {
             throw new AccessDeniedException("수정할 권한이 없습니다.");
         }
 
-        AdoptNoticeStatus newStatus = AdoptNoticeStatus.valueOf(dto.getStatus());
+        AdoptNoticeStatus newStatus = AdoptNoticeStatus.valueOf(status);
         adoptNotice.updateNoticeStatus(newStatus);
 
         return AdoptNoticeResponseDto.fromEntity(adoptNotice);
@@ -239,7 +239,7 @@ public class AdoptNoticeService {
     /**
      * 댓글 작성
      */
-    public Long createAdoptNoticeComment(Long memberId, AdoptNoticeCommentRequestDto dto) {
+    public Long createAdoptNoticeComment(Long memberId, AdoptNoticeCommentCreateRequestDto dto) {
         AdoptNotice notice = adoptNoticeRepository.findByIdAndDeletedAtNull(dto.getNoticeId()).orElseThrow(NotFoundException::new);
         Member member = memberRepository.findByIdAndDeletedAtNull(memberId).orElseThrow(NotFoundException::new);
         AdoptNoticeComment comment = AdoptNoticeComment.builder()
@@ -262,9 +262,9 @@ public class AdoptNoticeService {
     }
 
 
-    public AdoptNoticeCommentResponseDto updateAdoptNoticeComment(Long memberId, Long commentId, AdoptNoticeCommentRequestDto dto) {
+    public AdoptNoticeCommentResponseDto updateAdoptNoticeComment(Long memberId, Long commentId, AdoptNoticeCommentUpdateRequestDto dto) {
         AdoptNoticeComment comment = adoptNoticeCommentRepository.findByIdAndDeletedAtNull(commentId).orElseThrow(NotFoundException::new);
-        if (comment.getMember().getId() != memberId) {
+        if (!comment.getMember().getId().equals(memberId)) {
             throw new AccessDeniedException("ACCESS DENIED");
         }
         comment.updateContent(dto.getContent());
@@ -273,7 +273,7 @@ public class AdoptNoticeService {
 
     public Long deleteAdoptNoticeComment(Long memberId, Long noticeCommentId) {
         AdoptNoticeComment comment = adoptNoticeCommentRepository.findByIdAndDeletedAtNull(noticeCommentId).orElseThrow(NotFoundException::new);
-        if (comment.getMember().getId() != memberId) {
+        if (!comment.getMember().getId().equals(memberId)) {
             throw new AccessDeniedException("ACCESS DENIED");
         }
         comment.delete();

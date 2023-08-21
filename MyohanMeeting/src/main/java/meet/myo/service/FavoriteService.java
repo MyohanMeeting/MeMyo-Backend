@@ -45,12 +45,12 @@ public class FavoriteService {
     /*
      * 찜하기
      */
-    public Long createFavorite(Long memberId, CreateFavoriteRequestDto dto) {
+    public Long createFavorite(Long memberId, Long noticeId) {
 
         Member member = memberRepository.findByIdAndDeletedAtNull(memberId)
                 .orElseThrow(() -> new NotFoundException("회원을 찾을 수 없습니다."));
 
-        AdoptNotice notice = adoptNoticeRepository.findByIdAndDeletedAtNull(dto.getNoticeId())
+        AdoptNotice notice = adoptNoticeRepository.findByIdAndDeletedAtNull(noticeId)
                 .orElseThrow(() -> new NotFoundException("공고를 찾을 수 없습니다."));
 
         if (favoriteRepository.findByMemberIdAndAdoptNoticeIdAndDeletedAtNull(member.getId(), notice.getId()).isPresent()) {
