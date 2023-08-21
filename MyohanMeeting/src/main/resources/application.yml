@@ -16,4 +16,7 @@ springdoc:
   default-produces-media-type: application/json
   swagger-ui:
     defaultModelsExpandDepth: -1
+    operations-sorter: method
+    tags-sorter: alpha
+
     

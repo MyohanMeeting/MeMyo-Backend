@@ -30,7 +30,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 import java.util.Map;
 
-@Tag(name = "Adopt Notice", description = "분양공고 관련 기능")
+@Tag(name = "3. Adopt Notice", description = "분양공고 관련 기능")
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/v1/adoption/notices")

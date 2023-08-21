@@ -30,7 +30,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 import java.util.Map;
 
-@Tag(name = "Adopt Application", description = "분양신청 관련 기능")
+@Tag(name = "4. Adopt Application", description = "분양신청 관련 기능")
 @SecurityRequirement(name = "JWT")
 @RestController
 @RequiredArgsConstructor

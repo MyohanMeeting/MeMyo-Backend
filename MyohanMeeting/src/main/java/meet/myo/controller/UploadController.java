@@ -28,7 +28,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
-@Tag(name = "File", description = "파일 업로드 관련 기능")
+@Tag(name = "7. File", description = "파일 업로드 관련 기능")
 @SecurityRequirement(name = "JWT")
 @RestController
 @RequiredArgsConstructor

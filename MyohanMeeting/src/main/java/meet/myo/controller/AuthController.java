@@ -17,7 +17,7 @@ import meet.myo.springdoc.annotations.ApiResponseSignin;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
-@Tag(name = "Authentication", description = "인증 관련 기능")
+@Tag(name = "0. Authentication", description = "인증 관련 기능")
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/v1/auth")

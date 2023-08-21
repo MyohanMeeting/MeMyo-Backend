@@ -34,7 +34,7 @@ public class MemberController {
     /**
      * 직접 회원가입
      */
-    @Tag(name = "Sign Up", description = "회원가입 관련 기능")
+    @Tag(name = "1. Sign Up", description = "회원가입 관련 기능")
     @Operation(summary = "직접 가입", description = "이메일과 비밀번호로 직접 가입합니다.", operationId = "directJoin")
     @ApiResponse(responseCode = "200") @ApiResponseCommon
     @SecurityRequirement(name = "")
@@ -48,7 +48,7 @@ public class MemberController {
     /**
      * SNS 회원가입
      */
-    @Tag(name = "Sign Up", description = "회원가입 관련 기능")
+    @Tag(name = "1. Sign Up", description = "회원가입 관련 기능")
     @Operation(summary = "SNS 가입", description = "SNS 서비스를 통해 가입합니다.", operationId = "oauthJoin")
     @ApiResponse(responseCode = "200") @ApiResponseCommon
     @SecurityRequirement(name = "")
@@ -62,7 +62,7 @@ public class MemberController {
     /**
      * 이메일 중복확인
      */
-    @Tag(name = "Sign Up", description = "회원가입 관련 기능")
+    @Tag(name = "1. Sign Up", description = "회원가입 관련 기능")
     @Operation(summary = "이메일 중복 확인", description = "가입 시 이메일 중복여부를 확인합니다.", operationId = "emailDuplicationCheck")
     @ApiResponse(responseCode = "200") @ApiResponseCommon
     @SecurityRequirement(name = "")
@@ -78,7 +78,7 @@ public class MemberController {
     /**
      * 닉네임 중복확인
      */
-    @Tag(name = "Sign Up", description = "회원가입 관련 기능")
+    @Tag(name = "1. Sign Up", description = "회원가입 관련 기능")
     @Operation(summary = "닉네임 중복확인", description = "가입 시 닉네임 중복여부를 확인합니다.", operationId = "nicknameDuplicationCheck")
     @ApiResponse(responseCode = "200") @ApiResponseCommon
     @SecurityRequirement(name = "")
@@ -95,8 +95,8 @@ public class MemberController {
     /**
      * 인증 이메일 발송
      */
-    @Tag(name = "Sign Up", description = "회원가입 관련 기능")
     @Operation(summary = "인증 이메일 발송", description = "가입 후 이메일 주소 인증을 위한 이메일을 발송합니다.", operationId = "sendCertificationEmail")
+    @Tag(name = "1. Sign Up", description = "회원가입 관련 기능")
     @ApiResponse(responseCode = "200") @ApiResponseCommon @ApiResponseSignin
     @SecurityRequirement(name = "JWT")
     @PreAuthorize("hasAnyRole('ROLE_USER')")
@@ -110,7 +110,7 @@ public class MemberController {
     /**
      * 메일인증 코드 검증
      */
-    @Tag(name = "Sign Up", description = "회원가입 관련 기능")
+    @Tag(name = "1. Sign Up", description = "회원가입 관련 기능")
     @Operation(summary = "메일인증 코드 검증", description = "이메일 주소 인증코드를 검증합니다.", operationId = "verifyCertificationEmail")
     @ApiResponse(responseCode = "200") @ApiResponseCommon @ApiResponseSignin
     @SecurityRequirement(name = "JWT")
@@ -125,7 +125,7 @@ public class MemberController {
     /**
      * 내 정보 보기
      */
-    @Tag(name = "Member", description = "회원 관련 기능")
+    @Tag(name = "2. Member", description = "회원 관련 기능")
     @Operation(summary = "내 정보 보기", description = "자신의 회원정보를 확인합니다.", operationId = "getMyInfo")
     @ApiResponse(responseCode = "200") @ApiResponseCommon @ApiResponseSignin
     @SecurityRequirement(name = "JWT")
@@ -141,7 +141,7 @@ public class MemberController {
     /**
      * 내 정보 수정
      */
-    @Tag(name = "Member", description = "회원 관련 기능")
+    @Tag(name = "2. Member", description = "회원 관련 기능")
     @Operation(summary = "내 정보 수정", description = "자신의 회원정보를 수정합니다.", operationId = "updateMyInfo")
     @ApiResponse(responseCode = "200") @ApiResponseCommon @ApiResponseSignin
     @SecurityRequirement(name = "JWT")
@@ -157,7 +157,7 @@ public class MemberController {
     /**
      * 이메일 수정
      */
-    @Tag(name = "Member", description = "회원 관련 기능")
+    @Tag(name = "2. Member", description = "회원 관련 기능")
     @Operation(summary = "이메일 수정", description = "이메일을 수정합니다.", operationId = "updateEmail")
     @ApiResponse(responseCode = "200") @ApiResponseCommon @ApiResponseSignin
     @SecurityRequirement(name = "JWT")
@@ -173,7 +173,7 @@ public class MemberController {
     /**
      * 비밀번호 수정
      */
-    @Tag(name = "Member", description = "회원 관련 기능")
+    @Tag(name = "2. Member", description = "회원 관련 기능")
     @Operation(summary = "비밀번호 수정",
             description = "로그인에 사용되는 비밀번호를 수정하거나, 비밀번호를 설정한 적 없는 SNS 회원의 경우 비밀번호를 새롭게 설정합니다.",
             operationId = "updatePassword")
@@ -190,10 +190,10 @@ public class MemberController {
     /**
      * SNS 로그인 정보 수정
      */
-    @Tag(name = "Member", description = "회원 관련 기능")
     @Operation(summary = "SNS 로그인 정보 수정",
             description = "SNS 로그인 정보를 수정하거나, SNS 로그인을 설정한 적 없는 직접 가입 회원의 경우 SNS 로그인 정보를 새롭게 연결합니다.",
             operationId = "updateOauth")
+    @Tag(name = "2. Member", description = "회원 관련 기능")
     @ApiResponse(responseCode = "200") @ApiResponseCommon @ApiResponseSignin
     @SecurityRequirement(name = "JWT")
     @PreAuthorize("hasAnyRole('ROLE_USER')")
@@ -208,8 +208,8 @@ public class MemberController {
     /**
      * SNS 로그인 정보 삭제
      */
-    @Tag(name = "Member", description = "회원 관련 기능")
     @Operation(summary = "SNS 로그인 정보 삭제", description = "연결된 SNS 로그인 정보를 삭제합니다.", operationId = "removeOauth")
+    @Tag(name = "2. Member", description = "회원 관련 기능")
     @ApiResponse(responseCode = "200") @ApiResponseCommon @ApiResponseSignin
     @SecurityRequirement(name = "JWT")
     @PreAuthorize("hasAnyRole('ROLE_USER')")
@@ -223,7 +223,7 @@ public class MemberController {
     /**
      * 탈퇴
      */
-    @Tag(name = "Member", description = "회원 관련 기능")
+    @Tag(name = "2. Member", description = "회원 관련 기능")
     @Operation(summary = "회원 탈퇴", description = "서비스에서 탈퇴합니다.", operationId = "resign")
     @ApiResponse(responseCode = "200") @ApiResponseCommon @ApiResponseSignin
     @SecurityRequirement(name = "JWT")
