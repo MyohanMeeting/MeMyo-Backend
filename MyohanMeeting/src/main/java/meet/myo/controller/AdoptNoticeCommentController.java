@@ -66,7 +66,7 @@ public class AdoptNoticeCommentController {
   }
 }
 """)})) @ApiResponseCommon @ApiResponseResource @ApiResponseSignin
-    @SecurityRequirement(name = "JWT")
+    @SecurityRequirement(name = "Authorization")
     @PostMapping("/comments")
     public CommonResponseDto<Map<String, Long>> createNoticeCommentV1(
             @Valid @RequestBody final AdoptNoticeCommentCreateRequestDto dto
@@ -83,7 +83,7 @@ public class AdoptNoticeCommentController {
     @Operation(summary = "분양공고 댓글 수정", description = "분양공고 댓글의 내용을 수정합니다.", operationId = "updateNoticeCommentV1")
     @ApiResponse(responseCode = "200") @ApiResponseCommon @ApiResponseResource @ApiResponseAuthority
     @PutMapping("/comments/{noticeCommentId}")
-    @SecurityRequirement(name = "JWT")
+    @SecurityRequirement(name = "Authorization")
     public CommonResponseDto<AdoptNoticeCommentResponseDto> updateNoticeCommentV1(
             @Parameter(name = "noticeCommentId", description = "수정하고자 하는 댓글의 id입니다.")
             @PathVariable(name = "noticeCommentId") Long noticeCommentId,
@@ -111,7 +111,7 @@ public class AdoptNoticeCommentController {
   }
 }
 """)})) @ApiResponseCommon @ApiResponseResource @ApiResponseAuthority
-    @SecurityRequirement(name = "JWT")
+    @SecurityRequirement(name = "Authorization")
     @DeleteMapping("/comments/{noticeCommentId}")
     public CommonResponseDto<Map<String, Long>> deleteNoticeCommentV1(
             @Parameter(name = "noticeCommentId", description = "삭제하고자 하는 댓글의 id입니다.")

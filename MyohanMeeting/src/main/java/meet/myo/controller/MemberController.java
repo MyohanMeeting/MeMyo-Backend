@@ -155,7 +155,7 @@ public class MemberController {
     @Tag(name = "2. Member", description = "회원 관련 기능")
     @Operation(summary = "내 정보 보기", description = "자신의 회원정보를 확인합니다.", operationId = "getMyInfo")
     @ApiResponse(responseCode = "200") @ApiResponseCommon @ApiResponseSignin
-    @SecurityRequirement(name = "JWT")
+    @SecurityRequirement(name = "Authorization")
     @PreAuthorize("hasAnyRole('ROLE_USER')")
     @GetMapping("")
     public CommonResponseDto<MemberResponseDto> getMyInfoV1() {
@@ -171,7 +171,7 @@ public class MemberController {
     @Tag(name = "2. Member", description = "회원 관련 기능")
     @Operation(summary = "내 정보 수정", description = "자신의 회원정보를 수정합니다.", operationId = "updateMyInfo")
     @ApiResponse(responseCode = "200") @ApiResponseCommon @ApiResponseSignin
-    @SecurityRequirement(name = "JWT")
+    @SecurityRequirement(name = "Authorization")
     @PreAuthorize("hasAnyRole('ROLE_USER')")
     @PatchMapping("")
     public CommonResponseDto<MemberUpdateResponseDto> updateMyInfoV1(@RequestBody final MemberUpdateRequestDto dto) {
@@ -187,7 +187,7 @@ public class MemberController {
     @Tag(name = "2. Member", description = "회원 관련 기능")
     @Operation(summary = "이메일 수정", description = "이메일을 수정합니다.", operationId = "updateEmail")
     @ApiResponse(responseCode = "200") @ApiResponseCommon @ApiResponseSignin
-    @SecurityRequirement(name = "JWT")
+    @SecurityRequirement(name = "Authorization")
     @PreAuthorize("hasAnyRole('ROLE_USER')")
     @PutMapping("/email")
     public CommonResponseDto<EmailUpdateResponseDto> updateEmailV1(@Valid @RequestBody final EmailUpdateRequestDto dto) {
@@ -205,7 +205,7 @@ public class MemberController {
             description = "로그인에 사용되는 비밀번호를 수정하거나, 비밀번호를 설정한 적 없는 SNS 회원의 경우 비밀번호를 새롭게 설정합니다.",
             operationId = "updatePassword")
     @ApiResponse(responseCode = "200") @ApiResponseCommon @ApiResponseSignin
-    @SecurityRequirement(name = "JWT")
+    @SecurityRequirement(name = "Authorization")
     @PreAuthorize("hasAnyRole('ROLE_USER')")
     @PutMapping("/password")
     public CommonResponseDto updatePasswordV1(@RequestBody final PasswordUpdateRequestDto dto) {
@@ -222,7 +222,7 @@ public class MemberController {
             description = "로그인에 사용할 SNS를 새롭게 연결합니다. 이미 SNS 로그인 정보가 등록되어 있을 경우 먼저 해제가 필요합니다.",
             operationId = "registerOauth")
     @ApiResponse(responseCode = "200") @ApiResponseCommon @ApiResponseSignin
-    @SecurityRequirement(name = "JWT")
+    @SecurityRequirement(name = "Authorization")
     @PreAuthorize("hasAnyRole('ROLE_USER')")
     @PostMapping("/oauthInfo")
     public CommonResponseDto<OauthRegisterResponseDto> registerOauthV1(@Valid @RequestBody final OauthRegisterRequestDto dto) {
@@ -238,7 +238,7 @@ public class MemberController {
     @Tag(name = "2. Member", description = "회원 관련 기능")
     @Operation(summary = "SNS 연결 해제", description = "연결된 SNS 로그인 정보를 해제합니다. 비밀번호를 등록한 회원만 해제가 가능합니다.", operationId = "removeOauth")
     @ApiResponse(responseCode = "200") @ApiResponseCommon @ApiResponseSignin
-    @SecurityRequirement(name = "JWT")
+    @SecurityRequirement(name = "Authorization")
     @PreAuthorize("hasAnyRole('ROLE_USER')")
     @DeleteMapping("/oauthInfo")
     public CommonResponseDto removeOauthV1(@Valid @RequestBody OauthDeleteRequestDto dto) {
@@ -253,7 +253,7 @@ public class MemberController {
     @Tag(name = "2. Member", description = "회원 관련 기능")
     @Operation(summary = "회원 탈퇴", description = "서비스에서 탈퇴합니다.", operationId = "resign")
     @ApiResponse(responseCode = "200") @ApiResponseCommon @ApiResponseSignin
-    @SecurityRequirement(name = "JWT")
+    @SecurityRequirement(name = "Authorization")
     @PreAuthorize("hasAnyRole('ROLE_USER')")
     @DeleteMapping("")
     public CommonResponseDto resignV1() {

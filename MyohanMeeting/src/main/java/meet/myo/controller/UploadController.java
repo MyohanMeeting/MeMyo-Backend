@@ -29,7 +29,7 @@ import java.util.List;
 import java.util.Map;
 
 @Tag(name = "7. File", description = "파일 업로드 관련 기능")
-@SecurityRequirement(name = "JWT")
+@SecurityRequirement(name = "Authorization")
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/v1/files")

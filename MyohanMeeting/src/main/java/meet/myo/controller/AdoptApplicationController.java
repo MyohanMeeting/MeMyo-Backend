@@ -31,7 +31,7 @@ import java.util.List;
 import java.util.Map;
 
 @Tag(name = "4. Adopt Application", description = "분양신청 관련 기능")
-@SecurityRequirement(name = "JWT")
+@SecurityRequirement(name = "Authorization")
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/v1/adoption/applications")

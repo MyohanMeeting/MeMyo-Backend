@@ -30,7 +30,7 @@ import java.util.List;
 import java.util.Map;
 
 @Tag(name = "6. Favorite", description = "최애친구 관련 기능")
-@SecurityRequirement(name = "JWT")
+@SecurityRequirement(name = "Authorization")
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/v1/favorite")
