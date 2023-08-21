@@ -16,9 +16,9 @@ name: MyohanMeeting Backend CICD
 
 on:
   push:
-    branches: [ "develop" ]
+    branches: [ "deploy" ]
   pull_request:
-    branches: [ "develop" ]
+    branches: [ "deploy" ]
 
 env:
   PROJECT_ID: ${{ secrets.GCP_PROJECT_ID }}
