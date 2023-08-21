@@ -140,12 +140,12 @@ public class MemberController {
     @SecurityRequirement(name = "")
     @PutMapping("/certification")
     public CommonResponseDto verifyCertificationEmailV1(
-            @Parameter(name = "email", description = "회원 가입한 이메일입니다.", in = ParameterIn.QUERY, example = "myemail@email.com")
-            @RequestParam(value = "email") @Valid @Email(message = "{validation.Email}") String email,
             @Parameter(name = "certCode", description = "메일로 전달된 인증 코드입니다.", in = ParameterIn.QUERY, example = "123456")
-            @RequestParam(value = "certCode") String certCode
+            @RequestParam(value = "certCode") String certCode,
+            @Parameter(name = "email", description = "회원 가입한 이메일입니다.", in = ParameterIn.QUERY, example = "myemail@email.com")
+            @RequestParam(value = "email") @Valid @Email(message = "{validation.Email}") String email
     ) {
-        memberService.verifyCertificationEmail(email, certCode);
+        memberService.verifyCertificationEmail(certCode, email);
         return CommonResponseDto.builder().build(); // TODO: 리턴값 어떻게 할지 생각
     }
 

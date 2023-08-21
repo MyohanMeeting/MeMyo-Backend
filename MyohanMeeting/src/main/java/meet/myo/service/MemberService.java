@@ -130,9 +130,10 @@ public class MemberService {
     /**
      * 이메일 인증 CertCode 비교
      */
-    public void verifyCertificationEmail(String email, String certCode) {
+    public void verifyCertificationEmail(String certCode, String email) {
+
         EmailCertification latestCertification =
-                emailCertificationRepository.findByEmailAndCertCode(email, certCode)
+                emailCertificationRepository.findByCertCodeAndEmail(certCode, email)
                 .orElseThrow(() -> new NotFoundException("인증 메일 정보를 찾을 수 없습니다."));
 
         Member member = latestCertification.getMember();
