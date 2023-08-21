@@ -31,10 +31,10 @@ import org.springframework.http.HttpHeaders;
                 @Tag(name = "0. Authentication", description = "인증 관련 기능"),
                 @Tag(name = "1. Sign Up", description = "회원가입 관련 기능"),
                 @Tag(name = "2. Member", description = "회원 관련 기능"),
-                @Tag(name = "3. Favorite", description = "최애친구 관련 기능"),
-                @Tag(name = "4. Adopt Notice", description = "분양공고 관련 기능"),
+                @Tag(name = "3. Adopt Notice", description = "분양공고 관련 기능"),
+                @Tag(name = "4. Adopt Application", description = "분양신청 관련 기능"),
                 @Tag(name = "5. Adopt Notice Comment", description = "분양공고 댓글 관련 기능"),
-                @Tag(name = "6. Adopt Application", description = "분양신청 관련 기능"),
+                @Tag(name = "6. Favorite", description = "최애친구 관련 기능"),
                 @Tag(name = "7. File", description = "파일 업로드 관련 기능")
         }
 )

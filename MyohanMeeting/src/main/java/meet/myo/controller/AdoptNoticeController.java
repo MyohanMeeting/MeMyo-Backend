@@ -9,10 +9,10 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import meet.myo.config.SecurityUtil;
 import meet.myo.dto.request.adopt.AdoptNoticeCreateRequestDto;
-import meet.myo.dto.request.adopt.AdoptNoticeStatusUpdateRequestDto;
 import meet.myo.dto.request.adopt.AdoptNoticeUpdateRequestDto;
 import meet.myo.dto.response.adopt.AdoptNoticeResponseDto;
 import meet.myo.dto.response.CommonResponseDto;
@@ -24,7 +24,6 @@ import meet.myo.springdoc.annotations.*;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -207,7 +206,7 @@ public class AdoptNoticeController {
     @PreAuthorize("hasAnyRole('ROLE_USER')")
     @SecurityRequirement(name = "JWT")
     @PostMapping("")
-    public CommonResponseDto<Map<String, Long>> createNoticeV1(@Validated @RequestBody final AdoptNoticeCreateRequestDto dto) {
+    public CommonResponseDto<Map<String, Long>> createNoticeV1(@Valid @RequestBody final AdoptNoticeCreateRequestDto dto) {
         Long memberId = SecurityUtil.getCurrentUserPK().orElseThrow(() -> new NotAuthenticatedException("INVALID_ID"));
         return CommonResponseDto.<Map<String, Long>>builder()
                 .data(Map.of("noticeId", adoptNoticeService.createAdoptNotice(memberId, dto)))
@@ -226,11 +225,13 @@ public class AdoptNoticeController {
             @Parameter(name = "noticeId", description = "수정하고자 하는 공고의 id입니다.")
             @PathVariable(name = "noticeId") Long noticeId,
 
-            @Validated @RequestBody final AdoptNoticeStatusUpdateRequestDto dto
+            @Schema(allowableValues = {"ACCEPTING", "COMPLETE", "CANCELED"})
+            @Parameter(name = "status", description = "수정하고자 하는 공고의 상태입니다.", in = ParameterIn.QUERY)
+            @RequestParam(name = "status") String status
     ) {
         Long memberId = SecurityUtil.getCurrentUserPK().orElseThrow(() -> new NotAuthenticatedException("INVALID_ID"));
         return CommonResponseDto.<AdoptNoticeResponseDto>builder()
-                .data(adoptNoticeService.updateAdoptNoticeStatus(memberId, noticeId, dto))
+                .data(adoptNoticeService.updateAdoptNoticeStatus(memberId, noticeId, status))
                 .build();
     }
 
@@ -246,7 +247,7 @@ public class AdoptNoticeController {
             @Parameter(name = "noticeId", description = "수정하고자 하는 공고의 id입니다.")
             @PathVariable(name = "noticeId") Long noticeId,
 
-            @Validated @RequestBody final AdoptNoticeUpdateRequestDto dto
+            @RequestBody final AdoptNoticeUpdateRequestDto dto
     ) {
         Long memberId = SecurityUtil.getCurrentUserPK().orElseThrow(() -> new NotAuthenticatedException("INVALID_ID"));
         return CommonResponseDto.<AdoptNoticeResponseDto>builder()

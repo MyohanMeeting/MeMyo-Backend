@@ -8,6 +8,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import meet.myo.config.SecurityUtil;
 import meet.myo.dto.request.DeleteFilesRequestDto;
@@ -20,7 +21,6 @@ import meet.myo.springdoc.annotations.ApiResponseCommon;
 import meet.myo.springdoc.annotations.ApiResponseResource;
 import meet.myo.springdoc.annotations.ApiResponseSignin;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -72,7 +72,9 @@ public class UploadController {
     @PostMapping("")
     public CommonResponseDto<Map<String, List<Long>>> uploadFilesV1(
             @Parameter(name = "files", description = "업로드하고자 하는 파일 배열입니다.")
-            @RequestParam MultipartFile[] files,
+            @RequestParam(value = "files") MultipartFile[] files,
+
+            @Schema(type = "string", allowableValues = {"CAT", "PROFILE", "SERVICE", "NO_CATEGORY"})
             @RequestParam(value = "category") String fileCategory
     ) {
         Long memberId = SecurityUtil.getCurrentUserPK().orElseThrow(() -> new NotAuthenticatedException("INVALID_ID"));
@@ -98,7 +100,7 @@ public class UploadController {
 """)})) @ApiResponseCommon @ApiResponseResource @ApiResponseAuthority
     @DeleteMapping("")
     public CommonResponseDto<Map<String, List<Long>>> deleteFilesV1(
-            @Validated @RequestBody final DeleteFilesRequestDto dto
+            @Valid @RequestBody final DeleteFilesRequestDto dto
     ) {
         Long memberId = SecurityUtil.getCurrentUserPK().orElseThrow(() -> new NotAuthenticatedException("INVALID_ID"));
         return CommonResponseDto.<Map<String, List<Long>>>builder()

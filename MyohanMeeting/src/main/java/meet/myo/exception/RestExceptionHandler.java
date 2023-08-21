@@ -1,5 +1,8 @@
 package meet.myo.exception;
 
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatusCode;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.core.Ordered;
@@ -11,11 +14,31 @@ import org.springframework.security.core.AuthenticationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import meet.myo.dto.response.ErrorResponseDto;
+import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
+
+import java.util.stream.Collectors;
 
 @Order(Ordered.HIGHEST_PRECEDENCE)
 @RestControllerAdvice
 public class RestExceptionHandler extends ResponseEntityExceptionHandler {
+
+    @Override
+    protected ResponseEntity<Object> handleMethodArgumentNotValid(
+            MethodArgumentNotValidException ex, HttpHeaders headers, HttpStatusCode status, WebRequest request) {
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(
+                ErrorResponseDto.builder()
+                        .status(HttpStatus.BAD_REQUEST.toString())
+                        .message("INVALID PARAMETER")
+                        .debugMessage(ex.getFieldErrors().stream().collect(
+                                Collectors.toMap(
+                                        key -> key.getField(),
+                                        val -> val.getDefaultMessage() != null ? val.getDefaultMessage() : "",
+                                        (val1, val2) -> val1 + ";" + val2
+                                )
+                        ))
+                        .build());
+    }
 
     @ExceptionHandler(IllegalArgumentException.class)
     public ResponseEntity<ErrorResponseDto> handleIllegalArgumentException(IllegalArgumentException ex) {
@@ -35,7 +58,7 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
                         .message("AUTHORIZATION REQUIRED")
                         .debugMessage(ex.getMessage())
                         .build());
-        }
+    }
 
     @ExceptionHandler(AccessDeniedException.class)
     protected ResponseEntity<ErrorResponseDto> handleDataAccessException(AccessDeniedException ex) {
@@ -82,4 +105,5 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
                         .debugMessage(ex.getMessage())
                         .build());
     }
+
 }

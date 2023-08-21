@@ -3,11 +3,15 @@ package meet.myo.controller;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.enums.ParameterIn;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.ExampleObject;
+import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.Size;
 import lombok.RequiredArgsConstructor;
 import meet.myo.config.SecurityUtil;
 import meet.myo.dto.request.member.*;
@@ -38,10 +42,20 @@ public class MemberController {
      */
     @Tag(name = "1. Sign Up", description = "회원가입 관련 기능")
     @Operation(summary = "직접 가입", description = "이메일과 비밀번호로 직접 가입합니다.", operationId = "directJoin")
-    @ApiResponse(responseCode = "200") @ApiResponseCommon
+    @ApiResponse(responseCode = "200", description = "작성 성공", content = @Content(
+            schema = @Schema(implementation = CommonResponseDto.class), examples = { @ExampleObject(value = """
+{
+  "status": "200 OK",
+  "timestamp": "2023-06-10T09:19:08.550Z",
+  "message": "SUCCESS",
+  "data": {
+    "memberId" : 1
+  }
+}
+""")})) @ApiResponseCommon
     @SecurityRequirement(name = "")
     @PostMapping("/direct")
-    public CommonResponseDto<Map<String, Long>> joinDirectV1(@Validated @RequestBody final MemberDirectCreateRequestDto dto) {
+    public CommonResponseDto<Map<String, Long>> joinDirectV1(@Valid @RequestBody final MemberDirectCreateRequestDto dto) {
         return CommonResponseDto.<Map<String, Long>>builder()
                 .data(Map.of("memberId", memberService.directJoin(dto)))
                 .build();
@@ -52,10 +66,20 @@ public class MemberController {
      */
     @Tag(name = "1. Sign Up", description = "회원가입 관련 기능")
     @Operation(summary = "SNS 가입", description = "SNS 서비스를 통해 가입합니다.", operationId = "oauthJoin")
-    @ApiResponse(responseCode = "200") @ApiResponseCommon
+    @ApiResponse(responseCode = "200", description = "작성 성공", content = @Content(
+            schema = @Schema(implementation = CommonResponseDto.class), examples = { @ExampleObject(value = """
+{
+  "status": "200 OK",
+  "timestamp": "2023-06-10T09:19:08.550Z",
+  "message": "SUCCESS",
+  "data": {
+    "memberId" : 1
+  }
+}
+""")})) @ApiResponseCommon
     @SecurityRequirement(name = "")
     @PostMapping("/oauth")
-    public CommonResponseDto<Map<String, Long>> joinOauthV1(@Validated @RequestBody final MemberOauthCreateRequestDto dto) {
+    public CommonResponseDto<Map<String, Long>> joinOauthV1(@Valid @RequestBody final MemberOauthCreateRequestDto dto) {
         return CommonResponseDto.<Map<String, Long>>builder()
                 .data(Map.of("memberId", memberService.oauthJoin(dto)))
                 .build();
@@ -70,8 +94,8 @@ public class MemberController {
     @SecurityRequirement(name = "")
     @GetMapping("/email")
     public CommonResponseDto emailDuplicationCheckV1(
-            @Parameter(name = "email", description = "중복을 확인할 이메일입니다.", in = ParameterIn.QUERY)
-            @RequestParam(value = "email") String email
+            @Parameter(name = "email", description = "중복을 확인할 이메일입니다.", in = ParameterIn.QUERY, example = "dupltest@test.com")
+            @RequestParam(value = "email") @Valid @Email(message = "{validation.Email}") String email
     ) {
         memberService.emailDuplicationCheck(email);
         return CommonResponseDto.builder().build();
@@ -87,12 +111,11 @@ public class MemberController {
     @GetMapping("/nickname")
     public CommonResponseDto nicknameDuplicationCheckV1(
             @Parameter(name = "nickname", description = "중복을 확인할 닉네임입니다.", in = ParameterIn.QUERY)
-            @RequestParam(value = "nickname") String nickname
+            @RequestParam(value = "nickname") @Valid @Size(min = 2, max = 12, message = "{validation.ValidJsonNullable}") String nickname
     ) {
         memberService.nicknameDuplicationCheck(nickname);
         return CommonResponseDto.builder().build();
     }
-
 
     /**
      * 인증 이메일 발송
@@ -152,7 +175,7 @@ public class MemberController {
     @SecurityRequirement(name = "JWT")
     @PreAuthorize("hasAnyRole('ROLE_USER')")
     @PatchMapping("")
-    public CommonResponseDto<MemberUpdateResponseDto> updateMyInfoV1(@Validated @RequestBody final MemberUpdateRequestDto dto) {
+    public CommonResponseDto<MemberUpdateResponseDto> updateMyInfoV1(@RequestBody final MemberUpdateRequestDto dto) {
         Long memberId = SecurityUtil.getCurrentUserPK().orElseThrow(() -> new NotAuthenticatedException("INVALID_ID"));
         return CommonResponseDto.<MemberUpdateResponseDto>builder()
                 .data(memberService.updateMember(memberId, dto))
@@ -168,7 +191,7 @@ public class MemberController {
     @SecurityRequirement(name = "JWT")
     @PreAuthorize("hasAnyRole('ROLE_USER')")
     @PutMapping("/email")
-    public CommonResponseDto<EmailUpdateResponseDto> updateEmailV1(@Validated @RequestBody final EmailUpdateRequestDto dto) {
+    public CommonResponseDto<EmailUpdateResponseDto> updateEmailV1(@Valid @RequestBody final EmailUpdateRequestDto dto) {
         Long memberId = SecurityUtil.getCurrentUserPK().orElseThrow(() -> new NotAuthenticatedException("INVALID_ID"));
         return CommonResponseDto.<EmailUpdateResponseDto>builder()
                 .data(memberService.updateEmail(memberId, dto))
@@ -186,7 +209,7 @@ public class MemberController {
     @SecurityRequirement(name = "JWT")
     @PreAuthorize("hasAnyRole('ROLE_USER')")
     @PutMapping("/password")
-    public CommonResponseDto updatePasswordV1(@Validated @RequestBody final PasswordUpdateRequestDto dto) {
+    public CommonResponseDto updatePasswordV1(@RequestBody final PasswordUpdateRequestDto dto) {
         Long memberId = SecurityUtil.getCurrentUserPK().orElseThrow(() -> new NotAuthenticatedException("INVALID_ID"));
         memberService.updatePassword(memberId, dto);
         return CommonResponseDto.builder().build();

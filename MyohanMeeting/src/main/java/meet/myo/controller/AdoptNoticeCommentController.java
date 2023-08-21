@@ -8,9 +8,11 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import meet.myo.config.SecurityUtil;
-import meet.myo.dto.request.adopt.AdoptNoticeCommentRequestDto;
+import meet.myo.dto.request.adopt.AdoptNoticeCommentCreateRequestDto;
+import meet.myo.dto.request.adopt.AdoptNoticeCommentUpdateRequestDto;
 import meet.myo.dto.response.adopt.AdoptNoticeCommentResponseDto;
 import meet.myo.dto.response.CommonResponseDto;
 import meet.myo.exception.NotAuthenticatedException;
@@ -20,7 +22,6 @@ import meet.myo.springdoc.annotations.ApiResponseCommon;
 import meet.myo.springdoc.annotations.ApiResponseResource;
 import meet.myo.springdoc.annotations.ApiResponseSignin;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -68,7 +69,7 @@ public class AdoptNoticeCommentController {
     @SecurityRequirement(name = "JWT")
     @PostMapping("/comments")
     public CommonResponseDto<Map<String, Long>> createNoticeCommentV1(
-            @Validated @RequestBody final AdoptNoticeCommentRequestDto dto
+            @Valid @RequestBody final AdoptNoticeCommentCreateRequestDto dto
     ) {
         Long memberId = SecurityUtil.getCurrentUserPK().orElseThrow(() -> new NotAuthenticatedException("INVALID_ID"));
         return CommonResponseDto.<Map<String, Long>>builder()
@@ -87,7 +88,7 @@ public class AdoptNoticeCommentController {
             @Parameter(name = "noticeCommentId", description = "수정하고자 하는 댓글의 id입니다.")
             @PathVariable(name = "noticeCommentId") Long noticeCommentId,
 
-            @Validated @RequestBody final AdoptNoticeCommentRequestDto dto
+            @RequestBody final AdoptNoticeCommentUpdateRequestDto dto
     ) {
         Long memberId = SecurityUtil.getCurrentUserPK().orElseThrow(() -> new NotAuthenticatedException("INVALID_ID"));
         return CommonResponseDto.<AdoptNoticeCommentResponseDto>builder()
