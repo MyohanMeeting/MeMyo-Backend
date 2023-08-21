@@ -44,7 +44,7 @@ public class CustomPrincipalDetailService implements UserDetailsService {
      * loadByUsername과는 달리 직접 호출해야 함.
      */
     public CustomOAuth2User loadUserByOauth(String oauthType, String oauthId) {
-        return memberRepository.findByOauthOauthTypeAndOauthOauthIdAndDeletedAtNull(OauthType.valueOf(oauthType), oauthId)
+        return memberRepository.findByOauth(OauthType.valueOf(oauthType), oauthId)
                 .map(this::createOauthUser)
                 .orElseThrow(NotFoundException::new);
     }

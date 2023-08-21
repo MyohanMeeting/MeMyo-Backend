@@ -4,11 +4,12 @@ import jakarta.mail.MessagingException;
 import lombok.RequiredArgsConstructor;
 import meet.myo.domain.*;
 import meet.myo.domain.authority.MemberAuthority;
+import meet.myo.dto.request.member.OauthDeleteRequestDto;
 import meet.myo.dto.request.member.*;
 import meet.myo.dto.response.member.EmailUpdateResponseDto;
 import meet.myo.dto.response.member.MemberResponseDto;
 import meet.myo.dto.response.member.MemberUpdateResponseDto;
-import meet.myo.dto.response.member.OauthUpdateResponseDto;
+import meet.myo.dto.response.member.OauthRegisterResponseDto;
 import meet.myo.exception.NotFoundException;
 import meet.myo.repository.*;
 import org.springframework.dao.DuplicateKeyException;
@@ -74,6 +75,7 @@ public class MemberService {
     public Long oauthJoin(MemberOauthCreateRequestDto dto) {
 
         validateEmailDuplication(dto.getEmail());
+        validationOauthDuplication(dto.getOauthType(), dto.getOauthId());
 
         Upload profileImage = uploadRepository.findByIdAndDeletedAtNull(1L).orElseThrow(NotFoundException::new);
         Member.OauthJoinMemberBuilder builder = Member.oauthJoinBuilder()
@@ -168,27 +170,37 @@ public class MemberService {
 
 
     /**
-     * Oauth 수정
+     * Oauth 연결
      */
-    public OauthUpdateResponseDto updateOauth(Long memberId, OauthUpdateRequestDto dto) {
+    public OauthRegisterResponseDto registerOauth(Long memberId, OauthRegisterRequestDto dto) {
         Member member = memberRepository.findByIdAndDeletedAtNull(memberId)
                 .orElseThrow(() -> new NotFoundException("id에 해당하는 회원을 찾을 수 없습니다."));
+
+        if (member.getOauth() != null) {
+            throw new DuplicateKeyException("이미 연결된 SNS가 존재합니다. 변경을 원하시면 삭제 후 다시 등록해 주세요.");
+        }
 
         Oauth updatedOauth = Oauth.createOauth(OauthType.valueOf(dto.getOauthType()), dto.getOauthId()); //TODO: null check
         member.updateOauth(updatedOauth);
 
-        return OauthUpdateResponseDto.fromEntity(member);
+        return OauthRegisterResponseDto.fromEntity(member);
     }
 
     /**
      * Oauth 삭제
      */
-    public void deleteOauth(Long memberId) {
+    public void deleteOauth(Long memberId, OauthDeleteRequestDto dto) {
         Member member = memberRepository.findByIdAndDeletedAtNull(memberId)
                 .orElseThrow(() -> new NotFoundException("id에 해당하는 회원을 찾을 수 없습니다."));
+
         if (member.getPassword() == null) {
             throw new IllegalArgumentException("SNS 로그인 정보를 삭제하려면 먼저 비밀번호를 설정해야 합니다.");
         }
+
+        if (!passwordEncoder.matches(dto.getPassword(), member.getPassword())) {
+            throw new AccessDeniedException("비밀번호가 일치하지 않습니다.");
+        }
+
         member.updateOauth(null);
     }
 
@@ -268,6 +280,13 @@ public class MemberService {
         memberRepository.findByEmailAndDeletedAtNull(email)
                 .ifPresent(m -> {
                     throw new DuplicateKeyException("이미 같은 이메일이 존재합니다.");
+                });
+    }
+
+    private void validationOauthDuplication(String oauthType, String oauthId) {
+        memberRepository.findByOauth(OauthType.valueOf(oauthType), oauthId)
+                .ifPresent(m -> {
+                    throw new DuplicateKeyException("이미 해당 SNS 로그인 정보가 존재합니다.");
                 });
     }
 
