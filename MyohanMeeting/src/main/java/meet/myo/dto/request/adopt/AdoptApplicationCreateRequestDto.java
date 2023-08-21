@@ -4,6 +4,10 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.Getter;
+import meet.myo.domain.adopt.application.Gender;
+import meet.myo.domain.adopt.application.Married;
+import meet.myo.domain.adopt.application.YesOrNo;
+import meet.myo.util.validation.enums.EnumValid;
 import meet.myo.util.validation.pattern.CustomPattern;
 import meet.myo.util.validation.pattern.CustomPatternRegexp;
 
@@ -41,6 +45,7 @@ public class AdoptApplicationCreateRequestDto {
 
         @Schema(type = "string", allowableValues = {"MALE", "FEMALE", "OTHER"}, example = "FEMALE")
         @NotNull(message = "{validation.NotNull}")
+        @EnumValid(enumClass = Gender.class)
         private String gender;
 
         @Schema(type = "string", example = "서울시 중구 필동 99가 9동 9호")
@@ -59,6 +64,7 @@ public class AdoptApplicationCreateRequestDto {
 
         @Schema(type = "string", allowableValues = {"MARRIED", "UNMARRIED"}, example = "UNMARRIED")
         @NotNull(message = "{validation.NotNull}")
+        @EnumValid(enumClass = Married.class)
         private String married;
 
     }
@@ -67,6 +73,7 @@ public class AdoptApplicationCreateRequestDto {
         @Schema(type = "string", allowableValues = {"YES", "NO"},
                 description = "1-1. 반려동물을 키우신 적이 있습니까?", example = "YES")
         @NotNull(message = "{validation.NotNull}")
+        @EnumValid(enumClass = YesOrNo.class)
         private String answer1_1;
 
         @Schema(type = "string", description = "1-2. 어떤 종류의 동물인지, 얼마나 키우셨는지, 지금은 어떻게 되었는지 적어주세요.",
@@ -77,6 +84,7 @@ public class AdoptApplicationCreateRequestDto {
         @Schema(type = "string", allowableValues = {"YES", "NO"},
                 description = "2-1. 현재 집에 다른 동물을 키우고 계십니까?", example = "YES")
         @NotNull(message = "{validation.NotNull}")
+        @EnumValid(enumClass = YesOrNo.class)
         private String answer2_1;
 
         @Schema(type = "string", description = "2-2. 동물의 종류와 나이, 성별, 중성화 여부를 적어주세요.",
@@ -93,6 +101,7 @@ public class AdoptApplicationCreateRequestDto {
         @Schema(type = "string", allowableValues = {"YES", "NO", "PARTIAL"},
                 description = "4. 가족들은 유기동물 입양을 찬성하나요?", example = "YES")
         @NotNull(message = "{validation.NotNull}")
+        @EnumValid(enumClass = YesOrNo.class)
         private String answer4;
 
         @Schema(type = "string", description = "5. 입양을 원하는 이유는 무엇인가요?",
@@ -104,6 +113,7 @@ public class AdoptApplicationCreateRequestDto {
         @Schema(type = "string", allowableValues = {"YES", "NO"},
                 description = "6. 만일 분양자가 원한다면 입양 후 입양동물의 사진을 전해주실 수 있나요?", example = "YES")
         @NotNull(message = "{validation.NotNull}")
+        @EnumValid(enumClass = YesOrNo.class)
         private String answer6;
     }
 }

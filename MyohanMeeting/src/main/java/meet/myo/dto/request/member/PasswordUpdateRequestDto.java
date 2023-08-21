@@ -13,7 +13,7 @@ public class PasswordUpdateRequestDto {
     private String currentPassword;
 
     @Schema(type = "string", example = "newPassword")
-    @Size(min = 8, max = 24, message = "{validation.ValidJsonNullable}")
+    @Size(min = 8, max = 24, message = "{validation.Size}")
     @CustomPattern(regexp = CustomPatternRegexp.PASSWORD, message = "{validation.Pattern.password}")
     private String newPassword;
 }

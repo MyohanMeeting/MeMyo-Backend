@@ -17,7 +17,7 @@ public class DirectSignInRequestDto implements SignInRequestDto {
 
     @Schema(type = "string", example = "user1234!")
     @NotNull(message = "{validation.NotNull}")
-    @Size(min = 8, max = 24, message = "{validation.ValidJsonNullable}")
+    @Size(min = 8, max = 24, message = "{validation.Size}")
     @CustomPattern(regexp = CustomPatternRegexp.PASSWORD, message = "{validation.Pattern.password}")
     private String password;
 }

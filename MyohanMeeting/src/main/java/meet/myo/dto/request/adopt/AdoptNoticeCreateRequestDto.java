@@ -4,6 +4,11 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.Getter;
+import meet.myo.domain.adopt.notice.City;
+import meet.myo.domain.adopt.notice.cat.Neutered;
+import meet.myo.domain.adopt.notice.cat.Registered;
+import meet.myo.domain.adopt.notice.cat.Sex;
+import meet.myo.util.validation.enums.EnumValid;
 import meet.myo.util.validation.pattern.CustomPattern;
 import meet.myo.util.validation.pattern.CustomPatternRegexp;
 
@@ -55,12 +60,11 @@ public class AdoptNoticeCreateRequestDto {
                 allowableValues = {"REGISTERED", "NOT_REGISTERED"},
                 example = "REGISTERED")
         @NotNull(message = "{validation.NotNull}")
-        @Size(max = 32, message = "{validation.Size}")
+        @EnumValid(enumClass = Registered.class)
         private String registered;
 
         @Schema(type = "string", description = "농림축산검역본부 국가동물정보보호시스템에 등록된 구조동물 관리번호를 입력합니다.",
                 example = "전북-군산-2023-00000")
-        @NotNull(message = "{validation.NotNull}")
         @Size(max = 32, message = "{validation.Size}")
         private String registNumber;
 
@@ -75,10 +79,12 @@ public class AdoptNoticeCreateRequestDto {
 
         @Schema(type = "string", allowableValues = {"MALE", "FEMALE", "OTHER"}, example = "FEMALE")
         @NotNull(message = "{validation.NotNull}")
+        @EnumValid(enumClass = Sex.class)
         private String sex;
 
         @Schema(type = "string", allowableValues = {"NEUTERED", "NOT_NEUTERED", "UNKNOWN"}, example = "NEUTERED")
         @NotNull(message = "{validation.NotNull}")
+        @EnumValid(enumClass = Neutered.class)
         private String neutered;
 
         @Schema(type = "string", example = "건강에 아무 이상 없고 예방접종도 모두 마쳤어요.")
@@ -109,7 +115,7 @@ public class AdoptNoticeCreateRequestDto {
                 "ULSAN", "DAEJEON", "GYEONGGI", "GANGWON", "CHUNGCHEONG_BUK", "CHUNGCHEONG_NAM", "JEOLLA_BUK",
                 "JEOLLA_NAM", "GYEONGSANG_BUK", "GYEONGSANG_NAM", "JEJU"}, example = "JEOLLA_BUK")
         @NotNull(message = "{validation.NotNull}")
-        @Size(max = 255, message = "{validation.Size}")
+        @EnumValid(enumClass = City.class)
         private String city;
 
         @Schema(type = "string", example = "묘한보호소")

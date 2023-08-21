@@ -11,6 +11,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import meet.myo.config.SecurityUtil;
+import meet.myo.domain.FileCategory;
 import meet.myo.dto.request.DeleteFilesRequestDto;
 import meet.myo.dto.response.CommonResponseDto;
 import meet.myo.dto.response.UploadResponseDto;
@@ -20,6 +21,7 @@ import meet.myo.springdoc.annotations.ApiResponseAuthority;
 import meet.myo.springdoc.annotations.ApiResponseCommon;
 import meet.myo.springdoc.annotations.ApiResponseResource;
 import meet.myo.springdoc.annotations.ApiResponseSignin;
+import meet.myo.util.validation.enums.EnumValid;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -75,7 +77,7 @@ public class UploadController {
             @RequestParam(value = "files") MultipartFile[] files,
 
             @Schema(type = "string", allowableValues = {"CAT", "PROFILE", "SERVICE", "NO_CATEGORY"})
-            @RequestParam(value = "category") String fileCategory
+            @Valid @EnumValid(enumClass = FileCategory.class) @RequestParam(value = "category") String fileCategory
     ) {
         Long memberId = SecurityUtil.getCurrentUserPK().orElseThrow(() -> new NotAuthenticatedException("INVALID_ID"));
         return CommonResponseDto.<Map<String, List<Long>>>builder()

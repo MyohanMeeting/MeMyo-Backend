@@ -110,7 +110,7 @@ public class MemberController {
     @GetMapping("/nickname")
     public CommonResponseDto nicknameDuplicationCheckV1(
             @Parameter(name = "nickname", description = "중복을 확인할 닉네임입니다.", in = ParameterIn.QUERY)
-            @RequestParam(value = "nickname") @Valid @Size(min = 2, max = 12, message = "{validation.ValidJsonNullable}") String nickname
+            @RequestParam(value = "nickname") @Valid @Size(min = 2, max = 12, message = "{validation.Size}") String nickname
     ) {
         memberService.nicknameDuplicationCheck(nickname);
         return CommonResponseDto.builder().build();

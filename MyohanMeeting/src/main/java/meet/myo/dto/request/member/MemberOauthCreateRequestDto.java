@@ -25,7 +25,6 @@ public class MemberOauthCreateRequestDto {
     @Email(message = "{validation.Pattern.email}")
     private String email;
 
-//    @NotNull(message = "{validation.NotNull}")
-    @Size(min = 2, max = 12, message = "{validation.ValidJsonNullable}")
+    @Size(min = 2, max = 12, message = "{validation.Size}")
     private String nickname;
 }
