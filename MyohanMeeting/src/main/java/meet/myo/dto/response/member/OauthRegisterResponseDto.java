@@ -4,11 +4,11 @@ import lombok.Getter;
 import meet.myo.domain.Member;
 
 @Getter
-public class OauthUpdateResponseDto {
+public class OauthRegisterResponseDto {
     private String oauthType;
 
-    public static OauthUpdateResponseDto fromEntity(Member member) {
-        OauthUpdateResponseDto dto = new OauthUpdateResponseDto();
+    public static OauthRegisterResponseDto fromEntity(Member member) {
+        OauthRegisterResponseDto dto = new OauthRegisterResponseDto();
         dto.oauthType = member.getOauth().getOauthType().toString();
         return dto;
     }

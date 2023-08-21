@@ -7,7 +7,7 @@ import meet.myo.domain.OauthType;
 import meet.myo.util.validation.enums.EnumValid;
 
 @Getter
-public class OauthUpdateRequestDto {
+public class OauthRegisterRequestDto {
 
     @Schema(type = "string", allowableValues = {"KAKAOTALK"}, example = "KAKAOTALK")
     @NotNull(message = "{validation.NotNull}")

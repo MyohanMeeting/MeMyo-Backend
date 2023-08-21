@@ -19,13 +19,12 @@ import meet.myo.dto.response.*;
 import meet.myo.dto.response.member.EmailUpdateResponseDto;
 import meet.myo.dto.response.member.MemberResponseDto;
 import meet.myo.dto.response.member.MemberUpdateResponseDto;
-import meet.myo.dto.response.member.OauthUpdateResponseDto;
+import meet.myo.dto.response.member.OauthRegisterResponseDto;
 import meet.myo.exception.NotAuthenticatedException;
 import meet.myo.service.MemberService;
 import meet.myo.springdoc.annotations.ApiResponseCommon;
 import meet.myo.springdoc.annotations.ApiResponseSignin;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Map;
@@ -216,35 +215,35 @@ public class MemberController {
     }
 
     /**
-     * SNS 로그인 정보 수정
+     * SNS 연결
      */
-    @Operation(summary = "SNS 로그인 정보 수정",
-            description = "SNS 로그인 정보를 수정하거나, SNS 로그인을 설정한 적 없는 직접 가입 회원의 경우 SNS 로그인 정보를 새롭게 연결합니다.",
-            operationId = "updateOauth")
     @Tag(name = "2. Member", description = "회원 관련 기능")
+    @Operation(summary = "SNS 로그인 연결",
+            description = "로그인에 사용할 SNS를 새롭게 연결합니다. 이미 SNS 로그인 정보가 등록되어 있을 경우 먼저 해제가 필요합니다.",
+            operationId = "registerOauth")
     @ApiResponse(responseCode = "200") @ApiResponseCommon @ApiResponseSignin
     @SecurityRequirement(name = "JWT")
     @PreAuthorize("hasAnyRole('ROLE_USER')")
-    @PutMapping("/oauth")
-    public CommonResponseDto<OauthUpdateResponseDto> updateOauthV1(@Validated @RequestBody final OauthUpdateRequestDto dto) {
+    @PostMapping("/oauthInfo")
+    public CommonResponseDto<OauthRegisterResponseDto> registerOauthV1(@Valid @RequestBody final OauthRegisterRequestDto dto) {
         Long memberId = SecurityUtil.getCurrentUserPK().orElseThrow(() -> new NotAuthenticatedException("INVALID_ID"));
-        return CommonResponseDto.<OauthUpdateResponseDto>builder()
-                .data(memberService.updateOauth(memberId, dto))
+        return CommonResponseDto.<OauthRegisterResponseDto>builder()
+                .data(memberService.registerOauth(memberId, dto))
                 .build();
     }
 
     /**
      * SNS 로그인 정보 삭제
      */
-    @Operation(summary = "SNS 로그인 정보 삭제", description = "연결된 SNS 로그인 정보를 삭제합니다.", operationId = "removeOauth")
     @Tag(name = "2. Member", description = "회원 관련 기능")
+    @Operation(summary = "SNS 연결 해제", description = "연결된 SNS 로그인 정보를 해제합니다. 비밀번호를 등록한 회원만 해제가 가능합니다.", operationId = "removeOauth")
     @ApiResponse(responseCode = "200") @ApiResponseCommon @ApiResponseSignin
     @SecurityRequirement(name = "JWT")
     @PreAuthorize("hasAnyRole('ROLE_USER')")
-    @DeleteMapping("/oauth")
-    public CommonResponseDto removeOauthV1() {
+    @DeleteMapping("/oauthInfo")
+    public CommonResponseDto removeOauthV1(@Valid @RequestBody OauthDeleteRequestDto dto) {
         Long memberId = SecurityUtil.getCurrentUserPK().orElseThrow(() -> new NotAuthenticatedException("INVALID_ID"));
-        memberService.deleteOauth(memberId);
+        memberService.deleteOauth(memberId, dto);
         return CommonResponseDto.builder().build();
     }
 
