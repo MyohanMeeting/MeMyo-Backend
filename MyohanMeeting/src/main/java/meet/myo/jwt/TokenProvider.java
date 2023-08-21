@@ -10,6 +10,7 @@ import meet.myo.service.CustomPrincipalDetailService;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
@@ -94,6 +95,10 @@ public class TokenProvider implements InitializingBean {
 
         // 토큰에 클레임 존재할 경우 DB 접근 없이 클레임에서 정보를 찾음
         if (claims.containsKey(AUTH_CLAIM_NAME) && claims.containsKey("memberId")) {
+            if (claims.get(AUTH_CLAIM_NAME).toString().isBlank()) {
+                throw new AccessDeniedException("UNCERTIFIED");
+            }
+
             authorities = Arrays.stream(claims.get(AUTH_CLAIM_NAME).toString().split(","))
                     .map(SimpleGrantedAuthority::new)
                     .collect(Collectors.toList());

@@ -6,6 +6,8 @@ import io.swagger.v3.oas.annotations.enums.ParameterIn;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.Email;
 import lombok.RequiredArgsConstructor;
 import meet.myo.config.SecurityUtil;
 import meet.myo.dto.request.member.*;
@@ -95,15 +97,15 @@ public class MemberController {
     /**
      * 인증 이메일 발송
      */
-    @Operation(summary = "인증 이메일 발송", description = "가입 후 이메일 주소 인증을 위한 이메일을 발송합니다.", operationId = "sendCertificationEmail")
     @Tag(name = "1. Sign Up", description = "회원가입 관련 기능")
+    @Operation(summary = "인증 이메일 재발송", description = "이메일 인증 코드가 만료되었을 경우 재발송 요청을 보냅니다.", operationId = "sendCertificationEmail")
     @ApiResponse(responseCode = "200") @ApiResponseCommon @ApiResponseSignin
-    @SecurityRequirement(name = "JWT")
-    @PreAuthorize("hasAnyRole('ROLE_USER')")
+    @SecurityRequirement(name = "")
     @PostMapping("/certification")
-    public CommonResponseDto sendCertificationEmailV1() {
-        Long memberId = SecurityUtil.getCurrentUserPK().orElseThrow(() -> new NotAuthenticatedException("INVALID_ID"));
-        memberService.sendCertificationEmail(memberId);
+    public CommonResponseDto sendCertificationEmailV1(
+            @Parameter(name = "email", description = "회원 가입한 이메일입니다.", in = ParameterIn.QUERY, example = "myemail@email.com")
+            @RequestParam(value = "email") @Valid @Email(message = "{validation.Email}") String email) {
+        memberService.resendCertMail(email);
         return CommonResponseDto.builder().build();
     }
 
@@ -113,12 +115,15 @@ public class MemberController {
     @Tag(name = "1. Sign Up", description = "회원가입 관련 기능")
     @Operation(summary = "메일인증 코드 검증", description = "이메일 주소 인증코드를 검증합니다.", operationId = "verifyCertificationEmail")
     @ApiResponse(responseCode = "200") @ApiResponseCommon @ApiResponseSignin
-    @SecurityRequirement(name = "JWT")
-    @PreAuthorize("hasAnyRole('ROLE_USER')")
+    @SecurityRequirement(name = "")
     @PutMapping("/certification")
-    public CommonResponseDto verifyCertificationEmailV1(@Validated @RequestBody final CertifyEmailRequestDto dto) {
-        Long memberId = SecurityUtil.getCurrentUserPK().orElseThrow(() -> new NotAuthenticatedException("INVALID_ID"));
-        memberService.verifyCertificationEmail(memberId, dto);
+    public CommonResponseDto verifyCertificationEmailV1(
+            @Parameter(name = "email", description = "회원 가입한 이메일입니다.", in = ParameterIn.QUERY, example = "myemail@email.com")
+            @RequestParam(value = "email") @Valid @Email(message = "{validation.Email}") String email,
+            @Parameter(name = "certCode", description = "메일로 전달된 인증 코드입니다.", in = ParameterIn.QUERY, example = "123456")
+            @RequestParam(value = "certCode") String certCode
+    ) {
+        memberService.verifyCertificationEmail(email, certCode);
         return CommonResponseDto.builder().build(); // TODO: 리턴값 어떻게 할지 생각
     }
 

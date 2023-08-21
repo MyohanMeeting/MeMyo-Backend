@@ -1,11 +1,16 @@
 package meet.myo.jwt;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.ServletRequest;
 import jakarta.servlet.ServletResponse;
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
+import meet.myo.dto.response.ErrorResponseDto;
+import org.springframework.http.HttpStatus;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.util.StringUtils;
@@ -18,9 +23,9 @@ import java.io.IOException;
 public class JwtFilter extends GenericFilterBean {
 
     public static final String AUTHORIZATION_HEADER = "Authorization";
+
     private TokenProvider tokenProvider;
 
-    // tokenProvider를 final로 설정하지 않는 이유
     public JwtFilter(TokenProvider tokenProvider) {
         this.tokenProvider = tokenProvider;
     }
@@ -28,13 +33,29 @@ public class JwtFilter extends GenericFilterBean {
     @Override
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
         HttpServletRequest httpServletRequest = (HttpServletRequest) request;
+        HttpServletResponse httpServletResponse = (HttpServletResponse) response;
         String accessToken = resolveToken(httpServletRequest);
         String requestURI = httpServletRequest.getRequestURI();
 
         if (StringUtils.hasText(accessToken) && tokenProvider.validateToken(accessToken, true)) {
-            Authentication authentication = tokenProvider.getAuthentication(accessToken, true);
-            SecurityContextHolder.getContext().setAuthentication(authentication);
-            log.debug("Security Context에 '{}' 인증 정보를 저장했습니다, uri: {}", authentication.getName(), requestURI);
+            try {
+                Authentication authentication = tokenProvider.getAuthentication(accessToken, true);
+                SecurityContextHolder.getContext().setAuthentication(authentication);
+                log.debug("Security Context에 '{}' 인증 정보를 저장했습니다, uri: {}", authentication.getName(), requestURI);
+            } catch (AccessDeniedException e) {
+                SecurityContextHolder.clearContext(); // 컨텍스트 클리어
+                SecurityContextHolder.getContext().setAuthentication(null);
+
+                httpServletResponse.setContentType("application/json");
+                httpServletResponse.setCharacterEncoding("UTF-8");
+                httpServletResponse.setStatus(HttpServletResponse.SC_FORBIDDEN);
+                httpServletResponse.getWriter().write(new ObjectMapper().writeValueAsString(
+                        ErrorResponseDto.builder()
+                                .status(HttpStatus.FORBIDDEN.toString())
+                                .message(e.getMessage())
+                                .build()));
+                return;
+            }
         } else {
             log.debug("유효한 JWT 토큰이 없습니다, uri: {}", requestURI);
         }
