@@ -4,6 +4,7 @@ import io.jsonwebtoken.JwtException;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import meet.myo.domain.Certified;
 import meet.myo.domain.Member;
 import meet.myo.domain.authority.CustomOAuth2User;
 import meet.myo.exception.NotFoundException;
@@ -13,12 +14,15 @@ import meet.myo.dto.request.auth.SignInRequestDto;
 import meet.myo.jwt.TokenDto;
 import meet.myo.jwt.TokenProvider;
 import meet.myo.repository.MemberRepository;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.oauth2.client.authentication.OAuth2AuthenticationToken;
 import org.springframework.stereotype.Service;
+
 
 /**
  * 인증 서비스
@@ -56,6 +60,10 @@ public class AuthService {
         // member 엔티티 영속화
         Member member = memberRepository.findByEmailAndDeletedAtNull(authentication.getName())
                 .orElseThrow(NotFoundException::new);
+
+        if (member.getCertified() == Certified.NOT_CERTIFIED) {
+            throw new AccessDeniedException("UNCERTIFIED");
+        }
 
         // refresh token 업데이트
         member.updateRefreshToken(tokenSet.getRefreshToken());

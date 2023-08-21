@@ -10,10 +10,16 @@ server:
 spring:
   profiles:
     active: local
+  config:
+    import:
+      - classpath:config/client-env.yml
 
 springdoc:
   default-consumes-media-type: application/json
   default-produces-media-type: application/json
   swagger-ui:
     defaultModelsExpandDepth: -1
+    operations-sorter: method
+    tags-sorter: alpha
+
     

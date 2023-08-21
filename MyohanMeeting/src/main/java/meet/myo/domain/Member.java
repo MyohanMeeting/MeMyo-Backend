@@ -90,7 +90,7 @@ public class Member extends BaseAuditingListener {
         if (this.certified == Certified.NOT_CERTIFIED) {
             this.certified = Certified.CERTIFIED;
         } else {
-            throw new DuplicateKeyException("ALREADY CERTIFIED");
+            throw new IllegalArgumentException("ALREADY CERTIFIED");
         }
     }
 

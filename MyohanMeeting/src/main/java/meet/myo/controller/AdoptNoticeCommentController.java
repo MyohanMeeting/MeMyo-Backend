@@ -26,7 +26,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 import java.util.Map;
 
-@Tag(name = "Adopt Notice Comment", description = "분양공고 댓글 관련 기능")
+@Tag(name = "5. Adopt Notice Comment", description = "분양공고 댓글 관련 기능")
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/v1/adoption/notices")

@@ -12,14 +12,12 @@ import meet.myo.dto.response.member.OauthUpdateResponseDto;
 import meet.myo.exception.NotFoundException;
 import meet.myo.repository.*;
 import org.springframework.dao.DuplicateKeyException;
-import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.io.UnsupportedEncodingException;
-import java.util.List;
-import java.util.UUID;
 
 @Service
 @Transactional
@@ -64,7 +62,10 @@ public class MemberService {
                 member, authorityRepository.findByAuthorityName("ROLE_USER").orElseThrow(NotFoundException::new));
 
         memberAuthorityRepository.save(memberAuthority);
-        return memberRepository.save(member).getId();
+        memberRepository.save(member);
+        sendCertificationEmail(member);
+
+        return member.getId();
     }
 
     /**
@@ -75,25 +76,27 @@ public class MemberService {
         validateEmailDuplication(dto.getEmail());
 
         Upload profileImage = uploadRepository.findByIdAndDeletedAtNull(1L).orElseThrow(NotFoundException::new);
-        Member.OauthJoinMemberBuilder memberBuilder = Member.oauthJoinBuilder()
-                .oauthType(dto.getOauthType() != null ? OauthType.valueOf(dto.getOauthType()) : null)
+        Member.OauthJoinMemberBuilder builder = Member.oauthJoinBuilder()
+                .oauthType(OauthType.valueOf(dto.getOauthType()))
                 .oauthId(dto.getOauthId())
                 .email(dto.getEmail())
                 .profileImage(profileImage);
         if (dto.getNickname() != null) {
             validateNicknameDuplication(dto.getNickname());
-            memberBuilder.nickname(dto.getNickname());
+            builder.nickname(dto.getNickname());
         } else {
             String randomNickname = createRandomNickname();
             validateNicknameDuplication(randomNickname);
-            memberBuilder.nickname(randomNickname);
+            builder.nickname(randomNickname);
         }
-        Member member = memberBuilder.build();
+        Member member = builder.build();
+
         MemberAuthority memberAuthority = MemberAuthority.createMemberAuthority(
                 member, authorityRepository.findByAuthorityName("ROLE_USER").orElseThrow(NotFoundException::new));
-
         memberAuthorityRepository.save(memberAuthority);
         memberRepository.save(member);
+        sendCertificationEmail(member);
+        
         return member.getId();
     }
 
@@ -112,36 +115,40 @@ public class MemberService {
     }
 
     /**
-     * 이메일 인증용 메일발송 및 CertCode 저장
+     * 인증메일 재발송
      */
-    public void sendCertificationEmail(Long memberId) { // TODO: 리턴항목 생각
-        Member member = memberRepository.findByIdAndDeletedAtNull(memberId)
-                .orElseThrow(() -> new NotFoundException("id에 해당하는 회원을 찾을 수 없습니다."));
-        // 메일은 이곳에서 발송
-        try {
-            EmailCertification emailCertification = EmailCertification.createEmailCertification(member);
-            emailCertificationRepository.save(emailCertification);
-            emailService.sendEmail(member.getEmail(), emailCertification.getCertCode());
-
-        } catch (MessagingException | UnsupportedEncodingException e) {
-            // TODO: 에러 처리 로직 추가
-            throw new RuntimeException("메일 전송에 실패했습니다", e);
+    public void resendCertMail(String email) {
+        Member member = memberRepository.findByEmailAndDeletedAtNull(email).orElseThrow(NotFoundException::new);
+        if (member.getCertified() == Certified.CERTIFIED) {
+            throw new IllegalArgumentException("ALREADY_CERTIFIED");
         }
+        sendCertificationEmail(member);
     }
 
     /**
      * 이메일 인증 CertCode 비교
      */
-    public void verifyCertificationEmail(Long memberId, CertifyEmailRequestDto dto) {
+    public void verifyCertificationEmail(String email, String certCode) {
         EmailCertification latestCertification =
-                emailCertificationRepository.findByMemberIdAndCertCode(memberId, dto.getCertCode())
-                .orElseThrow(() -> new NotFoundException("해당하는 이메일을 찾을 수 없습니다."));
+                emailCertificationRepository.findByEmailAndCertCode(email, certCode)
+                .orElseThrow(() -> new NotFoundException("인증 메일 정보를 찾을 수 없습니다."));
+
+        Member member = latestCertification.getMember();
+
+        if (member.getCertified() == Certified.CERTIFIED) {
+            throw new IllegalArgumentException("이미 인증된 회원입니다.");
+        }
 
         if (latestCertification.isExpired()) {
-            throw new RuntimeException("인증코드가 만료되었습니다.");
+            throw new IllegalArgumentException("인증코드가 만료되었습니다.");
         }
-        Member member = latestCertification.getMember();
+
         member.updateCertified();
+        MemberAuthority memberAuthority = MemberAuthority.createMemberAuthority(
+                member, authorityRepository.findByAuthorityName("ROLE_USER").orElseThrow(NotFoundException::new));
+
+        memberAuthorityRepository.save(memberAuthority);
+        latestCertification.delete();
     }
 
     /**
@@ -238,6 +245,22 @@ public class MemberService {
     }
 
     /**
+     * 인증메일발송 및 CertCode 저장
+     */
+    private void sendCertificationEmail(Member member) {
+        // 메일 발송
+        try {
+            EmailCertification emailCertification = EmailCertification.createEmailCertification(member);
+            emailCertificationRepository.save(emailCertification);
+            emailService.sendEmail(member.getEmail(), emailCertification.getCertCode());
+
+        } catch (MessagingException | UnsupportedEncodingException e) {
+            // TODO: 에러 처리 로직 추가
+            throw new RuntimeException("메일 전송에 실패했습니다", e);
+        }
+    }
+
+    /**
      * 중복체크 유틸
      */
 
@@ -256,7 +279,7 @@ public class MemberService {
     }
 
     private String createRandomNickname() {
-        return "nickname" + UUID.randomUUID();
+        return "user" + System.currentTimeMillis();
     }
 
 }

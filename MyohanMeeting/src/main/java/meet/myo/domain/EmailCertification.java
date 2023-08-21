@@ -24,16 +24,29 @@ public class EmailCertification extends BaseAuditingListener {
     @JoinColumn(name = "member_id")
     private Member member;
 
+    private String email;
+
     @Column(nullable = false)
     private String certCode;
 
     private EmailCertification(Member member) {
         this.member = member;
+        this.email = member.getEmail();
         this.certCode = createCertCode();
     }
 
     public static EmailCertification createEmailCertification(Member member) {
         return new EmailCertification(member);
+    }
+
+    public boolean isExpired() {
+        return Duration.between(super.getCreatedAt(), LocalDateTime.now())
+                .compareTo(Duration.ofSeconds(3000))  // TODO: 임의로 만료시간 5분 설정
+                >= 0;
+    }
+
+    public void delete() {
+        super.delete();
     }
 
     private String createCertCode() {
@@ -43,9 +56,4 @@ public class EmailCertification extends BaseAuditingListener {
         return String.valueOf(random.nextInt(max - min + 1) + min);
     }
 
-    public boolean isExpired() {
-        return Duration.between(super.getCreatedAt(), LocalDateTime.now())
-                .compareTo(Duration.ofSeconds(3000))  // TODO: 임의로 만료시간 5분 설정
-                >= 0;
-    }
 }

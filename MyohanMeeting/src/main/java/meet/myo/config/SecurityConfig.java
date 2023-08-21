@@ -77,6 +77,10 @@ public class SecurityConfig {
                 .requestMatchers(HttpMethod.GET, "/v1/member/email").permitAll()
                 .requestMatchers(HttpMethod.GET, "/v1/member/nickname").permitAll()
 
+                // 이메일 인증
+                .requestMatchers(HttpMethod.POST, "/v1/member/certification").permitAll()
+                .requestMatchers(HttpMethod.PUT, "/v1/member/certification").permitAll()
+
                 // 입양공고, 입양공고 덧글
                 .requestMatchers(HttpMethod.GET, "/v1/adoption/notices").permitAll()
                 .requestMatchers(
