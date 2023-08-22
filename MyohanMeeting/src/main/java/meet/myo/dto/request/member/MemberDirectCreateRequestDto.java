@@ -16,12 +16,12 @@ public class MemberDirectCreateRequestDto {
 
     @Schema(type = "string", example = "user1234!")
     @NotNull(message="{validation.NotNull}")
-    @Size(min = 8, max = 24, message = "{validation.ValidJsonNullable}")
-    @CustomPattern(regexp = CustomPatternRegexp.PASSWORD, message = "{validation.password}")
+    @Size(min = 8, max = 24, message = "{validation.Size}")
+    @CustomPattern(regexp = CustomPatternRegexp.PASSWORD, message = "{validation.Pattern.password}")
     private String password;
 
     @NotNull(message = "{validation.NotNull}")
-    @Size(min = 2, max = 12, message = "{validation.ValidJsonNullable}")
+    @Size(min = 2, max = 12, message = "{validation.Size}")
     private String nickname;
 
     @NotNull(message = "{validation.NotNull}")

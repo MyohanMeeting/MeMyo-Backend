@@ -24,6 +24,7 @@ public class EmailCertification extends BaseAuditingListener {
     @JoinColumn(name = "member_id")
     private Member member;
 
+    @Column(nullable = false)
     private String email;
 
     @Column(nullable = false)

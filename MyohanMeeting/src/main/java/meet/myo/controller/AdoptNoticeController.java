@@ -12,6 +12,8 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import meet.myo.config.SecurityUtil;
+import meet.myo.domain.adopt.notice.AdoptNoticeStatus;
+import meet.myo.domain.adopt.notice.City;
 import meet.myo.dto.request.adopt.AdoptNoticeCreateRequestDto;
 import meet.myo.dto.request.adopt.AdoptNoticeUpdateRequestDto;
 import meet.myo.dto.response.adopt.AdoptNoticeResponseDto;
@@ -21,6 +23,7 @@ import meet.myo.exception.NotAuthenticatedException;
 import meet.myo.search.AdoptNoticeSearch;
 import meet.myo.service.AdoptNoticeService;
 import meet.myo.springdoc.annotations.*;
+import meet.myo.util.validation.enums.EnumValid;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -91,7 +94,7 @@ public class AdoptNoticeController {
                     allowableValues = {"SEOUL", "SEJONG", "BUSAN", "DAEGU", "INCHEON", "GWANGJU", "ULSAN", "DAEJEON",
                             "GYEONGGI", "GANGWON", "CHUNGCHEONG_BUK", "CHUNGCHEONG_NAM", "JEOLLA_BUK", "JEOLLA_NAM",
                             "GYEONGSANG_BUK", "GYEONGSANG_NAM", "JEJU"}))
-            @RequestParam(value = "city", required = false) String city,
+            @Valid @EnumValid(enumClass = City.class) @RequestParam(value = "city", required = false) String city,
 
             @Parameter(name = "shelterName", description = "보호소 이름으로 검색합니다.", in = ParameterIn.QUERY)
             @RequestParam(value = "shelterName", required = false) String shelterName,
@@ -204,7 +207,7 @@ public class AdoptNoticeController {
 }
 """)})) @ApiResponseCommon @ApiResponseSignin
     @PreAuthorize("hasAnyRole('ROLE_USER')")
-    @SecurityRequirement(name = "JWT")
+    @SecurityRequirement(name = "Authorization")
     @PostMapping("")
     public CommonResponseDto<Map<String, Long>> createNoticeV1(@Valid @RequestBody final AdoptNoticeCreateRequestDto dto) {
         Long memberId = SecurityUtil.getCurrentUserPK().orElseThrow(() -> new NotAuthenticatedException("INVALID_ID"));
@@ -219,7 +222,7 @@ public class AdoptNoticeController {
     @Operation(summary = "분양공고 상태 업데이트", description = "분양공고의 상태를 업데이트합니다.", operationId = "updateNoticeStatus")
     @ApiResponse(responseCode = "200") @ApiResponseCommon @ApiResponseResource @ApiResponseAuthority
     @PreAuthorize("hasAnyRole('ROLE_USER')")
-    @SecurityRequirement(name = "JWT")
+    @SecurityRequirement(name = "Authorization")
     @PutMapping("/{noticeId}/status")
     public CommonResponseDto<AdoptNoticeResponseDto> updateNoticeStatusV1(
             @Parameter(name = "noticeId", description = "수정하고자 하는 공고의 id입니다.")
@@ -227,7 +230,7 @@ public class AdoptNoticeController {
 
             @Schema(allowableValues = {"ACCEPTING", "COMPLETE", "CANCELED"})
             @Parameter(name = "status", description = "수정하고자 하는 공고의 상태입니다.", in = ParameterIn.QUERY)
-            @RequestParam(name = "status") String status
+            @Valid @EnumValid(enumClass = AdoptNoticeStatus.class) @RequestParam(name = "status") String status
     ) {
         Long memberId = SecurityUtil.getCurrentUserPK().orElseThrow(() -> new NotAuthenticatedException("INVALID_ID"));
         return CommonResponseDto.<AdoptNoticeResponseDto>builder()
@@ -241,7 +244,7 @@ public class AdoptNoticeController {
     @Operation(summary = "분양공고 수정", description = "분양공고의 내용을 수정합니다.", operationId = "updateNotice")
     @ApiResponse(responseCode = "200") @ApiResponseCommon @ApiResponseResource @ApiResponseAuthority
     @PreAuthorize("hasAnyRole('ROLE_USER')")
-    @SecurityRequirement(name = "JWT")
+    @SecurityRequirement(name = "Authorization")
     @PatchMapping("/{noticeId}")
     public CommonResponseDto<AdoptNoticeResponseDto> updateNoticeV1(
             @Parameter(name = "noticeId", description = "수정하고자 하는 공고의 id입니다.")
@@ -271,7 +274,7 @@ public class AdoptNoticeController {
 }
 """)})) @ApiResponseCommon @ApiResponseResource @ApiResponseAuthority
     @PreAuthorize("hasAnyRole('ROLE_USER')")
-    @SecurityRequirement(name = "JWT")
+    @SecurityRequirement(name = "Authorization")
     @DeleteMapping("/{noticeId}")
     public CommonResponseDto<Map<String, Long>> deleteNoticeV1(
             @Parameter(name = "noticeId", description = "삭제하고자 하는 공고의 id입니다.")

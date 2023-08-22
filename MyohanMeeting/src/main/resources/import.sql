@@ -1,5 +1,5 @@
 -- 회원(운영자)
-insert into member (`created_at`, `email`, `password`, `nickname`, `phone_number`, `certified`) values (TIMESTAMP '2023-08-15 00:23:48.207129', 'admin@admin.com', '$2a$10$EI3YbKFob4MKhoJuE6y87.vu37kjdstBvK.YWNU1/U0rWcy1s0Slu', 'admin', '000-000-0000', 'CERTIFIED');
+insert into member (`created_at`, `email`, `password`, `nickname`, `phone_number`, `certified`) values (TIMESTAMP '2023-08-15 00:23:48.207129', 'admin@admin.com', '$2a$10$PQgvoDXZKkfKcfZ9le7/iuD/6WOA/RYmgyKjHfVcEefVFoknXqqoC', 'admin', '000-000-0000', 'CERTIFIED');
 
 -- 업로드
 -- 유저 프로필 이미지(관리자 회원이 업로드)
@@ -8,7 +8,7 @@ insert into upload (`created_at`, `extension`, `file_category`, `origin_name`, `
 update member set `profile_image_id` = 1 where `member_id` = 1;
 
 -- 회원(일반회원)
-insert into member (`created_at`, `email`, `password`, `nickname`, `phone_number`, `certified`, `profile_image_id`) values (TIMESTAMP '2023-08-15 00:23:48.207129', 'user@user.com', '$2a$10$E.2ZQcc2g2b29oORqmK.DeqeohuEvJiA6u5QH0N5n5EMCwqv2nSj.', 'user', '000-000-0000', 'CERTIFIED', 1);
+insert into member (`created_at`, `email`, `password`, `nickname`, `phone_number`, `certified`, `profile_image_id`) values (TIMESTAMP '2023-08-15 00:23:48.207129', 'user@user.com', '$2a$10$HL5JawgxCmMnTRJvaS9VE.cXDVo.ymm3dAntjcnpYe6G3WQy7RlZ.', 'user', '000-000-0000', 'CERTIFIED', 1);
 insert into member (`created_at`, `oauth_type`, `oauth_id`, `nickname`, `email`, `certified`, `profile_image_id`) values (TIMESTAMP '2023-08-15 00:23:48.207129', 'KAKAOTALK', '$2a$10$Dld5fafSWm2acfqohlRcBub6r9KVQ6K.wyuz7u3BY0P2RmIUFxADS', 'kakaouser', 'kakaotest@kakao.com', 'CERTIFIED', 1);
 
 -- 권한
