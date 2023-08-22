@@ -49,6 +49,7 @@ dependencies {
 
     // database
     runtimeOnly 'com.h2database:h2'
+    implementation 'mysql:mysql-connector-java:8.0.28'
 
     // Google Cloud Storage
     implementation 'org.springframework.cloud:spring-cloud-gcp-starter:1.2.8.RELEASE'

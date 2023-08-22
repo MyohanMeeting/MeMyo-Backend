@@ -37,8 +37,8 @@ out/
 .vscode/
 
 ### SECRET ###
-cloud-storage-key.json
-secret.yml
+**/src/main/resources/config/
+**/src/test/resources/config/
 
 ### Mac OS ###
 .DS_STORE
