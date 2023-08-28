@@ -1,12 +1,12 @@
 package meet.myo.service;
 
-import io.jsonwebtoken.JwtException;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import meet.myo.domain.Certified;
 import meet.myo.domain.Member;
 import meet.myo.domain.authority.CustomOAuth2User;
+import meet.myo.dto.response.SignInResponseDto;
 import meet.myo.exception.NotFoundException;
 import meet.myo.dto.request.auth.DirectSignInRequestDto;
 import meet.myo.dto.request.auth.OauthSignInRequestDto;
@@ -21,6 +21,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.oauth2.client.authentication.OAuth2AuthenticationToken;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
 
 
 /**
@@ -43,9 +44,9 @@ public class AuthService {
     private final MemberRepository memberRepository;
 
     /**
-     * 로그인 요청 처리
+     * 로그인
      */
-    public TokenDto getToken(SignInRequestDto dto) throws NotFoundException {
+    public SignInResponseDto signIn(SignInRequestDto dto) {
 
         // Authentication 객체 획득
         Authentication authentication = customAuthenticate(dto);
@@ -67,18 +68,23 @@ public class AuthService {
         // refresh token 업데이트
         member.updateRefreshToken(tokenSet.getRefreshToken());
 
-        return tokenSet;
+        return SignInResponseDto.builder()
+                .email(member.getEmail())
+                .nickName(member.getNickname())
+                .profileImageUrl(member.getProfileImage().getUrl())
+                .token(tokenSet)
+                .build();
     }
 
     /**
-     * 토큰 리프레시 요청 처리
+     * 토큰 리프레시
      */
-    public TokenDto tokenRefresh(String refreshToken) throws JwtException {
+    public TokenDto tokenRefresh(String refreshToken) {
 
         // 토큰의 유효성 체크
         if (!tokenProvider.validateToken(refreshToken, false)) {
             log.warn("Invalid refresh token excepted");
-            throw new JwtException("INVALID_TOKEN");
+            throw new AccessDeniedException("INVALID_TOKEN");
         }
 
         Authentication authentication = tokenProvider.getAuthentication(refreshToken, false);
@@ -88,7 +94,7 @@ public class AuthService {
 
         if (!refreshToken.equals(member.getRefreshToken())) {
             log.warn("Not matched refresh token");
-            throw new JwtException("INVALID_TOKEN");
+            throw new AccessDeniedException("INVALID_TOKEN");
         }
 
         // 토큰 셋 발급, 엔티티에 ref token 업데이트
@@ -96,6 +102,17 @@ public class AuthService {
         member.updateRefreshToken(tokenSet.getRefreshToken());
 
         return tokenSet;
+    }
+
+    /**
+     * 로그아웃(토큰 만료)
+     */
+    public void signOut(String token) {
+        if (!tokenProvider.validateToken(resolveToken(token), true)) {
+            throw new AccessDeniedException("INVALID_TOKEN");
+        }
+
+        // TODO: 블랙리스트 등록
     }
 
     /**
@@ -131,5 +148,13 @@ public class AuthService {
                 .accessToken(tokenProvider.getAccessToken(authentication))
                 .refreshToken(tokenProvider.getRefreshToken(authentication))
                 .build();
+    }
+
+    private String resolveToken(String token) {
+        if (StringUtils.hasText(token) && token.startsWith("Bearer ")) {
+            return token.substring(7);
+        } else {
+            throw new IllegalArgumentException("INVALID_TOKEN");
+        }
     }
 }
