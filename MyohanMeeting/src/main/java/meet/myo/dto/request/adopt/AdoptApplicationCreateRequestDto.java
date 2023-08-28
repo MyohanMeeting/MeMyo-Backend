@@ -1,6 +1,7 @@
 package meet.myo.dto.request.adopt;
 
 import io.swagger.v3.oas.annotations.media.Schema;
+import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.Getter;
@@ -20,9 +21,11 @@ public class AdoptApplicationCreateRequestDto {
     @NotNull(message = "{validation.NotNull}")
     private Long noticeId;
 
+    @Valid
     @NotNull(message = "{validation.NotNull}")
     private Applicant applicant;
 
+    @Valid
     @NotNull(message = "{validation.NotNull}")
     private Survey survey;
 
