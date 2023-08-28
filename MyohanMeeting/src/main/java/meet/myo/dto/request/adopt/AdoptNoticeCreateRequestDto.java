@@ -1,6 +1,7 @@
 package meet.myo.dto.request.adopt;
 
 import io.swagger.v3.oas.annotations.media.Schema;
+import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.Getter;
@@ -19,9 +20,11 @@ import java.util.List;
 @Getter
 public class AdoptNoticeCreateRequestDto {
 
+    @Valid
     @NotNull(message = "{validation.NotNull}")
     private Cat cat;
 
+    @Valid
     @NotNull(message = "{validation.NotNull}")
     private Shelter shelter;
 
