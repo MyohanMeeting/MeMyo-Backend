@@ -71,7 +71,7 @@ public class AuthController {
     @Operation(summary = "로그아웃", description = "로그아웃(토큰을 만료시킴)합니다.", operationId = "signOut")
     @ApiResponse(responseCode = "200") @ApiResponseCommon @ApiResponseSignin @ApiResponseAuthority
     @SecurityRequirement(name = "Authorization")
-    @PostMapping("/refresh")
+    @PostMapping("/signout")
     public CommonResponseDto signOutV1(@RequestHeader("Authorization") String token) {
         authService.signOut(token);
         return CommonResponseDto.builder().build();
