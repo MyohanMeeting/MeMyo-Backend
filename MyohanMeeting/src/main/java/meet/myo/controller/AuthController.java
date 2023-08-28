@@ -10,6 +10,7 @@ import meet.myo.dto.request.auth.DirectSignInRequestDto;
 import meet.myo.dto.request.auth.OauthSignInRequestDto;
 import meet.myo.dto.request.auth.TokenRefreshRequestDto;
 import meet.myo.dto.response.CommonResponseDto;
+import meet.myo.dto.response.SignInResponseDto;
 import meet.myo.jwt.TokenDto;
 import meet.myo.service.AuthService;
 import meet.myo.springdoc.annotations.ApiResponseAuthority;
@@ -32,9 +33,9 @@ public class AuthController {
     @ApiResponse(responseCode = "200") @ApiResponseCommon @ApiResponseCertify
     @SecurityRequirement(name = "")
     @PostMapping("/signin/direct")
-    public CommonResponseDto<TokenDto> directSignInV1(@Valid @RequestBody final DirectSignInRequestDto dto) {
-        return CommonResponseDto.<TokenDto>builder()
-                .data(authService.getToken(dto))
+    public CommonResponseDto<SignInResponseDto> directSignInV1(@Valid @RequestBody final DirectSignInRequestDto dto) {
+        return CommonResponseDto.<SignInResponseDto>builder()
+                .data(authService.signIn(dto))
                 .build();
     }
 
@@ -45,9 +46,9 @@ public class AuthController {
     @ApiResponse(responseCode = "200") @ApiResponseCommon @ApiResponseCertify
     @SecurityRequirement(name = "")
     @PostMapping("/signin/oauth")
-    public CommonResponseDto<TokenDto> oauthSignInV1(@Valid @RequestBody final OauthSignInRequestDto dto) {
-        return CommonResponseDto.<TokenDto>builder()
-                .data(authService.getToken(dto))
+    public CommonResponseDto<SignInResponseDto> oauthSignInV1(@Valid @RequestBody final OauthSignInRequestDto dto) {
+        return CommonResponseDto.<SignInResponseDto>builder()
+                .data(authService.signIn(dto))
                 .build();
     }
 
@@ -56,11 +57,23 @@ public class AuthController {
      */
     @Operation(summary = "토큰 리프레시", description = "토큰 리프레시를 요청합니다.", operationId = "refreshToken")
     @ApiResponse(responseCode = "200") @ApiResponseCommon @ApiResponseSignin @ApiResponseAuthority
-    @SecurityRequirement(name = "")
+    @SecurityRequirement(name = "Authorization")
     @PostMapping("/refresh")
     public CommonResponseDto<TokenDto> refreshTokenV1(@Valid @RequestBody final TokenRefreshRequestDto dto) {
         return CommonResponseDto.<TokenDto>builder()
                 .data(authService.tokenRefresh(dto.getRefreshToken()))
                 .build();
+    }
+
+    /**
+     * 로그아웃
+     */
+    @Operation(summary = "로그아웃", description = "로그아웃(토큰을 만료시킴)합니다.", operationId = "signOut")
+    @ApiResponse(responseCode = "200") @ApiResponseCommon @ApiResponseSignin @ApiResponseAuthority
+    @SecurityRequirement(name = "Authorization")
+    @PostMapping("/refresh")
+    public CommonResponseDto signOutV1(@RequestHeader("Authorization") String token) {
+        authService.signOut(token);
+        return CommonResponseDto.builder().build();
     }
 }

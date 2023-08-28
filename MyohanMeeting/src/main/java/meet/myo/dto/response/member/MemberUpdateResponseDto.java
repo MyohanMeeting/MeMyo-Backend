@@ -7,13 +7,13 @@ import meet.myo.domain.Member;
 public class MemberUpdateResponseDto {
     private String nickname;
     private String phoneNumber;
-    private String profileImage;
+    private String profileImageUrl;
 
     public static MemberUpdateResponseDto fromEntity(Member member) {
         MemberUpdateResponseDto dto = new MemberUpdateResponseDto();
         dto.nickname = member.getNickname();
         dto.phoneNumber = member.getPhoneNumber();
-        dto.profileImage = member.getProfileImage().getUrl();
+        dto.profileImageUrl = member.getProfileImage().getUrl();
         return dto;
     }
 }
