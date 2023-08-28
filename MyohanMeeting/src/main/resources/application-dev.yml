@@ -29,5 +29,5 @@ logging:
 
 
 jwt:
-  access-token-validity-time: 180000 # 3분
+  access-token-validity-time: 18000000 # 300분
   refresh-token-validity-time: 60480000 # 1008분
