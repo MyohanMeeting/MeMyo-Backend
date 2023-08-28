@@ -51,13 +51,8 @@ public class EmailService {
 
     @Async("threadPoolTaskExecutor")
     public void sendEmail(String toEmail, String authNum) throws MessagingException, UnsupportedEncodingException {
-        System.out.println("Async method is running on thread: " + Thread.currentThread().getName());
         MimeMessage emailForm = createEmailForm(toEmail, authNum);
-        System.out.println("Async method is running on thread: " + Thread.currentThread().getName());
-
-        System.out.println("Email sending started...");
         emailSender.send(emailForm);
-        System.out.println("Email sending completed.");
         //:TODO void?
     }
 }
