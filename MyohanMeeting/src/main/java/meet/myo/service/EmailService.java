@@ -3,10 +3,9 @@ package meet.myo.service;
 
 import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;
-import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
 import java.io.UnsupportedEncodingException;
@@ -50,11 +49,15 @@ public class EmailService {
         return message;
     }
 
-    //실제 메일 전송
-    public String sendEmail(String toEmail, String authNum) throws MessagingException, UnsupportedEncodingException {
+    @Async("threadPoolTaskExecutor")
+    public void sendEmail(String toEmail, String authNum) throws MessagingException, UnsupportedEncodingException {
+        System.out.println("Async method is running on thread: " + Thread.currentThread().getName());
         MimeMessage emailForm = createEmailForm(toEmail, authNum);
+        System.out.println("Async method is running on thread: " + Thread.currentThread().getName());
+
+        System.out.println("Email sending started...");
         emailSender.send(emailForm);
-        //인증코드 반환
-        return authNum;
+        System.out.println("Email sending completed.");
+        //:TODO void?
     }
 }
