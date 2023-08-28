@@ -1,6 +1,7 @@
 package meet.myo.jwt;
 
 import lombok.RequiredArgsConstructor;
+import meet.myo.exception.ExceptionHandlerFilter;
 import org.springframework.security.config.annotation.SecurityConfigurerAdapter;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.web.DefaultSecurityFilterChain;
@@ -14,6 +15,9 @@ public class JwtSecurityConfig extends SecurityConfigurerAdapter<DefaultSecurity
     @Override
     public void configure(HttpSecurity httpSecurity) {
         JwtFilter jwtFilter = new JwtFilter(this.tokenProvider);
-        httpSecurity.addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);
+        ExceptionHandlerFilter exceptionHandlerFilter = new ExceptionHandlerFilter();
+        httpSecurity
+                .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class)
+                .addFilterBefore(exceptionHandlerFilter, JwtFilter.class);
     }
 }

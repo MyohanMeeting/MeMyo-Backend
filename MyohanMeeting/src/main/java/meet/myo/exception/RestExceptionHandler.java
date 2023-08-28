@@ -2,7 +2,9 @@ package meet.myo.exception;
 
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatusCode;
+import org.springframework.lang.Nullable;
 import org.springframework.web.bind.MethodArgumentNotValidException;
+import org.springframework.web.bind.MissingServletRequestParameterException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.core.Ordered;
@@ -37,6 +39,17 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
                                         (val1, val2) -> val1 + ";" + val2
                                 )
                         ))
+                        .build());
+    }
+
+    @Override
+    protected ResponseEntity<Object> handleMissingServletRequestParameter(
+            MissingServletRequestParameterException ex, HttpHeaders headers, HttpStatusCode status, WebRequest request) {
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(
+                ErrorResponseDto.builder()
+                        .status(HttpStatus.BAD_REQUEST.toString())
+                        .message("INVALID PARAMETER")
+                        .debugMessage(ex.getMessage())
                         .build());
     }
 
@@ -83,15 +96,6 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
         return ResponseEntity.status(HttpStatus.METHOD_NOT_ALLOWED).body(ErrorResponseDto.builder()
                 .status(HttpStatus.METHOD_NOT_ALLOWED.toString())
                 .message("METHOD NOT ALLOWED")
-                .debugMessage(ex.getMessage())
-                .build());
-    }
-
-    @ExceptionHandler(RuntimeException.class)
-    protected ResponseEntity<ErrorResponseDto> handleServerException(RuntimeException ex) {
-        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(ErrorResponseDto.builder()
-                .status(HttpStatus.INTERNAL_SERVER_ERROR.toString())
-                .message("SERVER ERROR")
                 .debugMessage(ex.getMessage())
                 .build());
     }

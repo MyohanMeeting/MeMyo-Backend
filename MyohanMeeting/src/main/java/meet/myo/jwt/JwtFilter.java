@@ -31,31 +31,18 @@ public class JwtFilter extends GenericFilterBean {
     }
 
     @Override
-    public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
+    public void doFilter(
+            ServletRequest request, ServletResponse response, FilterChain chain
+    ) throws IOException, ServletException {
         HttpServletRequest httpServletRequest = (HttpServletRequest) request;
         HttpServletResponse httpServletResponse = (HttpServletResponse) response;
         String accessToken = resolveToken(httpServletRequest);
         String requestURI = httpServletRequest.getRequestURI();
 
         if (StringUtils.hasText(accessToken) && tokenProvider.validateToken(accessToken, true)) {
-            try {
-                Authentication authentication = tokenProvider.getAuthentication(accessToken, true);
-                SecurityContextHolder.getContext().setAuthentication(authentication);
-                log.debug("Security Context에 '{}' 인증 정보를 저장했습니다, uri: {}", authentication.getName(), requestURI);
-            } catch (AccessDeniedException e) {
-                SecurityContextHolder.clearContext(); // 컨텍스트 클리어
-                SecurityContextHolder.getContext().setAuthentication(null);
-
-                httpServletResponse.setContentType("application/json");
-                httpServletResponse.setCharacterEncoding("UTF-8");
-                httpServletResponse.setStatus(HttpServletResponse.SC_FORBIDDEN);
-                httpServletResponse.getWriter().write(new ObjectMapper().writeValueAsString(
-                        ErrorResponseDto.builder()
-                                .status(HttpStatus.FORBIDDEN.toString())
-                                .message(e.getMessage())
-                                .build()));
-                return;
-            }
+            Authentication authentication = tokenProvider.getAuthentication(accessToken, true);
+            SecurityContextHolder.getContext().setAuthentication(authentication);
+            log.debug("Security Context에 '{}' 인증 정보를 저장했습니다, uri: {}", authentication.getName(), requestURI);
         } else {
             log.debug("유효한 JWT 토큰이 없습니다, uri: {}", requestURI);
         }
