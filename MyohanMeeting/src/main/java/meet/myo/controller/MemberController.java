@@ -22,6 +22,7 @@ import meet.myo.dto.response.member.MemberUpdateResponseDto;
 import meet.myo.dto.response.member.OauthRegisterResponseDto;
 import meet.myo.exception.NotAuthenticatedException;
 import meet.myo.service.MemberService;
+import meet.myo.service.SignInService;
 import meet.myo.springdoc.annotations.ApiResponseCommon;
 import meet.myo.springdoc.annotations.ApiResponseSignin;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -35,6 +36,7 @@ import java.util.Map;
 public class MemberController {
 
     private final MemberService memberService;
+    private final SignInService signInService;
 
     /**
      * 직접 회원가입
@@ -56,7 +58,7 @@ public class MemberController {
     @PostMapping("/direct")
     public CommonResponseDto<Map<String, Long>> joinDirectV1(@Valid @RequestBody final MemberDirectCreateRequestDto dto) {
         return CommonResponseDto.<Map<String, Long>>builder()
-                .data(Map.of("memberId", memberService.directJoin(dto)))
+                .data(Map.of("memberId", signInService.directJoin(dto)))
                 .build();
     }
 
@@ -80,7 +82,7 @@ public class MemberController {
     @PostMapping("/oauth")
     public CommonResponseDto<Map<String, Long>> joinOauthV1(@Valid @RequestBody final MemberOauthCreateRequestDto dto) {
         return CommonResponseDto.<Map<String, Long>>builder()
-                .data(Map.of("memberId", memberService.oauthJoin(dto)))
+                .data(Map.of("memberId", signInService.oauthJoin(dto)))
                 .build();
     }
 
@@ -96,7 +98,7 @@ public class MemberController {
             @Parameter(name = "email", description = "중복을 확인할 이메일입니다.", in = ParameterIn.QUERY, example = "dupltest@test.com")
             @RequestParam(value = "email") @Valid @Email(message = "{validation.Email}") String email
     ) {
-        memberService.emailDuplicationCheck(email);
+        signInService.emailDuplicationCheck(email);
         return CommonResponseDto.builder().build();
     }
 
@@ -112,7 +114,7 @@ public class MemberController {
             @Parameter(name = "nickname", description = "중복을 확인할 닉네임입니다.", in = ParameterIn.QUERY)
             @RequestParam(value = "nickname") @Valid @Size(min = 2, max = 12, message = "{validation.Size}") String nickname
     ) {
-        memberService.nicknameDuplicationCheck(nickname);
+        signInService.nicknameDuplicationCheck(nickname);
         return CommonResponseDto.builder().build();
     }
 
@@ -127,7 +129,7 @@ public class MemberController {
     public CommonResponseDto sendCertificationEmailV1(
             @Parameter(name = "email", description = "회원 가입한 이메일입니다.", in = ParameterIn.QUERY, example = "myemail@email.com")
             @RequestParam(value = "email") @Valid @Email(message = "{validation.Email}") String email) {
-        memberService.resendCertMail(email);
+        signInService.resendCertMail(email);
         return CommonResponseDto.builder().build();
     }
 
@@ -145,7 +147,7 @@ public class MemberController {
             @Parameter(name = "email", description = "회원 가입한 이메일입니다.", in = ParameterIn.QUERY, example = "myemail@email.com")
             @RequestParam(value = "email") @Valid @Email(message = "{validation.Email}") String email
     ) {
-        memberService.verifyCertificationEmail(certCode, email);
+        signInService.verifyCertificationEmail(certCode, email);
         return CommonResponseDto.builder().build(); // TODO: 리턴값 어떻게 할지 생각
     }
 
