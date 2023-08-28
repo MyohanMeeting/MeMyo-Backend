@@ -21,5 +21,6 @@ public interface EmailCertificationRepository extends JpaRepository<EmailCertifi
             "and e.deletedAt is NULL " +
             "order by e.id desc " +
             "limit 1")
-    Optional<EmailCertification> findByCertCodeAndEmail(String certCode, String email);
+    Optional<EmailCertification> findByCertCodeAndEmail(@Param("certCode")String certCode,
+                                                        @Param("email")String email);
 }
