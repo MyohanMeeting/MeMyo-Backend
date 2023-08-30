@@ -39,6 +39,7 @@ out/
 ### SECRET ###
 **/src/main/resources/config/
 **/src/test/resources/config/
+**/src/main/generated/
 
 ### Mac OS ###
 .DS_STORE

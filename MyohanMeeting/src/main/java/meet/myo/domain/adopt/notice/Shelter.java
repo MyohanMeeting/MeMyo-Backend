@@ -2,6 +2,8 @@ package meet.myo.domain.adopt.notice;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Embeddable;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import lombok.*;
 
 @Embeddable
@@ -11,6 +13,7 @@ import lombok.*;
 @Builder
 public class Shelter {
 
+    @Enumerated(EnumType.STRING)
     @Column(name="shelter_city", nullable = false)
     private City city;
 
