@@ -27,23 +27,22 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class AdoptNoticeService {
 
-    private final AdoptNoticeRepository adoptNoticeRepository;
+    private final AdoptNoticeRepoImpl adoptNoticeRepo;
     private final AdoptNoticeCommentRepository adoptNoticeCommentRepository;
     private final MemberRepository memberRepository;
     private final UploadRepository uploadRepository;
     private final CatPictureRepository catPictureRepository;
+    private final AdoptNoticeRepository adoptNoticeRepository;
 
     /**
      * 공고목록 전체 조회
      */
     @Transactional(readOnly = true)
     public List<AdoptNoticeSummaryResponseDto> getAdoptNoticeList(Pageable pageable, AdoptNoticeSearch search) {
-
-        Page<AdoptNotice> adoptNotices = adoptNoticeRepository.findByDeletedAtNull(pageable);
+        Page<AdoptNotice> adoptNotices = adoptNoticeRepo.findByDeletedAtNull(pageable, search);
         return adoptNotices.getContent().stream()
                 .map(AdoptNoticeSummaryResponseDto::fromEntity)
                 .collect(Collectors.toList());
-
     }
 
     /**
