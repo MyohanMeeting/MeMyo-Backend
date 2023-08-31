@@ -1,0 +1,55 @@
+# Copyright 2020 Google, LLC.
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#    http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+name: MyohanMeeting Backend CICD Test
+
+on:
+  pull_request:
+    branches: [ "main" ]
+
+env:
+  PROJECT_ID: ${{ secrets.GCP_PROJECT_ID }}
+
+jobs:
+  setup-build:
+    name: Setup, Build
+    runs-on: ubuntu-latest
+
+    steps:
+    
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Create Secret
+        run: |-
+          mkdir ./MyohanMeeting/src/main/resources/config
+          touch ./MyohanMeeting/src/main/resources/config/secret.yml
+          echo "${{ secrets.DEV_SECRET_PROPERTIES }}" > ./MyohanMeeting/src/main/resources/config/secret.yml
+          cat ./MyohanMeeting/src/main/resources/config/secret.yml
+
+      - name: Create Client Environment
+        run: |-
+          touch ./MyohanMeeting/src/main/resources/config/client-env.yml
+          echo "${{ secrets.DEV_CLIENT_ENV }}" > ./MyohanMeeting/src/main/resources/config/client-env.yml
+          cat ./MyohanMeeting/src/main/resources/config/client-env.yml
+
+      - name: Create Google Cloud Storage Key
+        run: |-
+          touch ./MyohanMeeting/src/main/resources/config/cloud-storage-key.json
+          echo "${{ secrets.GCS_SA_KEY }}" > ./MyohanMeeting/src/main/resources/config/cloud-storage-key.json
+          cat ./MyohanMeeting/src/main/resources/config/cloud-storage-key.json
+
+      - name: Build the Docker image
+        run: |-
+          docker build --tag "gcr.io/$PROJECT_ID/myoback-dev:$GITHUB_SHA" /home/runner/work/MeMyo-Backend/MeMyo-Backend/MyohanMeeting
