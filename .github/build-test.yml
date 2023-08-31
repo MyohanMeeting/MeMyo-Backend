@@ -12,22 +12,18 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-name: MyohanMeeting Backend CICD
+name: MyohanMeeting Backend CICD Test
 
 on:
-  push:
-    branches: [ "deploy" ]
   pull_request:
-    branches: [ "deploy" ]
+    branches: [ "main" ]
 
 env:
   PROJECT_ID: ${{ secrets.GCP_PROJECT_ID }}
-  GCE_INSTANCE: myoback-dev
-  GCE_INSTANCE_ZONE: us-west4-b
 
 jobs:
-  setup-build-publish-deploy:
-    name: Setup, Build, Publish, and Deploy
+  setup-build:
+    name: Setup, Build
     runs-on: ubuntu-latest
 
     steps:
@@ -54,30 +50,6 @@ jobs:
           echo "${{ secrets.GCS_SA_KEY }}" > ./MyohanMeeting/src/main/resources/config/cloud-storage-key.json
           cat ./MyohanMeeting/src/main/resources/config/cloud-storage-key.json
 
-      - id: 'auth'
-        uses: 'google-github-actions/auth@v1'
-        with:
-          credentials_json: '${{ secrets.GCP_SA_KEY }}'
-
-      - name: 'Set up Cloud SDK'
-        uses: 'google-github-actions/setup-gcloud@v1'
-        with:
-          version: '>= 363.0.0'
-
-      # Configure Docker to use the gcloud command-line tool as a credential
-      # helper for authentication
-      - run: |-
-          gcloud --quiet auth configure-docker
-      # Build the Docker image
-      - name: Build
+      - name: Build the Docker image
         run: |-
           docker build --tag "gcr.io/$PROJECT_ID/myoback-dev:$GITHUB_SHA" /home/runner/work/MeMyo-Backend/MeMyo-Backend/MyohanMeeting
-      # Push the Docker image to Google Container Registry
-      - name: Publish
-        run: |-
-          docker push "gcr.io/$PROJECT_ID/myoback-dev:$GITHUB_SHA"
-      - name: Deploy
-        run: |-
-          gcloud compute instances update-container "$GCE_INSTANCE" \
-            --zone "$GCE_INSTANCE_ZONE" \
-            --container-image "gcr.io/$PROJECT_ID/myoback-dev:$GITHUB_SHA"
