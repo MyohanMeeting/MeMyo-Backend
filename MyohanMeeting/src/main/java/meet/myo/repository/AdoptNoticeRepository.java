@@ -1,10 +1,15 @@
 package meet.myo.repository;
 
-import meet.myo.domain.adopt.AdoptNotice;
+import meet.myo.domain.adopt.notice.AdoptNotice;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
-@Repository
-public interface AdoptNoticeRepository extends JpaRepository<AdoptNotice, Long> {
+import java.util.Optional;
 
+@Repository
+public interface AdoptNoticeRepository extends JpaRepository<AdoptNotice, Long> , AdoptNoticeRepositoryCustom {
+    Optional<AdoptNotice> findByIdAndDeletedAtNull(Long noticeId);
+    Page<AdoptNotice> findByMemberIdAndDeletedAtNull(Pageable pageable, Long memberId);
 }

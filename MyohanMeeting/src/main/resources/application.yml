@@ -1,0 +1,25 @@
+server:
+  port: 8080
+  servlet:
+    context-path: /
+    encoding:
+      charset: UTF-8
+      enabled: true
+      force: true
+
+spring:
+  profiles:
+    active: local
+  config:
+    import:
+      - classpath:config/client-env.yml
+
+springdoc:
+  default-consumes-media-type: application/json
+  default-produces-media-type: application/json
+  swagger-ui:
+    defaultModelsExpandDepth: -1
+    operations-sorter: method
+    tags-sorter: alpha
+
+    
