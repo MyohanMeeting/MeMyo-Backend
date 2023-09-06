@@ -72,21 +72,12 @@ public class AdoptApplicationController {
             @RequestParam(value = "page", required = false, defaultValue = "0") int page,
 
             @Parameter(name = "limit", description = "리미트를 설정합니다.", in = ParameterIn.QUERY)
-            @RequestParam(value = "limit", required = false, defaultValue = "100") int size,
-
-            /**
-             * 정렬 기준 파라미터
-             */
-            @Parameter(name = "sort", description = "정렬 기준을 선택합니다.<br><br>" +
-                    ", 를 구분자로 항목 앞에 -를 붙이면 내림차순, 붙이지 않으면 오름차순 정렬입니다.<br>" +
-                    "정렬 가능한 항목은 다음과 같습니다: createdAt(작성일), applicationCount(신청수), commentCount(댓글수)",
-                    in = ParameterIn.QUERY, example = "-createdAt,applicationCount")
-            @RequestParam(value = "sort", required = false) String sort
+            @RequestParam(value = "limit", required = false, defaultValue = "100") int size
     ) {
         Long memberId = SecurityUtil.getCurrentUserPK().orElseThrow(() -> new NotAuthenticatedException("INVALID_ID"));
         Pageable pageable = PageRequest.of(page, size);
         return CommonResponseDto.<List<AdoptApplicationResponseDto>>builder()
-                .data(adoptApplicationService.getMyAdoptApplicationList(memberId, pageable, sort))
+                .data(adoptApplicationService.getMyAdoptApplicationList(memberId, pageable))
                 .build();
     }
 
@@ -109,21 +100,12 @@ public class AdoptApplicationController {
             @RequestParam(value = "page", required = false, defaultValue = "0") int page,
 
             @Parameter(name = "limit", description = "리미트를 설정합니다.", in = ParameterIn.QUERY)
-            @RequestParam(value = "limit", required = false, defaultValue = "100") int size,
-
-            /**
-             * 정렬 기준 파라미터
-             */
-            @Parameter(name = "sort", description = "정렬 기준을 선택합니다.<br><br>" +
-                    ", 를 구분자로 항목 앞에 -를 붙이면 내림차순, 붙이지 않으면 오름차순 정렬입니다.<br>" +
-                    "정렬 가능한 항목은 다음과 같습니다: createdAt(작성일), applicationCount(신청수), commentCount(댓글수)",
-                    in = ParameterIn.QUERY, example = "-createdAt,applicationCount")
-            @RequestParam(value = "sort", required = false) String sort
+            @RequestParam(value = "limit", required = false, defaultValue = "100") int size
     ) {
         Long memberId = SecurityUtil.getCurrentUserPK().orElseThrow(() -> new NotAuthenticatedException("INVALID_ID"));
         Pageable pageable = PageRequest.of(page, size);
         return CommonResponseDto.<List<AdoptApplicationResponseDto>>builder()
-                .data(adoptApplicationService.getAdoptApplicationListByNotice(memberId, noticeId, pageable, sort))
+                .data(adoptApplicationService.getAdoptApplicationListByNotice(memberId, noticeId, pageable))
                 .build();
     }
 

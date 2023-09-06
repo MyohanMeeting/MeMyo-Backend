@@ -51,7 +51,7 @@ public class AdoptNoticeService {
     @Transactional(readOnly = true)
     public List<AdoptNoticeSummaryResponseDto> getMyAdoptNoticeList(Long memberId, Pageable pageable, String ordered) {
 
-        Page<AdoptNotice> adoptNotices = adoptNoticeRepository.findByMemberIdAndDeletedAtNull(pageable, memberId);
+        Page<AdoptNotice> adoptNotices = adoptNoticeRepository.findAdoptNoticeByMemberId(pageable, memberId);
         return adoptNotices.getContent().stream()
                 .map(AdoptNoticeSummaryResponseDto::fromEntity)
                 .collect(Collectors.toList());
@@ -62,7 +62,7 @@ public class AdoptNoticeService {
      */
     @Transactional(readOnly = true)
     public AdoptNoticeResponseDto getAdoptNotice(Long noticeId) {
-        AdoptNotice adoptNotice = adoptNoticeRepository.findByIdAndDeletedAtNull(noticeId)
+        AdoptNotice adoptNotice = adoptNoticeRepository.findAdoptNoticeWithId(noticeId)
                 .orElseThrow(() -> new NotFoundException("해당하는 입양공고가 존재하지 않습니다."));
         return AdoptNoticeResponseDto.fromEntity(adoptNotice);
     }

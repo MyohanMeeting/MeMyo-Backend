@@ -116,7 +116,7 @@ public class MemberService {
      * 개인정보 수정
      */
     public MemberUpdateResponseDto updateMember(Long memberId, MemberUpdateRequestDto dto) {
-        Member member = memberRepository.findByIdAndDeletedAtNull(memberId)
+        Member member = memberRepository.findMemberWithId(memberId)
                 .orElseThrow(() -> new NotFoundException("id에 해당하는 회원을 찾을 수 없습니다."));
 
         if (dto.getNickname().isPresent()) { member.updateNickname(dto.getNickname().get()); }
