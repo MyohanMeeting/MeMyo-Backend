@@ -19,14 +19,14 @@ public class AdoptApplication extends BaseAuditingListener {
     @Column(name = "adopt_application_id")
     private Long id;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "member_id")
     private Member member;
 
     @Column(columnDefinition = "TEXT", nullable = false)
     private String content;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "adopt_notice_id")
     private AdoptNotice adoptNotice;
 
