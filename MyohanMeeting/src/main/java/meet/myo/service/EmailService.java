@@ -19,7 +19,7 @@ public class EmailService {
     private final String resendUrl;
 
     public EmailService(JavaMailSender emailSender,
-                        @Value("${client-env.url}") String url) {
+                        @Value("${deploy.client.url}") String url) {
         this.emailSender = emailSender;
         this.certUrl = String.format("%s/certification", url);
         this.resendUrl = String.format("%s/certification", url);
