@@ -4,12 +4,16 @@ import meet.myo.domain.Member;
 import meet.myo.domain.OauthType;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.Optional;
 
 @Repository
 public interface MemberRepository extends JpaRepository<Member, Long> {
+
+    @Query("select m from Member m join fetch m.profileImage where m.id = :memberId and m.deletedAt is null")
+    Optional<Member> findMemberWithId(@Param("memberId") Long memberId);
 
     Optional<Member> findByIdAndDeletedAtNull(Long memberId);
 
