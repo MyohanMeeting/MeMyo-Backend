@@ -114,6 +114,29 @@ public class TokenProvider implements InitializingBean {
         return new UsernamePasswordAuthenticationToken(principal, token, authorities);
     }
 
+    // 토큰 멤버 아이디 구하기
+    public Long getMemberId(String token) {
+        Claims claims = Jwts.parserBuilder()
+                .setSigningKey(accessKey)
+                .build()
+                .parseClaimsJws(token)
+                .getBody();
+        if (!claims.containsKey("memberId")) {
+            throw new AccessDeniedException("INVALID_TOKEN");
+        }
+        return claims.get("memberId", Long.class);
+    }
+
+    // 토큰 유효시간 구하기
+    public Long getExpiration(String token, boolean isAccessToken) {
+        return Jwts.parserBuilder()
+                .setSigningKey(isAccessToken ? accessKey : refreshKey)
+                .build()
+                .parseClaimsJws(token)
+                .getBody()
+                .getExpiration().getTime();
+    }
+
     // 토큰 검증 부분
     public boolean validateToken(String token, boolean isAccessToken) {
         try {

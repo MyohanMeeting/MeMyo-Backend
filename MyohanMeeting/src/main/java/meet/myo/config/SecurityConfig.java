@@ -7,6 +7,7 @@ import meet.myo.jwt.JwtSecurityConfig;
 import meet.myo.jwt.TokenProvider;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -19,16 +20,24 @@ import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 import org.springframework.security.web.util.matcher.RegexRequestMatcher;
 
 
-@RequiredArgsConstructor
 @Configuration
 @EnableWebSecurity
 @EnableMethodSecurity
 public class SecurityConfig {
 
+    private final RedisTemplate<String, String> redisTemplate;
     private final TokenProvider tokenProvider;
     private final JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint;
     private final JwtAccessDeniedHandler jwtAccessDeniedHandler;
 
+    public SecurityConfig(RedisTemplate<String, String> redisTemplate, TokenProvider tokenProvider,
+                          JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint,
+                          JwtAccessDeniedHandler jwtAccessDeniedHandler) {
+        this.redisTemplate = redisTemplate;
+        this.tokenProvider = tokenProvider;
+        this.jwtAuthenticationEntryPoint = jwtAuthenticationEntryPoint;
+        this.jwtAccessDeniedHandler = jwtAccessDeniedHandler;
+    }
 
     // 패스워드 암호화
     @Bean
@@ -94,7 +103,7 @@ public class SecurityConfig {
 
                 // JwtSecurityConfig 적용
                 .and()
-                .apply(new JwtSecurityConfig(tokenProvider));
+                .apply(new JwtSecurityConfig(redisTemplate, tokenProvider));
 
         return http.build();
     }
