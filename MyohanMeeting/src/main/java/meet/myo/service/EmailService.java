@@ -19,10 +19,11 @@ public class EmailService {
     private final String resendUrl;
 
     public EmailService(JavaMailSender emailSender,
-                        @Value("${client-env.url}") String url) {
+                        @Value("${client-env.local.host}") String host,
+                        @Value("${client-env.local.port}") String port) {
         this.emailSender = emailSender;
-        this.certUrl = String.format("%s/certification", url);
-        this.resendUrl = String.format("%s/certification", url);
+        this.certUrl = String.format("http://%s:%s/certification", host, port);
+        this.resendUrl = String.format("http://%s:%s/certification", host, port);
     }
 
     //메일 양식 작성
@@ -52,5 +53,6 @@ public class EmailService {
     public void sendEmail(String toEmail, String authNum) throws MessagingException, UnsupportedEncodingException {
         MimeMessage emailForm = createEmailForm(toEmail, authNum);
         emailSender.send(emailForm);
+        //:TODO void?
     }
 }

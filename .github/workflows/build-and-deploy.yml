@@ -36,9 +36,15 @@ jobs:
       - name: Create Secret
         run: |-
           mkdir ./MyohanMeeting/src/main/resources/config
-          touch ./MyohanMeeting/src/main/resources/config/secret-dev.yml
-          echo "${{ secrets.DEV_SECRET_PROPERTIES }}" > ./MyohanMeeting/src/main/resources/config/secret-dev.yml
-          cat ./MyohanMeeting/src/main/resources/config/secret-dev.yml
+          touch ./MyohanMeeting/src/main/resources/config/secret.yml
+          echo "${{ secrets.DEV_SECRET_PROPERTIES }}" > ./MyohanMeeting/src/main/resources/config/secret.yml
+          cat ./MyohanMeeting/src/main/resources/config/secret.yml
+
+      - name: Create Client Environment
+        run: |-
+          touch ./MyohanMeeting/src/main/resources/config/client-env.yml
+          echo "${{ secrets.DEV_CLIENT_ENV }}" > ./MyohanMeeting/src/main/resources/config/client-env.yml
+          cat ./MyohanMeeting/src/main/resources/config/client-env.yml
 
       - name: Create Google Cloud Storage Key
         run: |-
