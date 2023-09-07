@@ -7,6 +7,7 @@ import meet.myo.domain.adopt.notice.*;
 import meet.myo.domain.adopt.notice.cat.*;
 import meet.myo.dto.request.adopt.*;
 import meet.myo.dto.response.adopt.AdoptNoticeCommentResponseDto;
+import meet.myo.dto.response.adopt.AdoptNoticeListResponseDto;
 import meet.myo.dto.response.adopt.AdoptNoticeResponseDto;
 import meet.myo.exception.NotFoundException;
 import meet.myo.dto.response.adopt.AdoptNoticeSummaryResponseDto;
@@ -14,6 +15,7 @@ import meet.myo.dto.response.adopt.AdoptNoticeSummaryResponseDto;
 import meet.myo.repository.*;
 import meet.myo.search.AdoptNoticeSearch;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
@@ -38,11 +40,17 @@ public class AdoptNoticeService {
      * 공고목록 전체 조회
      */
     @Transactional(readOnly = true)
-    public List<AdoptNoticeSummaryResponseDto> getAdoptNoticeList(Pageable pageable, AdoptNoticeSearch search) {
+    public AdoptNoticeListResponseDto getAdoptNoticeList(Pageable pageable, AdoptNoticeSearch search) {
+
         Page<AdoptNotice> adoptNotices = adoptNoticeRepo.findByDeletedAtNull(pageable, search);
-        return adoptNotices.getContent().stream()
+
+        return AdoptNoticeListResponseDto.of(
+                adoptNotices.getTotalElements(),
+                adoptNotices.getTotalPages(),
+                adoptNotices.getContent().stream()
                 .map(AdoptNoticeSummaryResponseDto::fromEntity)
-                .collect(Collectors.toList());
+                .collect(Collectors.toList())
+        );
     }
 
     /**

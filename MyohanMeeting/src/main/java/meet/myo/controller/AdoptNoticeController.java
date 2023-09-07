@@ -16,6 +16,7 @@ import meet.myo.domain.adopt.notice.AdoptNoticeStatus;
 import meet.myo.domain.adopt.notice.City;
 import meet.myo.dto.request.adopt.AdoptNoticeCreateRequestDto;
 import meet.myo.dto.request.adopt.AdoptNoticeUpdateRequestDto;
+import meet.myo.dto.response.adopt.AdoptNoticeListResponseDto;
 import meet.myo.dto.response.adopt.AdoptNoticeResponseDto;
 import meet.myo.dto.response.CommonResponseDto;
 import meet.myo.dto.response.adopt.AdoptNoticeSummaryResponseDto;
@@ -46,7 +47,7 @@ public class AdoptNoticeController {
     @Operation(summary = "분양공고 목록조회", description = "검색 조건에 따른 분양 공고 목록을 조회합니다.", operationId = "getNoticeList")
     @ApiResponse(responseCode = "200") @ApiResponseCommon
     @GetMapping("")
-    public CommonResponseDto<List<AdoptNoticeSummaryResponseDto>> getNoticeListV1(
+    public CommonResponseDto<AdoptNoticeListResponseDto> getNoticeListV1(
             /**
              * 페이징
              */
@@ -132,7 +133,7 @@ public class AdoptNoticeController {
                 .sort(sort)
                 .build();
 
-        return CommonResponseDto.<List<AdoptNoticeSummaryResponseDto>>builder()
+        return CommonResponseDto.<AdoptNoticeListResponseDto>builder()
                 .data(adoptNoticeService.getAdoptNoticeList(pageable, search))
                 .build();
     }
