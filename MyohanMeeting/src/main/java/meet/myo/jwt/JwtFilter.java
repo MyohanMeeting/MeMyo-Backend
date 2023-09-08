@@ -1,15 +1,12 @@
 package meet.myo.jwt;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.ServletRequest;
 import jakarta.servlet.ServletResponse;
 import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
-import meet.myo.dto.response.ErrorResponseDto;
-import org.springframework.http.HttpStatus;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -18,15 +15,16 @@ import org.springframework.web.filter.GenericFilterBean;
 
 import java.io.IOException;
 
-//logger 대신 Slf4j 어노테이션 사용
 @Slf4j
 public class JwtFilter extends GenericFilterBean {
 
     public static final String AUTHORIZATION_HEADER = "Authorization";
 
-    private TokenProvider tokenProvider;
+    private RedisTemplate<String, String> redisTemplate;
+    private final TokenProvider tokenProvider;
 
-    public JwtFilter(TokenProvider tokenProvider) {
+    public JwtFilter(RedisTemplate<String, String> redisTemplate, TokenProvider tokenProvider) {
+        this.redisTemplate = redisTemplate;
         this.tokenProvider = tokenProvider;
     }
 
@@ -35,11 +33,11 @@ public class JwtFilter extends GenericFilterBean {
             ServletRequest request, ServletResponse response, FilterChain chain
     ) throws IOException, ServletException {
         HttpServletRequest httpServletRequest = (HttpServletRequest) request;
-        HttpServletResponse httpServletResponse = (HttpServletResponse) response;
         String accessToken = resolveToken(httpServletRequest);
         String requestURI = httpServletRequest.getRequestURI();
 
         if (StringUtils.hasText(accessToken) && tokenProvider.validateToken(accessToken, true)) {
+            validBlackToken(accessToken);
             Authentication authentication = tokenProvider.getAuthentication(accessToken, true);
             SecurityContextHolder.getContext().setAuthentication(authentication);
             log.debug("Security Context에 '{}' 인증 정보를 저장했습니다, uri: {}", authentication.getName(), requestURI);
@@ -48,6 +46,13 @@ public class JwtFilter extends GenericFilterBean {
         }
 
         chain.doFilter(request, response);
+    }
+
+    private void validBlackToken(String accessToken) {
+        String blackList = redisTemplate.opsForValue().get(accessToken);
+        if(StringUtils.hasText(blackList)) {
+            throw new AccessDeniedException("SIGNOUT_TOKEN");
+        }
     }
 
     // Bearer 토큰인지 판단하는 부분

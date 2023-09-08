@@ -145,7 +145,7 @@ public class AdoptNoticeController {
     @ApiResponse(responseCode = "200") @ApiResponseCommon @ApiResponseSignin
     @PreAuthorize("hasAnyRole('ROLE_USER')")
     @GetMapping("/my")
-    public CommonResponseDto<AdoptNoticeListResponseDto> getMyNoticeListV1(
+    public CommonResponseDto<List<AdoptNoticeSummaryResponseDto>> getMyNoticeListV1(
             /**
              * 페이징
              */
@@ -172,7 +172,7 @@ public class AdoptNoticeController {
     ) {
         Long memberId = SecurityUtil.getCurrentUserPK().orElseThrow(() -> new NotAuthenticatedException("INVALID_ID"));
         Pageable pageable = PageRequest.of(page, size);
-        return CommonResponseDto.<AdoptNoticeListResponseDto>builder()
+        return CommonResponseDto.<List<AdoptNoticeSummaryResponseDto>>builder()
                 .data(adoptNoticeService.getMyAdoptNoticeList(memberId, pageable, sort))
                 .build();
     }

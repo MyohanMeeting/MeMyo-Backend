@@ -21,7 +21,7 @@ public class CatPicture extends BaseAuditingListener {
     private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "notice_id")
+    @JoinColumn(name = "adopt_notice_id")
     private AdoptNotice adoptNotice;
 
     @ManyToOne(fetch = FetchType.LAZY)

@@ -33,7 +33,7 @@ public class FavoriteService {
      * 찜 목록 가져오기
      */
     public List<FavoriteResponseDto> getFavoriteList(Long memberId, Pageable pageable) {
-        Page<Favorite> favoritePage = favoriteRepository.findByMemberIdAndDeletedAtNull(memberId, pageable);
+        Page<Favorite> favoritePage = favoriteRepository.findFavoriteByMemberId(memberId, pageable);
 
         List<FavoriteResponseDto> favoriteList = favoritePage.stream()
                 .map(FavoriteResponseDto::fromEntity)

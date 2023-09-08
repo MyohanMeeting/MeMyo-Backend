@@ -2,6 +2,8 @@ package meet.myo.repository;
 
 import meet.myo.domain.adopt.notice.AdoptNoticeComment;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -12,5 +14,8 @@ public interface AdoptNoticeCommentRepository extends JpaRepository<AdoptNoticeC
 
     Optional<AdoptNoticeComment> findByIdAndDeletedAtNull(Long noticeCommentId);
 
-    List<AdoptNoticeComment> findByAdoptNoticeIdAndDeletedAtNull(Long noticeId);
+    @Query("SELECT anc FROM AdoptNoticeComment anc " +
+            "JOIN FETCH anc.member m " +
+            "JOIN FETCH m.profileImage WHERE anc.adoptNotice.id = :noticeId and anc.deletedAt is null")
+    List<AdoptNoticeComment> findByAdoptNoticeIdAndDeletedAtNull(@Param("noticeId") Long noticeId);
 }

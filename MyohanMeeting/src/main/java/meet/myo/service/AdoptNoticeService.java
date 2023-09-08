@@ -57,16 +57,12 @@ public class AdoptNoticeService {
      * 특정 회원의 공고목록 전체 조회
      */
     @Transactional(readOnly = true)
-    public AdoptNoticeListResponseDto getMyAdoptNoticeList(Long memberId, Pageable pageable, String ordered) {
+    public List<AdoptNoticeSummaryResponseDto> getMyAdoptNoticeList(Long memberId, Pageable pageable, String ordered) {
 
-        Page<AdoptNotice> adoptNotices = adoptNoticeRepository.findByMemberIdAndDeletedAtNull(pageable, memberId);
-        return AdoptNoticeListResponseDto.of(
-                adoptNotices.getTotalElements(),
-                adoptNotices.getTotalPages(),
-                adoptNotices.getContent().stream()
+        Page<AdoptNotice> adoptNotices = adoptNoticeRepository.findAdoptNoticeByMemberId(pageable, memberId);
+        return adoptNotices.getContent().stream()
                 .map(AdoptNoticeSummaryResponseDto::fromEntity)
-                .collect(Collectors.toList())
-        );
+                .collect(Collectors.toList());
     }
 
     /**
@@ -74,7 +70,7 @@ public class AdoptNoticeService {
      */
     @Transactional(readOnly = true)
     public AdoptNoticeResponseDto getAdoptNotice(Long noticeId) {
-        AdoptNotice adoptNotice = adoptNoticeRepository.findByIdAndDeletedAtNull(noticeId)
+        AdoptNotice adoptNotice = adoptNoticeRepository.findAdoptNoticeWithId(noticeId)
                 .orElseThrow(() -> new NotFoundException("해당하는 입양공고가 존재하지 않습니다."));
         return AdoptNoticeResponseDto.fromEntity(adoptNotice);
     }

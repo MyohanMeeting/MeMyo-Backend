@@ -33,6 +33,9 @@ dependencies {
     runtimeOnly group: 'io.jsonwebtoken', name: 'jjwt-impl', version: '0.11.5'
     runtimeOnly group: 'io.jsonwebtoken', name: 'jjwt-jackson', version: '0.11.5'
 
+    //Redis cache
+    implementation 'org.springframework.boot:spring-boot-starter-data-redis'
+
     // spring doc(swagger ui)
     // http://server:port/context-path/swagger-ui/index.html
     implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.1.0'

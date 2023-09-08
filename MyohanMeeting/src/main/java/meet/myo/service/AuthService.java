@@ -14,6 +14,7 @@ import meet.myo.dto.request.auth.SignInRequestDto;
 import meet.myo.jwt.TokenDto;
 import meet.myo.jwt.TokenProvider;
 import meet.myo.repository.MemberRepository;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
@@ -22,6 +23,8 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.oauth2.client.authentication.OAuth2AuthenticationToken;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
+
+import java.util.concurrent.TimeUnit;
 
 
 /**
@@ -42,6 +45,7 @@ public class AuthService {
     private final AuthenticationManagerBuilder authenticationManagerBuilder;
     private final CustomPrincipalDetailService customPrincipalDetailService;
     private final MemberRepository memberRepository;
+    private final RedisTemplate<String ,String> redisTemplate;
 
     /**
      * 로그인
@@ -107,12 +111,21 @@ public class AuthService {
     /**
      * 로그아웃(토큰 만료)
      */
-    public void signOut(String token) {
-        if (!tokenProvider.validateToken(resolveToken(token), true)) {
+    public void signOut(String header) {
+        String token = resolveToken(header);
+
+        if (!tokenProvider.validateToken(token, true)) {
             throw new AccessDeniedException("INVALID_TOKEN");
         }
 
-        // TODO: 블랙리스트 등록
+        Long expiration = tokenProvider.getExpiration(token, true);
+
+        //Redis Cache에 저장
+        redisTemplate.opsForValue().set(token, "logout", expiration, TimeUnit.MILLISECONDS);
+
+        //리프레쉬 토큰 삭제
+        memberRepository.findByIdAndDeletedAtNull(tokenProvider.getMemberId(token)).orElseThrow(NotFoundException::new)
+                .updateRefreshToken(null);
     }
 
     /**
@@ -125,13 +138,15 @@ public class AuthService {
         if (dto instanceof DirectSignInRequestDto directSignInRequestDto) {
             // 인증된 Authentication 객체 획득(authentication manager가 loadByUserName 호출)
             authentication =  authenticationManagerBuilder.getObject().authenticate(
-                    new UsernamePasswordAuthenticationToken(directSignInRequestDto.getEmail(), directSignInRequestDto.getPassword())
+                    new UsernamePasswordAuthenticationToken(
+                            directSignInRequestDto.getEmail(), directSignInRequestDto.getPassword())
             );
 
         } else if (dto instanceof OauthSignInRequestDto oauthSignInRequestDto) {
 
             // OAuth 버전의 loadByUserName
-            CustomOAuth2User user = customPrincipalDetailService.loadUserByOauth(oauthSignInRequestDto.getOauthType(), oauthSignInRequestDto.getOauthId());
+            CustomOAuth2User user = customPrincipalDetailService.loadUserByOauth(
+                    oauthSignInRequestDto.getOauthType(), oauthSignInRequestDto.getOauthId());
 
             // Authentication 객체 생성
             authentication = new OAuth2AuthenticationToken(user, user.getAuthorities(), oauthSignInRequestDto.getOauthId());
@@ -151,10 +166,9 @@ public class AuthService {
     }
 
     private String resolveToken(String token) {
-        if (StringUtils.hasText(token) && token.startsWith("Bearer ")) {
-            return token.substring(7);
-        } else {
+        if (!token.startsWith("Bearer ")) {
             throw new IllegalArgumentException("INVALID_TOKEN");
         }
+        return token.substring(7);
     }
 }
