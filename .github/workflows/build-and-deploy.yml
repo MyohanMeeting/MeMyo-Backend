@@ -84,9 +84,9 @@ jobs:
         run: |-
           gcloud compute ssh --project=$PROJECT_ID --zone=$GCE_INSTANCE_ZONE $GCE_INSTANCE \
             --ssh-key-file=$SSH_DIR \
-            --command="sudo gcloud --quiet auth activate-service-account ${{ secret.GCE_SA_EMAIL }} --key-file=${{ secret.GCE_SA_KEY_DIR }}
+            --command="sudo gcloud --quiet auth activate-service-account ${{ secrets.GCE_SA_EMAIL }} --key-file=${{ secrets.GCE_SA_KEY_DIR }}
               sudo gcloud --quiet auth configure-docker gcr.io
-              cd ${{ secret.PROJ_DIR }}
+              cd ${{ secrets.PROJ_DIR }}
               sudo docker compose down
               sudo docker rmi $IMAGE_NAME -f
               sudo docker compose up -d"
