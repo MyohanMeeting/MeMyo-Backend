@@ -7,6 +7,7 @@ import io.swagger.v3.oas.annotations.info.Contact;
 import io.swagger.v3.oas.annotations.info.Info;
 import io.swagger.v3.oas.annotations.security.SecurityScheme;
 import io.swagger.v3.oas.annotations.security.SecuritySchemes;
+import io.swagger.v3.oas.annotations.servers.Server;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpHeaders;
@@ -36,6 +37,9 @@ import org.springframework.http.HttpHeaders;
                 @Tag(name = "5. Adopt Notice Comment", description = "분양공고 댓글 관련 기능"),
                 @Tag(name = "6. Favorite", description = "최애친구 관련 기능"),
                 @Tag(name = "7. File", description = "파일 업로드 관련 기능")
+        },
+        servers = {
+                @Server(url = "https://myomeet.store")
         }
 )
 @SecuritySchemes({
