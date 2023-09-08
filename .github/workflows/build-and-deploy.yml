@@ -21,7 +21,10 @@ on:
 env:
   PROJECT_ID: ${{ secrets.GCP_PROJECT_ID }}
   GCE_INSTANCE: myoback-dev
-  GCE_INSTANCE_ZONE: us-west4-b
+  GCE_INSTANCE_ZONE: us-central1-a
+  SSH_DIR: ${{ secrets.SSH_DIR }}
+  IMAGE_NAME: gcr.io/${{ secrets.GCP_PROJECT_ID }}/myoback-dev:latest
+
 
 jobs:
   setup-build-publish-deploy:
@@ -29,7 +32,7 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    
+
       - name: Checkout
         uses: actions/checkout@v3
 
@@ -45,6 +48,15 @@ jobs:
           touch ./MyohanMeeting/src/main/resources/config/cloud-storage-key.json
           echo "${{ secrets.GCS_SA_KEY }}" > ./MyohanMeeting/src/main/resources/config/cloud-storage-key.json
           cat ./MyohanMeeting/src/main/resources/config/cloud-storage-key.json
+
+      - name: Create SSH Key
+        run: |-
+          touch $SSH_DIR.pub
+          echo "${{ secrets.GCP_SSH_PUB }}" > $SSH_DIR.pub
+          chmod 400 $SSH_DIR.pub
+          touch $SSH_DIR
+          echo "${{ secrets.GCP_SSH_KEY }}" > $SSH_DIR
+          chmod 400 $SSH_DIR
 
       - id: 'auth'
         uses: 'google-github-actions/auth@v1'
@@ -63,13 +75,18 @@ jobs:
       # Build the Docker image
       - name: Build
         run: |-
-          docker build --tag "gcr.io/$PROJECT_ID/myoback-dev:$GITHUB_SHA" /home/runner/work/MeMyo-Backend/MeMyo-Backend/MyohanMeeting
+          docker build --tag $IMAGE_NAME /home/runner/work/MeMyo-Backend/MeMyo-Backend/MyohanMeeting
       # Push the Docker image to Google Container Registry
       - name: Publish
         run: |-
-          docker push "gcr.io/$PROJECT_ID/myoback-dev:$GITHUB_SHA"
+          docker push $IMAGE_NAME
       - name: Deploy
         run: |-
-          gcloud compute instances update-container "$GCE_INSTANCE" \
-            --zone "$GCE_INSTANCE_ZONE" \
-            --container-image "gcr.io/$PROJECT_ID/myoback-dev:$GITHUB_SHA"
+          gcloud compute ssh --project=$PROJECT_ID --zone=$GCE_INSTANCE_ZONE $GCE_INSTANCE \
+            --ssh-key-file=$SSH_DIR \
+            --command="sudo gcloud --quiet auth activate-service-account ${{ secret.GCE_SA_EMAIL }} --key-file=${{ secret.GCE_SA_KEY_DIR }}
+              sudo gcloud --quiet auth configure-docker gcr.io
+              cd ${{ secret.PROJ_DIR }}
+              sudo docker compose down
+              sudo docker rmi $IMAGE_NAME -f
+              sudo docker compose up -d"
