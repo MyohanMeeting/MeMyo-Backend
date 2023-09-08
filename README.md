@@ -37,9 +37,10 @@ Spring Security, JWT, Redis
 Github Actions, Docker, Google Cloud Compute Engine
 
 ## API 문서
-[Swagger UI(개발서버)](http://34.125.176.70:8080/swagger-ui/index.html)
+[Swagger UI(개발서버)](https://myomeet.store/swagger-ui/index.html)
 
 ## 프론트엔드 링크
+[서비스 링크](https://myohanmeeting.github.io/MeMyo-Frontend)
 [GitHub 레포지토리](https://github.com/MyohanMeeting/MeMyo-Frontend)
 
 
