@@ -44,5 +44,8 @@ out/
 ### Doc ###
 /docs
 
+### docker-compose ###
+docker-compose.yml
+
 ### Mac OS ###
 .DS_STORE
