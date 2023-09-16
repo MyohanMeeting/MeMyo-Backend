@@ -41,5 +41,8 @@ out/
 **/src/test/resources/config/
 **/src/main/generated/
 
+### Doc ###
+/docs
+
 ### Mac OS ###
 .DS_STORE

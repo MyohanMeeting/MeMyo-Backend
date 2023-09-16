@@ -18,5 +18,3 @@ springdoc:
     defaultModelsExpandDepth: -1
     operations-sorter: method
     tags-sorter: alpha
-
-    
