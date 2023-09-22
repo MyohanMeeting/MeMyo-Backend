@@ -40,7 +40,7 @@ jobs:
         run: |-
           mkdir ./MyohanMeeting/src/main/resources/config
           touch ./MyohanMeeting/src/main/resources/config/secret-dev.yml
-          echo "${{ secrets.DEV_SECRET_PROPERTIES }}" > ./MyohanMeeting/src/main/resources/config/secret-dev.yml
+          echo "${{ secrets.DEV_SECRET_PROPERTIES_H2 }}" > ./MyohanMeeting/src/main/resources/config/secret-dev.yml
           cat ./MyohanMeeting/src/main/resources/config/secret-dev.yml
 
       - name: Create Google Cloud Storage Key

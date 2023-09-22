@@ -1,10 +1,8 @@
 spring:
   config:
     import:
+      - classpath:dev-db-h2.yml
       - classpath:./config/secret-dev.yml
-
-  datasource:
-    driver-class-name: com.mysql.cj.jdbc.Driver
 
   jpa:
     hibernate:
