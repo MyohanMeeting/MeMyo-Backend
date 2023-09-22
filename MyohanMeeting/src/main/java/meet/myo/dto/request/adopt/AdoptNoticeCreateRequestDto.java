@@ -2,6 +2,7 @@ package meet.myo.dto.request.adopt;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.Getter;
@@ -33,6 +34,7 @@ public class AdoptNoticeCreateRequestDto {
     private Long thumbnailId;
 
     @Schema(type = "array", example = "[2, 3, 4, 5, 6]")
+    @NotEmpty(message = "{validation.NotEmpty}")
     @NotNull(message = "{validation.NotNull}")
     private List<Long> catPictures;
 
