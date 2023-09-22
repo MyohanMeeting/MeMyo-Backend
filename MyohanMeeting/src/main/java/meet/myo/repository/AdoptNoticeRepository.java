@@ -18,8 +18,8 @@ public interface AdoptNoticeRepository extends JpaRepository<AdoptNotice, Long> 
     @Query("select an from AdoptNotice an " +
             "join fetch an.member m " +
             "join fetch an.thumbnail th " +
-            "join fetch an.catPictures cp " +
-            "join fetch cp.upload u " +
+            "left join fetch an.catPictures cp " +
+            "left join fetch cp.upload u " +
             "where an.id = :noticeId and an.deletedAt is null")
     Optional<AdoptNotice> findAdoptNoticeWithId(@Param("noticeId") Long noticeId);
 
