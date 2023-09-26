@@ -65,6 +65,7 @@ public class SecurityConfig {
 
                 .and()
                 .authorizeHttpRequests()
+                .requestMatchers(HttpMethod.OPTIONS).permitAll()
 
                 // 문서, h2 console 관련 세팅
                 // TODO: test 환경에서만 작동하도록 설정해야 함
